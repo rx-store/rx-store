@@ -1,7 +1,7 @@
 .vscode
 node_modules
 lerna-debug.log
-/packages/react-rx-store/types
-/packages/react-rx-store/lib
-/packages/react-rx-store/es
-/packages/react-rx-store/dist
+/packages/*/types
+/packages/*/lib
+/packages/*/es
+/packages/*/dist

@@ -1,7 +1,5 @@
 import { Subject, BehaviorSubject } from "rxjs";
-import { filter } from "rxjs/operators";
 import { AppSubjects, AppObservables, AppContextValue } from "../types";
-import { scanCount } from "./operators/scan-count";
 import { scanSum } from "./operators/scan-sum";
 
 /**

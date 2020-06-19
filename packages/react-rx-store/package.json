@@ -17,7 +17,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.10.2"
+    "@babel/runtime": "^7.10.2",
+    "@rx-store/rx-store": "^0.0.1"
   },
   "types": "types/",
   "devDependencies": {
