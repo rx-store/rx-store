@@ -13,7 +13,13 @@ module.exports = {
         {
           to: 'docs/',
           activeBasePath: 'docs',
-          label: 'Docs',
+          label: 'Getting Started',
+          position: 'left',
+        },
+        {
+          to: 'faq/',
+          activeBasePath: 'docs',
+          label: 'FAQ',
           position: 'left',
         },
         {
@@ -30,12 +36,12 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
+              label: 'Getting Started',
               to: 'docs/',
             },
             {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
+              label: 'FAQ',
+              to: 'docs/faq/',
             },
           ],
         },
@@ -44,12 +50,12 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/',
+              label: 'GitHub',
+              href: 'https://github.com/rx-store/rx-store',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'Report Issue',
+              href: 'https://github.com/rx-store/rx-store/issues',
             },
           ],
         },
@@ -63,17 +69,11 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'doc1',
+          homePageId: 'getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/rx-store/rx-store/edit/master/website/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
