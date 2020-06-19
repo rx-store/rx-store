@@ -1,8 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
-import { rxStoreContext } from "./store";
 import { unstable_batchedUpdates } from "react-dom";
 import { Subscription, combineLatest } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import { context } from "@rx-store/react-rx-store";
+import { AppContextValue } from "./types";
+
+function useRxStore() {
+  const value = useContext(context);
+  if (!value) throw new Error();
+  const { subjects, observables } = value as AppContextValue;
+  return { subjects, observables };
+}
 
 function App() {
   const [increments, setIncrements] = useState<number>();
@@ -10,17 +18,17 @@ function App() {
   const [total, setTotal] = useState<number>();
   const [stateCounter, setStateCounter] = useState<number>();
 
-  const { subjects, observables } = useContext(rxStoreContext);
+  const { subjects, observables } = useRxStore();
 
   useEffect(() => {
     unstable_batchedUpdates(() => {
       const subscriptions: Subscription[] = [];
       subscriptions.push(
-        observables.incrementCount$.subscribe(increments => {
+        observables.incrementCount$.subscribe((increments) => {
           setIncrements(increments);
         }),
 
-        observables.decrementCount$.subscribe(decrements =>
+        observables.decrementCount$.subscribe((decrements) =>
           setDecrements(decrements)
         ),
 
@@ -29,23 +37,25 @@ function App() {
           observables.decrementCount$.pipe(startWith(0))
         )
           .pipe(map(([inc, dec]: [number, number]) => inc + dec))
-          .subscribe(total => setTotal(total)),
+          .subscribe((total) => setTotal(total)),
 
-        subjects.stateCounter$.subscribe(count => setStateCounter(count))
+        subjects.count$.subscribe((count) => setStateCounter(count))
       );
-      return () => subscriptions.forEach(s => s.unsubscribe());
+      return () => subscriptions.forEach((s) => s.unsubscribe());
     });
-  }, []);
+  }, [
+    observables.decrementCount$,
+    observables.incrementCount$,
+    subjects.count$,
+  ]);
 
   return (
     <div className="App">
       <h1> Counter</h1>
       count: {stateCounter}, increments: {increments}, decrements: {decrements},
       total: {total}
-      <button onClick={() => subjects.streamCounterChange$.next(1)}>add</button>
-      <button onClick={() => subjects.streamCounterChange$.next(-1)}>
-        subtract
-      </button>
+      <button onClick={() => subjects.counterChange$.next(1)}>add</button>
+      <button onClick={() => subjects.counterChange$.next(-1)}>subtract</button>
     </div>
   );
 }

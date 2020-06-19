@@ -8,8 +8,8 @@ import { RxStoreSubjects, RxStoreObservables } from "@rx-store/rx-store";
  * they are multi-cast, read & write.
  */
 export interface AppSubjects extends RxStoreSubjects {
-  streamCounterChange$: Subject<number>;
-  stateCounter$: Subject<number>;
+  counterChange$: Subject<number>;
+  count$: Subject<number>;
 }
 
 /**

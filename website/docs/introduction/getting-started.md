@@ -17,7 +17,7 @@ Our counter app will use an event bus where we will emit values, in this case a 
 
 ```tsx
 const appSubjects = {
-  count$: new Subject()
+  count$: new Subject(),
 };
 ```
 
@@ -25,9 +25,9 @@ Subjects should be a single source of truth,
 they are multi-cast, both read & write. That is, you can subscribe to them, and emit values on them which will be multi-cast to all the subscribers.
 
 ```tsx
-appSubjects.subscribe(x => console.log(`subscriber A ${x}`));
+appSubjects.subscribe((x) => console.log(`subscriber A ${x}`));
 appSubjects.count$.next(1);
-appSubjects.subscribe(x => console.log(`subscriber B ${x}`));
+appSubjects.subscribe((x) => console.log(`subscriber B ${x}`));
 appSubjects.count$.next(2);
 appSubjects.count$.next(3);
 
@@ -59,7 +59,7 @@ const appObservables = {
   oddCount$: appSubjects.count$.asObservable().pipe(
     delay(500),
     filter((x: number) => x % 2 !== 0)
-  )
+  ),
 };
 ```
 
@@ -77,7 +77,7 @@ Your subscription could emit values back onto the `count$` subject if you wanted
 export const appRootEffect = ({ subjects }) => {
   const subscription = subjects.count$
     .pipe(delay(1000))
-    .subscribe(count => console.log({ count }));
+    .subscribe((count) => console.log({ count }));
   return () => subscription.unsubscribe();
 };
 ```
@@ -88,11 +88,11 @@ Your subscription will more commonly emit onto some other subject, or run some s
 
 ### Subject
 
-Let's rename our `count$` subject to `countChange$`. We're going to switch our thinking from state to streams. No longer will this be a stream of state, it will be a stream of changes!
+Let's rename our `count$` subject to `counterChange$`. We're going to switch our thinking from state to streams. No longer will this be a stream of state, it will be a stream of changes!
 
 ```tsx
 const appSubjects = {
-  countChange$: new Subject()
+  counterChange$: new Subject(),
 };
 ```
 
@@ -100,7 +100,7 @@ const appSubjects = {
 
 ```tsx
 const appSubjects = {
-  countChange$: new Subject()
+  counterChange$: new Subject()
   count$: new BehaviorSubject(0)
 };
 
@@ -108,14 +108,13 @@ const appSubjects = {
 appSubjects.count$.subscribe(value => console.log(value));
 ```
 
-Lastly, we add an effect that subscribes to the `countChange$`, each time it emits `1` or `-1`, we'll add that to an accumulator with a `scan()` operator, and emit the running total back onto `count$` subject:
+Lastly, we add an effect that subscribes to the `counterChange$`, each time it emits `1` or `-1`, we'll add that to an accumulator with a `scan()` operator, and emit the running total back onto `count$` subject:
 
 ```tsx
 export const appRootEffect = ({ subjects }) => {
-  const subscription = subjects.streamCounterChange$
-    .asObservable()
+  const subscription = subjects.counterChange$
     .pipe(scan((acc, val) => acc + val, 0))
-    .subscribe(count => appSubjects.count$.next(count));
+    .subscribe((count) => appSubjects.count$.next(count));
   return () => subscription.unsubscribe();
 };
 ```
@@ -137,9 +136,9 @@ In this example we're working backwards, we wanted a stream of all the clicks, s
 Compare this to Redux change detection:
 
 ```tsx
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user,
-  page: state.page
+  page: state.page,
 });
 ```
 
