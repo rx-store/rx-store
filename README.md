@@ -26,7 +26,7 @@ These "subjects" are closest to what you're used to calling your app's "state". 
 Our counter app will use an event bus where we will emit values, in this case a `count`!
 
 ```tsx
-const appSubjects: AppSubjects = {
+const appSubjects = {
   count$: new Subject()
 };
 ```
@@ -60,7 +60,7 @@ They derive state, manipulate time, are lazy &
 uni-cast, and are read only.
 
 ```tsx
-const appObservables: AppObservables = {
+const appObservables = {
   evenCount$: appSubjects.count$.asObservable().pipe(
     delay(500),
     filter((x: number) => x % 2 === 0)
@@ -84,7 +84,7 @@ Here is an effect that subscribes to the `count$` stream of events, delays the e
 Your subscription could emit values back onto the `count$` subject if you wanted, which would create an infinite loop.
 
 ```tsx
-export const appRootEffect: RxStoreEffect<AppContextValue> = ({ subjects }) => {
+export const appRootEffect = ({ subjects }) => {
   const subscription = subjects.count$
     .pipe(delay(1000))
     .subscribe(count => console.log({ count }));
@@ -93,6 +93,88 @@ export const appRootEffect: RxStoreEffect<AppContextValue> = ({ subjects }) => {
 ```
 
 Your subscription will more commonly emit onto some other subject, or run some sort of side effect. For example you could subscribe to a subject, and for each event send a network request, and emit the network responses onto some other subject.
+
+## State vs Streams
+
+### Subject
+
+Let's rename our `count$` subject to `countChange$`. We're going to switch our thinking from state to streams. No longer will this be a stream of state, it will be a stream of changes!
+
+```tsx
+const appSubjects = {
+  countChange$: new Subject()
+};
+```
+
+### Behavior Subject
+
+```tsx
+const appSubjects = {
+  countChange$: new Subject()
+  count$: new BehaviorSubject(0)
+};
+
+// emits the last [initital] value on subscribe
+appSubjects.count$.subscribe(value => console.log(value));
+```
+
+Lastly, we add an effect that subscribes to the `countChange$`, each time it emits `1` or `-1`, we'll add that to an accumulator with a `scan()` operator, and emit the running total back onto `count$` subject:
+
+```tsx
+export const appRootEffect = ({ subjects }) => {
+  const subscription = subjects.streamCounterChange$
+    .asObservable()
+    .pipe(scan((acc, val) => acc + val, 0))
+    .subscribe(count => appSubjects.count$.next(count));
+  return () => subscription.unsubscribe();
+};
+```
+
+## Deriving state "up"
+
+In a traditional Redux app, you may be used to paring down the state using selectors, or deriving state "down".
+
+When thinking & working reactively, first think about the stream you want, and work backwards from that. The result is you write code that builds the state "up".
+
+Example:
+
+```tsx
+const allClick$ = merge(myClick$, yourClick$);
+```
+
+In this example we're working backwards, we wanted a stream of all the clicks, so we defined it. Then we assigned the result of merging two other streams. This merge operator builds "up" the state.
+
+Compare this to Redux change detection:
+
+```tsx
+const mapStateToProps = state => ({
+  user: state.user,
+  page: state.page
+});
+```
+
+With Redux, you start out with the top level state, and pared it "down" to the subset of state you wanted. This works fine until you have a larger app where running all `mapStateToProps` on every state change in the entire app becomes unwieldy. It is also prone to unwanted renders, imagine the `page` state looks like this:
+
+```
+{
+    name: 'Test',
+    url: '/test',
+}
+```
+
+Now imagine someone comes along & adds the current time to this object, in a manner where it updates every 100ms (10x a second):
+
+```
+{
+    name: 'Test',
+    url: '/test',
+    time: 1592539673319
+}
+```
+
+With the naive `mapStateToProps` function above, your component would re-render with a new `page` object 10x a second, even if all the component actually renders is the page's `name`.
+
+With `Rx Store`, we do not have 1 top level state object that is always changing, which we have to pare down & memoize. Instead, we have many low level things updating independantly, and we must subscribe to, merge, or combine them individually, allowing fine grained control of what updates.
 
 ## React Example app
 
