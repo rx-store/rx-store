@@ -2,6 +2,7 @@ import { Subject, BehaviorSubject } from "rxjs";
 import { filter } from "rxjs/operators";
 import { AppSubjects, AppObservables, AppContextValue } from "../types";
 import { scanCount } from "./operators/scan-count";
+import { scanSum } from "./operators/scan-sum";
 
 /**
  * These "subjects" are your app's "state"
@@ -21,15 +22,7 @@ export const appSubjects: AppSubjects = {
  * uni-cast, and are read only.
  */
 const appObservables: AppObservables = {
-  incrementCount$: appSubjects.counterChange$.asObservable().pipe(
-    filter((x: number) => x === 1),
-    scanCount()
-  ),
-
-  decrementCount$: appSubjects.counterChange$.asObservable().pipe(
-    filter((x: number) => x === -1),
-    scanCount()
-  ),
+  count$: appSubjects.counterChange$.pipe(scanSum()),
 };
 
 /** Our context value, which contains subjects & observables */

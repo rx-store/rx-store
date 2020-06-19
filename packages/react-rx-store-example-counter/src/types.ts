@@ -19,8 +19,7 @@ export interface AppSubjects extends RxStoreSubjects {
  * uni-cast, and are read only.
  */
 export interface AppObservables extends RxStoreObservables {
-  incrementCount$: Observable<number>;
-  decrementCount$: Observable<number>;
+  count$: Observable<number>;
 }
 
 /** Our context value, which contains subjects & observables */
