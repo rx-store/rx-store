@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/joshribakoff/rx-store#readme",
   "devDependencies": {
+    "lerna": "^3.22.1",
     "typescript": "^3.9.5"
   },
   "dependencies": {
