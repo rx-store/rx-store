@@ -12,7 +12,7 @@ function useRxStore() {
   return { subjects, observables };
 }
 
-function App() {
+function Counter() {
   const [increments, setIncrements] = useState<number>();
   const [decrements, setDecrements] = useState<number>();
   const [total, setTotal] = useState<number>();
@@ -60,4 +60,4 @@ function App() {
   );
 }
 
-export default App;
+export default Counter;
