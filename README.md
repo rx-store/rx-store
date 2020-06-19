@@ -27,14 +27,14 @@ Example:
 const allClick$ = merge(myClick$, yourClick$);
 ```
 
-In this example we're working backwards, we wanted a stream of all the clicks, so we defined it. Then we assigned the result of merging two other streams. This merge operator builds "up" the state.
+In this example we're working backwards, we wanted a stream of all the clicks, so we defined it. Then we assigned the result of merging two other streams. This merge operator builds "up" two smaller streams into one larger combined stream.
 
 Compare this to Redux change detection:
 
 ```tsx
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user,
-  page: state.page
+  page: state.page,
 });
 ```
 
@@ -57,9 +57,9 @@ Now imagine someone comes along & adds the current time to this object, in a man
 }
 ```
 
-With the naive `mapStateToProps` function above, your component would re-render with a new `page` object 10x a second, even if all the component actually renders is the page's `name`.
+With the naive `mapStateToProps` function above, your component would re-render with a new `page` object 10x a second, even if all the component actually renders is the page's `name`. In other words, Redux gives you every change by default, for you to pare down & memoize (otherwise your components may wastefully render). In Rx Store your components make specific granular subscriptions, the only way to get every change would be to manually `merge()` together everything in your app & subscribe to it.
 
-With `Rx Store`, we do not have 1 top level state object that is always changing, which we have to pare down & memoize. Instead, we have many low level things updating independantly, and we must subscribe to, merge, or combine them individually, allowing fine grained control of what updates.
+With `Rx Store`, we do not have 1 top level state object that is always changing, which we have to pare down & memoize. Instead, we have many low level things updating independently, that we can subscribe to selectively, and we can combine these data sources, and have fine grained control of how those updates are pushed to our UI components over time.
 
 ## React Example app
 
