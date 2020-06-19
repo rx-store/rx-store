@@ -1,0 +1,25 @@
+{
+  "name": "rx-store",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshribakoff/rx-store.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joshribakoff/rx-store/issues"
+  },
+  "homepage": "https://github.com/joshribakoff/rx-store#readme",
+  "devDependencies": {
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "rxjs": "^6.5.5"
+  }
+}
