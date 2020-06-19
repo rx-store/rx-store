@@ -1,21 +1,31 @@
 import React, { createContext, useEffect } from "react";
-import { Subject } from "rxjs";
-import { filter, delay } from "rxjs/operators";
+import { Subject, Observable, BehaviorSubject } from "rxjs";
+import { filter, scan, tap, startWith } from "rxjs/operators";
 import { RxStoreEffect } from "@rx-store/rx-store";
 import { AppSubjects, AppObservables, AppContextValue } from "../types";
 
+export const scanCount = () => (source$: Observable<any>): Observable<number> =>
+  source$.pipe(
+    scan((acc, _) => acc + 1, 0),
+    startWith(0)
+  );
+
 const appSubjects: AppSubjects = {
-  count$: new Subject()
+  streamCounterChange$: new Subject(),
+  stateCounter$: new BehaviorSubject(0)
 };
 
 const appObservables: AppObservables = {
-  evenCount$: appSubjects.count$
-    .asObservable()
-    .pipe(filter((x: number) => x % 2 === 0)),
+  incrementCount$: appSubjects.streamCounterChange$.asObservable().pipe(
+    filter((x: number) => x === 1),
+    scanCount(),
+    tap(console.log)
+  ),
 
-  oddCount$: appSubjects.count$
-    .asObservable()
-    .pipe(filter((x: number) => x % 2 !== 0))
+  decrementCount$: appSubjects.streamCounterChange$.asObservable().pipe(
+    filter((x: number) => x === -1),
+    scanCount()
+  )
 };
 
 export const appContextValue: AppContextValue = {
@@ -26,9 +36,13 @@ export const appContextValue: AppContextValue = {
 export const rxStoreContext = createContext<AppContextValue>(appContextValue);
 
 export const appRootEffect: RxStoreEffect<AppContextValue> = ({ subjects }) => {
-  const subscription = subjects.count$
-    .pipe(delay(1000))
-    .subscribe(count => console.log({ count }));
+  const subscription = subjects.streamCounterChange$
+    .asObservable()
+    .pipe(
+      scan((acc, val) => acc + val, 0),
+      startWith(0)
+    )
+    .subscribe(count => appSubjects.stateCounter$.next(count));
   return () => subscription.unsubscribe();
 };
 

@@ -8,7 +8,8 @@ import { RxStoreSubjects, RxStoreObservables } from "@rx-store/rx-store";
  * they are multi-cast, read & write.
  */
 export interface AppSubjects extends RxStoreSubjects {
-  count$: Subject<number>;
+  streamCounterChange$: Subject<number>;
+  stateCounter$: Subject<number>;
 }
 
 /**
@@ -18,8 +19,8 @@ export interface AppSubjects extends RxStoreSubjects {
  * uni-cast, and are read only.
  */
 export interface AppObservables extends RxStoreObservables {
-  evenCount$: Observable<number>;
-  oddCount$: Observable<number>;
+  incrementCount$: Observable<number>;
+  decrementCount$: Observable<number>;
 }
 
 /** Our context value, which contains subjects & observables */
