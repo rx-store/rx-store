@@ -16,6 +16,8 @@ These "subjects" are closest to what you're used to calling your app's "state". 
 Our counter app will use an event bus where we will emit values, in this case a `count`!
 
 ```tsx
+import { Subject } from "rxjs";
+
 const store = {
   count$: new Subject(),
 };
@@ -42,6 +44,18 @@ Notice that only `subscriber A` received the first value, but after `subscriber 
 
 https://stackblitz.com/edit/rxjs-szr5f9
 
+### Provider
+
+You wrap your app in the provider like so, and pass in the store from the previous step:
+
+```tsx
+import { Provider } from "@rx-store/react-rx-store";
+
+<Provider value={store}>
+  <App />
+</Provider>;
+```
+
 ### Observables
 
 These "observables" are your app's "selectors".
@@ -52,7 +66,7 @@ uni-cast, and are read only.
 ```tsx
 count$ = new Subject();
 
-const appObservables = {
+const store = {
   $count,
 
   evenCount$: count$.pipe(
@@ -69,16 +83,45 @@ const appObservables = {
 
 Observables (here `eventCount$` and `oddCount`), just like subjects, can be subscribed to, however they are uni-cast & lazy, meaning the timer for the `delay` will not start a timer until something subscribes, and each subscriber will get its own timer.
 
-## Effects
+## Subscriptions
 
-Effects are where we actually subscribe. We can subscribe directly to our subjects (event emitters), subscribe directly to observables, or create combos using creating operators such as `merge()`, `combineLatest()`, `bufferWhen()` etc.
-
-Here is an effect that subscribes to the `count$` stream of events, delays the events by 1s, and logs them to console.
-
-Your subscription could emit values back onto the `count$` subject if you wanted, which would create an infinite loop.
+In your components, you can subscribe to & consume data from any observable or subject in your store, using the provided hooks:
 
 ```tsx
-export const appRootEffect = (store) => {
+import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
+
+function Component() {
+  const store = useRxStore();
+
+  // consume just the value(s)
+  const [count] = useSubscription(store.count$);
+
+  // or also render error / completion information
+  const [next, error, complete] = useSubscription(store.websocketMessage$);
+
+  return (
+    <>
+      Counter: {count}
+      Websockets value: {next}
+      Websockets error: {error}
+      Websockets complete: {complete}
+    </>
+  );
+}
+```
+
+Your component will re-render whenever the stream emits, errors, or completes.
+
+## Effects
+
+Effects are global subscriptions, normally producing side effects, or handling some cross cutting concerns.
+
+We can subscribe directly to our subjects (event emitters), subscribe directly to observables, or create combos and higher order streams using RxJs creation operators such as `merge()`, `combineLatest()`, `bufferWhen()` etc.
+
+Here is an effect that subscribes to the `count$` stream, it delays each value by one second, and logs them to console. In this example, we have a global effect that runs as soon as the app boots, waits until the `count$` subject emits, then waits 1s, logs the values, and resets the count back to 1 with a 50% probability. Be careful not to create an infinite loop by having a stream recursively emit back onto itself with 100% probability!
+
+```tsx
+export const effect = (store) => {
   const subscription = store.count$.pipe(delay(1000)).subscribe((count) => {
     console.log({ count });
     if (Math.random() > 0.5) {
@@ -89,9 +132,35 @@ export const appRootEffect = (store) => {
 };
 ```
 
-In this example, we have a global effect that runs as soon as the app boots, waits until the `count$` subject emits, then waits 1s, logs the values, and resets the count back to 1 with a 50% probability.
+Pass your effect(s) to the `Provider` at the top level of your app:
 
-Your subscription will more commonly emit onto some other subject, or run some sort of side effect. For example you could subscribe to a subject, and for each event send a network request, and emit the network responses onto some other subject.
+```tsx
+import { Provider } from "@rx-store/react-rx-store";
+
+<Provider value={store} rootEffect={effect}>
+  <App />
+</Provider>;
+```
+
+If you want multiple effects & subscriptions, it is up to you to nest them like so:
+
+```tsx
+export const effect = (store) => {
+  const subscriptions = []
+  subscriptions.push(
+    store.count$.subscribe((count) => console.log({ count })),
+    store.count$.subscribe((count) => console.log({ count })),
+    store.count$.subscribe((count) => console.log({ count })),
+  });
+  return () => subscriptions.forEach(s => s.unsubscribe());
+};
+```
+
+Your subscription will more commonly emit onto some other subject, for example you might often subscribe to a subject, and for each value emitted on that subject you might send a network request, and you might emit the network responses back onto some other subject.
+
+As another example, in a social network app you may have "refetch news feed" effect, which may subscribe to a `refetchNewsFeed$` subject, which emits `true` when the user scrolls up, to trigger a global effect that fetched the latest news feed posts & emitted them onto a `newsFeedPost$` subject.
+
+In a video game, you might have a "game loop" effect wherein you subscribe to the latest `x$`, `y$` mouse position, and a stream of the latest `click$`. You might emit onto a stream of `hit$` & `miss$` depending on if the latest values on the `x$`, `y$` streams collide with any enemy positions.
 
 ## State vs Streams
 
@@ -100,7 +169,7 @@ Your subscription will more commonly emit onto some other subject, or run some s
 Let's rename our `count$` subject to `counterChange$`. We're going to switch our thinking from state to streams. No longer will this be a stream of state, it will be a stream of changes!
 
 ```tsx
-const appSubjects = {
+const store = {
   counterChange$: new Subject(),
 };
 ```
@@ -108,7 +177,7 @@ const appSubjects = {
 ### Behavior Subject
 
 ```tsx
-const appSubjects = {
+const store = {
   counterChange$: new Subject()
   count$: new BehaviorSubject(0)
 };
@@ -120,10 +189,10 @@ appSubjects.count$.subscribe(value => console.log(value));
 Lastly, we add an effect that subscribes to the `counterChange$`, each time it emits `1` or `-1`, we'll add that to an accumulator with a `scan()` operator, and emit the running total back onto `count$` subject:
 
 ```tsx
-export const appRootEffect = ({ subjects }) => {
-  const subscription = subjects.counterChange$
+export const appRootEffect = (store) => {
+  const subscription = store.counterChange$
     .pipe(scan((acc, val) => acc + val, 0))
-    .subscribe((count) => appSubjects.count$.next(count));
+    .subscribe((count) => store.count$.next(count));
   return () => subscription.unsubscribe();
 };
 ```

@@ -13,9 +13,9 @@ export const context = createContext<any>(null);
  */
 export const Provider: React.FC<{
   value: any;
-  rootEffect: RxStoreEffect<any>;
+  rootEffect?: RxStoreEffect<any>;
 }> = ({ children, rootEffect, value }) => {
-  useEffect(rootEffect(value), [value]);
+  useEffect(rootEffect ? rootEffect(value) : () => {}, [value]);
   return <context.Provider value={value}>{children}</context.Provider>;
 };
 
