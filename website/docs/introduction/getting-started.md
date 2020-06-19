@@ -5,19 +5,6 @@ title: Getting Started
 
 Reactive store for frontend UI libraries, like React, using Rxjs.
 
-# Motivation
-
-Existing "reactive" stores exist, built with RxJS, but all were all inherently built with "state" instead of "streams", or uses a single global event emitter with a single root state that changes on every update, like ngRx store or redux-observable.
-
-In larger redux apps, even with memoization, running every mapStateToProps on every action can be expensive. It is especially problematic if you have lots of things happening over time. For these use cases, it is better to deal with "streams" instead of with "state".
-
-# Principles
-
-- Only render/deliver updates for what changed, nothing more.
-- Only deals with events, not state.
-- Work with the RxJS API directly, this is not a "wrapper" on top of Rxjs.
-- Derive state "up" instead of "down" (read on).
-
 # Concepts
 
 Let's walk through the Rx Store concepts using a counter app.
