@@ -12,4 +12,6 @@ export type RxStoreValue = RxStoreSubjects & RxStoreObservables;
 
 export type RxEffectCleanupFn = () => void;
 
-export type RxEffect<T> = (value: T) => RxEffectCleanupFn;
+export type RxStoreEffect<T extends RxStoreValue> = (
+  value: T
+) => RxEffectCleanupFn;

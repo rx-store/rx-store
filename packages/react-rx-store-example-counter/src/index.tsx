@@ -4,8 +4,7 @@ import { filter, delay } from "rxjs/operators";
 import {
   RxStoreSubjects,
   RxStoreObservables,
-  RxStoreValue,
-  RxEffect
+  RxStoreEffect
 } from "@rx-store/rx-store";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -42,7 +41,7 @@ const appContextValue: AppContextValue = {
 
 export const rxStoreContext = createContext<AppContextValue>(appContextValue);
 
-const appRootEffect: RxEffect<AppContextValue> = ({ count }) => {
+const appRootEffect: RxStoreEffect<AppContextValue> = ({ count }) => {
   const subscription = count
     .pipe(delay(1000))
     .subscribe(count => console.log({ count }));
@@ -51,7 +50,7 @@ const appRootEffect: RxEffect<AppContextValue> = ({ count }) => {
 
 const RxStoreProvider: React.FC<{
   value: AppContextValue;
-  rootEffect: RxEffect<AppContextValue>;
+  rootEffect: RxStoreEffect<AppContextValue>;
 }> = ({ children, rootEffect, value }) => {
   useEffect(rootEffect(value), [value]);
   return (
