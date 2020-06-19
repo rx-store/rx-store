@@ -1,6 +1,6 @@
 {
   "name": "react-rx-store-counter-example",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "private": true,
   "dependencies": {
     "@rx-store/react-rx-store": "^0.0.1",
