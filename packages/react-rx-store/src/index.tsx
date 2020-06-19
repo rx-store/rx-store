@@ -65,3 +65,21 @@ export function useSubscription<T>(
   }, [source]);
   return [next, error, complete];
 }
+
+export function withSubscription<T>(
+  WrappedComponent: React.ComponentType<{
+    next: T;
+    error: any;
+    complete: boolean;
+  }>,
+  source: Observable<T>
+) {
+  const [next, error, complete] = useSubscription<T>(source);
+  return (
+    <WrappedComponent
+      next={next}
+      error={error}
+      complete={complete}
+    ></WrappedComponent>
+  );
+}
