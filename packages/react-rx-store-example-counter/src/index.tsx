@@ -8,7 +8,7 @@ import App from "./App";
 ReactDOM.render(
   <React.StrictMode>
     {/* Render the `react-rx-store` Provider with the context value & root effect */}
-    <Provider contextValue={storeValue} rootEffect={appRootEffect}>
+    <Provider value={storeValue} rootEffect={appRootEffect}>
       <App />
     </Provider>
   </React.StrictMode>,

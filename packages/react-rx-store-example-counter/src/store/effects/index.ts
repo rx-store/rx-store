@@ -19,12 +19,12 @@ import { AppContextValue } from "../../types";
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: RxStoreEffect<AppContextValue> = ({ subjects }) => {
-  const subscription = subjects.counterChange$
+export const appRootEffect: RxStoreEffect<AppContextValue> = (store) => {
+  const subscription = store.counterChange$
     .pipe(
       scan((acc, val) => acc + val, 0),
       startWith(0)
     )
-    .subscribe((count) => subjects.count$.next(count));
+    .subscribe((count) => store.count$.next(count));
   return () => subscription.unsubscribe();
 };

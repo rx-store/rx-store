@@ -3,18 +3,18 @@ import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
 import { AppContextValue } from "./types";
 
 function Counter() {
-  const { subjects, observables } = useRxStore<AppContextValue>();
+  const store = useRxStore<AppContextValue>();
 
-  const [count] = useSubscription(subjects.count$);
-  const [localCount] = useSubscription(observables.count$);
+  const [count] = useSubscription(store.count$);
+  const [localCount] = useSubscription(store.localCount$);
 
   return (
     <div className="App">
       <h1> Counter</h1>
       count: {count}
       local: {localCount}
-      <button onClick={() => subjects.counterChange$.next(1)}>add</button>
-      <button onClick={() => subjects.counterChange$.next(-1)}>subtract</button>
+      <button onClick={() => store.counterChange$.next(1)}>add</button>
+      <button onClick={() => store.counterChange$.next(-1)}>subtract</button>
     </div>
   );
 }

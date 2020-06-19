@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useState, useContext } from "react";
 import { Observable } from "rxjs";
-import { RxStoreValue, RxStoreEffect } from "@rx-store/rx-store";
+import { RxStoreEffect } from "@rx-store/rx-store";
 
-export const context = createContext<RxStoreValue | null>(null);
+export const context = createContext<any>(null);
 
 /**
  * Mount this at the top of your app.
@@ -12,18 +12,17 @@ export const context = createContext<RxStoreValue | null>(null);
  * context value.
  */
 export const Provider: React.FC<{
-  contextValue: RxStoreValue;
+  value: any;
   rootEffect: RxStoreEffect<any>;
-}> = ({ children, rootEffect, contextValue }) => {
-  useEffect(rootEffect(contextValue), [contextValue]);
-  return <context.Provider value={contextValue}>{children}</context.Provider>;
+}> = ({ children, rootEffect, value }) => {
+  useEffect(rootEffect(value), [value]);
+  return <context.Provider value={value}>{children}</context.Provider>;
 };
 
-export function useRxStore<T extends RxStoreValue>() {
+export function useRxStore<T>(): T {
   const value = useContext(context);
   if (!value) throw new Error();
-  const { subjects, observables } = value as T;
-  return { subjects, observables };
+  return value;
 }
 
 /**

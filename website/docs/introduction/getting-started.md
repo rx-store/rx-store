@@ -16,7 +16,7 @@ These "subjects" are closest to what you're used to calling your app's "state". 
 Our counter app will use an event bus where we will emit values, in this case a `count`!
 
 ```tsx
-const appSubjects = {
+const store = {
   count$: new Subject(),
 };
 ```
@@ -25,11 +25,11 @@ Subjects should be a single source of truth,
 they are multi-cast, both read & write. That is, you can subscribe to them, and emit values on them which will be multi-cast to all the subscribers.
 
 ```tsx
-appSubjects.subscribe((x) => console.log(`subscriber A ${x}`));
-appSubjects.count$.next(1);
-appSubjects.subscribe((x) => console.log(`subscriber B ${x}`));
-appSubjects.count$.next(2);
-appSubjects.count$.next(3);
+store.subscribe((x) => console.log(`subscriber A ${x}`));
+store.count$.next(1);
+store.subscribe((x) => console.log(`subscriber B ${x}`));
+store.count$.next(2);
+store.count$.next(3);
 
 // subscriber A 1
 // subscriber A 2
@@ -50,20 +50,24 @@ They derive state, manipulate time, are lazy &
 uni-cast, and are read only.
 
 ```tsx
+count$ = new Subject();
+
 const appObservables = {
-  evenCount$: appSubjects.count$.asObservable().pipe(
+  $count,
+
+  evenCount$: count$.pipe(
     delay(500),
     filter((x: number) => x % 2 === 0)
   ),
 
-  oddCount$: appSubjects.count$.asObservable().pipe(
+  oddCount$: count$.pipe(
     delay(500),
     filter((x: number) => x % 2 !== 0)
   ),
 };
 ```
 
-Observables, just like subjects, can be subscribed to, however they are uni-cast & lazy, meaning the timer for the `delay` will not start a timer until something subscribes, and each subscriber will get its own timer.
+Observables (here `eventCount$` and `oddCount`), just like subjects, can be subscribed to, however they are uni-cast & lazy, meaning the timer for the `delay` will not start a timer until something subscribes, and each subscriber will get its own timer.
 
 ## Effects
 
@@ -74,13 +78,18 @@ Here is an effect that subscribes to the `count$` stream of events, delays the e
 Your subscription could emit values back onto the `count$` subject if you wanted, which would create an infinite loop.
 
 ```tsx
-export const appRootEffect = ({ subjects }) => {
-  const subscription = subjects.count$
-    .pipe(delay(1000))
-    .subscribe((count) => console.log({ count }));
+export const appRootEffect = (store) => {
+  const subscription = store.count$.pipe(delay(1000)).subscribe((count) => {
+    console.log({ count });
+    if (Math.random() > 0.5) {
+      store.count$.next(1);
+    }
+  });
   return () => subscription.unsubscribe();
 };
 ```
+
+In this example, we have a global effect that runs as soon as the app boots, waits until the `count$` subject emits, then waits 1s, logs the values, and resets the count back to 1 with a 50% probability.
 
 Your subscription will more commonly emit onto some other subject, or run some sort of side effect. For example you could subscribe to a subject, and for each event send a network request, and emit the network responses onto some other subject.
 
