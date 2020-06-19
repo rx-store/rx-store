@@ -3,7 +3,7 @@ id: getting-started
 title: Getting Started
 ---
 
-Reactive store for frontend UI libraries, like React, using Rxjs.
+Reactive store for frontend UI libraries, like React, using Rxjs. If you are not yet familiar with Rxjs, [go watch this video](https://www.youtube.com/watch?v=ewcoEYS85Co) & then come back.
 
 # Concepts
 
