@@ -11,7 +11,7 @@ import { RxStoreEffect } from "@rx-store/rx-store";
 
 export const _context = createContext<any>({});
 
-const useStore = <T extends {}>(context: Context<T> = _context): T => {
+export const useStore = <T extends {}>(context: Context<T> = _context): T => {
   const value = useContext(context);
   if (!value) throw new Error();
   return value;

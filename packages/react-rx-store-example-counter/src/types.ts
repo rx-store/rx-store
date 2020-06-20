@@ -1,7 +1,7 @@
 import { Subject, Observable } from "rxjs";
 
 /** Our context value, which contains subjects & observables */
-export interface AppContextValue {
+export interface RootContextValue {
   /**
    * These "subjects" are your app's "state"
    *

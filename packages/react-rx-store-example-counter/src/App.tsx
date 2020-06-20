@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { interval, Observable } from "rxjs";
-import { createStore } from "@rx-store/react-rx-store";
-import { AppContextValue } from "./types";
+import { createStore, useStore } from "@rx-store/react-rx-store";
+import { RootContextValue } from "./types";
+import Counter from "./Counter";
 
 const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
   console.log("render", i, j);
@@ -13,18 +14,20 @@ const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
     <>
       <hr />
       {i}-{j}
+      {/* <Counter /> */}
     </>
   );
 };
 
-interface ChildContext {
+export interface ChildContextValue extends RootContextValue {
   foo$: Observable<number>;
 }
 
 const Child: React.FC<{ i: number }> = ({ i }) => {
+  const store = useStore<RootContextValue>();
   const { Manager } = useMemo(() => {
-    const value = { foo$: interval(1000 * (i + 1)) };
-    return createStore<ChildContext, AppContextValue>(value, (value) => {
+    const value = { ...store, foo$: interval(1000 * (i + 1)) };
+    return createStore<ChildContextValue, RootContextValue>(value, (value) => {
       value.parent.count$.subscribe((c) => console.log({ c }));
       const s = value.foo$.subscribe((value) =>
         console.log(`hello from ${i} with value of ${value}`)
