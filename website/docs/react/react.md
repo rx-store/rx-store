@@ -3,6 +3,26 @@ id: react
 title: Usage with React
 ---
 
+## Manager
+
+You create your store value, which is a plain old javascript object, then use `createStore()` passing in the store value, and the optional root effect.
+
+You get back a `Manager` and a hook. Wrap your app at the top level using the `Manager` as shown here, and ex-export the hook:
+
+```tsx
+import { Provider } from "@rx-store/react-rx-store";
+
+const storeValue = {};
+
+const { Manager, useStore } = createStore(value, appRootEffect);
+
+export const useRootStore = useStore;
+
+<Manager>
+  <App />
+</Manager>;
+```
+
 ## Subscribing
 
 ### useSubscription hook
@@ -10,10 +30,10 @@ title: Usage with React
 In your components, you can access the store, and subscribe to any observable or subject in your store, using the provided hooks:
 
 ```tsx
-import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
+import { useSubscription } from "@rx-store/react-rx-store";
 
 function Component() {
-  const store = useRxStore();
+  const store = useRootStore();
 
   // consume just the value(s)
   const [count] = useSubscription(store.count$);
@@ -40,7 +60,7 @@ You can also modify observables inline with `.pipe()`:
 import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
 
 function Component() {
-  const store = useRxStore();
+  const store = useRootStore();
 
   // create an observable inline, just memoize it otherwise
   // useSubscription() hook will re-subscribe on every render!
@@ -71,32 +91,6 @@ Your component will be rendered with `next`, `error` & `complete` props:
   error={error}
   complete={complete}
 ></WrappedComponent>
-```
-
-## Provider
-
-You wrap your app at the top level using the `Provider` as shown here, passing in the store, which is a plain old javascript object:
-
-```tsx
-import { Provider } from "@rx-store/react-rx-store";
-
-const store = {};
-
-<Provider value={store}>
-  <App />
-</Provider>;
-```
-
-## Effects
-
-Pass your effect(s) to the `Provider` at the top level of your app:
-
-```tsx
-import { Provider } from "@rx-store/react-rx-store";
-
-<Provider value={store} rootEffect={effect}>
-  <App />
-</Provider>;
 ```
 
 ## React Example app

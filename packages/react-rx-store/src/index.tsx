@@ -4,37 +4,47 @@ import { RxStoreEffect } from "@rx-store/rx-store";
 
 export const context = createContext<any>(null);
 
-/**
- * Mount this at the top of your app.
- *
- * It subscribes your Rx Store's root effect, and provides a context
- * allowing children components to subscribe to the streams in the
- * context value.
- */
-export const Provider: React.FC<{
-  store: any;
-  rootEffect: RxStoreEffect<any>;
-}> = ({ children, rootEffect, store }) => {
-  if (rootEffect) {
-    if (typeof rootEffect !== "function") {
-      throw new Error("rootEffect, if supplied, must be a function");
+export const createStore = <T extends {}>(
+  value: T,
+  rootEffect?: RxStoreEffect<T>
+) => {
+  const context = createContext<T>(value);
+
+  /**
+   * Mount this at the top of your app, or nest them to build a tree of stores.
+   *
+   * It subscribes your Rx Store's root effect, and provides a context
+   * allowing children components to subscribe to the streams in the
+   * context value.
+   */
+  const Manager: React.FC<{}> = ({ children }) => {
+    if (!rootEffect) {
+      if (typeof rootEffect !== "function") {
+        throw new Error("rootEffect, if supplied, must be a function");
+      }
+      rootEffect = () => () => null;
     }
     useEffect(() => {
-      const cleanupFn = rootEffect(store);
+      const cleanupFn = rootEffect!(value);
       if (typeof cleanupFn !== "function") {
         throw new Error("rootEffect must return a cleanup function");
       }
       return cleanupFn;
-    }, [store]);
-  }
-  return <context.Provider value={store}>{children}</context.Provider>;
-};
+    }, [value]);
+    return <context.Provider value={value}>{children}</context.Provider>;
+  };
 
-export function useRxStore<T>(): T {
-  const value = useContext(context);
-  if (!value) throw new Error();
-  return value;
-}
+  /**
+   * Re-export this for children to consume the store value off the context
+   */
+  const useStore = (): T => {
+    const value = useContext(context);
+    if (!value) throw new Error();
+    return value;
+  };
+
+  return { Manager, useStore };
+};
 
 /**
  * A react hook for subscribing to an observable

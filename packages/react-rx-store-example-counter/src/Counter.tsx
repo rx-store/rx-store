@@ -1,9 +1,9 @@
 import React from "react";
-import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
-import { AppContextValue } from "./types";
+import { useSubscription } from "@rx-store/react-rx-store";
+import { useRootStore } from ".";
 
 function Counter() {
-  const store = useRxStore<AppContextValue>();
+  const store = useRootStore();
 
   const [count] = useSubscription(store.count$);
   const [localCount] = useSubscription(store.localCount$);

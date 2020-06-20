@@ -9,9 +9,9 @@ you emit values onto them which are then multi-cast to all subscribers.
 ### Subjects
 
 ```tsx
-store.subscribe((x) => console.log(`subscriber A ${x}`));
+store.count$.subscribe((x) => console.log(`subscriber A ${x}`));
 store.count$.next(1);
-store.subscribe((x) => console.log(`subscriber B ${x}`));
+store.count$.subscribe((x) => console.log(`subscriber B ${x}`));
 store.count$.next(2);
 store.count$.next(3);
 
@@ -22,9 +22,7 @@ store.count$.next(3);
 // subscriber B 3
 ```
 
-Notice that only `subscriber A` received the first value, but after `subscriber B` subscribed, both subscribers received the following values. Run the example code here:
-
-https://stackblitz.com/edit/rxjs-szr5f9
+Notice that only `subscriber A` received the first value, but after `subscriber B` subscribed, both subscribers received the following values.
 
 ## Behavior Subject
 

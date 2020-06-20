@@ -1,16 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { storeValue } from "./store/value";
+import { createStoreValue } from "./store/value";
 import { appRootEffect } from "./store/effects";
-import { Provider } from "@rx-store/react-rx-store";
 import App from "./App";
+import { createStore } from "@rx-store/react-rx-store";
+
+const value = createStoreValue();
+const { Manager, useStore } = createStore(value, appRootEffect);
+
+export const useRootStore = useStore;
 
 ReactDOM.render(
   <React.StrictMode>
     {/* Render the `react-rx-store` Provider with the context value & root effect */}
-    <Provider value={storeValue} rootEffect={appRootEffect}>
+    <Manager>
       <App />
-    </Provider>
+    </Manager>
   </React.StrictMode>,
   document.getElementById("root")
 );
