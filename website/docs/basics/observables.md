@@ -65,7 +65,7 @@ const store = {
 
 ## Uni-cast vs Multi-cast
 
-Each subscriber will get its own instance of stream state. In the above example, each time you `subscribe()` to `timerA$`, it runs a new `setInterval()`, and each time you `unsubscribe()` it runs the corresponding `clearInterval()`. You will have `N` number of intervals going, where `N` is the number of subscriptions. Each subscription's callback will run in a separate tick of the event loop.
+Each subscriber will get its own instance of stream state. In both of the above two examples, each time you `subscribe()` to `timer$`, it runs a new `setInterval()`, and each time you `unsubscribe()` it runs the corresponding `clearInterval()`. You will have `N` number of intervals going, where `N` is the number of subscriptions. Each subscription's callback will run in a separate tick of the event loop.
 
 You could use the [share](https://rxjs.dev/api/operators/share) operator in your observable pipeline, which internally uses a subject, it would make all subscribers share a single `setInterval` callback running in the same event loop tick.
 
