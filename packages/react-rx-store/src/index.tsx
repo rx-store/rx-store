@@ -1,49 +1,60 @@
-import React, { createContext, useEffect, useState, useContext } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  useContext,
+  Context,
+} from "react";
 import { Observable } from "rxjs";
 import { RxStoreEffect } from "@rx-store/rx-store";
 
-export const context = createContext<any>(null);
+export const _context = createContext<any>({});
+
+const useStore = <T extends { parent?: {} }>(
+  context: Context<T> = _context
+): T => {
+  const value = useContext(context);
+  if (!value) throw new Error();
+  return value;
+};
 
 export const createStore = <T extends {}>(
   value: T,
-  rootEffect?: RxStoreEffect<T>
+  rootEffect?: RxStoreEffect<T & { parent?: {} }>,
+  context: Context<T> = _context
 ) => {
-  const context = createContext<T>(value);
-
   /**
    * Mount this at the top of your app, or nest them to build a tree of stores.
    *
-   * It subscribes your Rx Store's root effect, and provides a context
+   * It subscribes your store's root effect, and provides a context
    * allowing children components to subscribe to the streams in the
    * context value.
    */
   const Manager: React.FC<{}> = ({ children }) => {
-    if (!rootEffect) {
-      if (typeof rootEffect !== "function") {
-        throw new Error("rootEffect, if supplied, must be a function");
-      }
-      rootEffect = () => () => null;
-    }
+    const parent = useStore(context);
+    console.log("create", parent);
+    const extendedValue = { ...value, parent };
+    // if (!rootEffect) {
+    //   if (typeof rootEffect !== "function") {
+    //     throw new Error("rootEffect, if supplied, must be a function");
+    //   }
+    //   rootEffect = () => () => null;
+    // }
+
     useEffect(() => {
-      const cleanupFn = rootEffect!(value);
+      const cleanupFn = rootEffect(extendedValue);
       if (typeof cleanupFn !== "function") {
         throw new Error("rootEffect must return a cleanup function");
       }
       return cleanupFn;
-    }, [value]);
-    return <context.Provider value={value}>{children}</context.Provider>;
+    }, [extendedValue]);
+
+    return (
+      <context.Provider value={extendedValue}>{children}</context.Provider>
+    );
   };
 
-  /**
-   * Re-export this for children to consume the store value off the context
-   */
-  const useStore = (): T => {
-    const value = useContext(context);
-    if (!value) throw new Error();
-    return value;
-  };
-
-  return { Manager, useStore };
+  return { Manager };
 };
 
 /**

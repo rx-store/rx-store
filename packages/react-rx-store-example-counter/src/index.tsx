@@ -6,9 +6,7 @@ import App from "./App";
 import { createStore } from "@rx-store/react-rx-store";
 
 const value = createStoreValue();
-const { Manager, useStore } = createStore(value, appRootEffect);
-
-export const useRootStore = useStore;
+const { Manager } = createStore(value, appRootEffect);
 
 ReactDOM.render(
   <React.StrictMode>
