@@ -23,7 +23,7 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
     const value = { foo$: interval(1000 * (i + 1)) };
     return createStore<{ foo$: Observable<number> }>(value, (value) => {
       // @ts-ignore
-      // value.parent.count$.subscribe((c) => console.log({ c }));
+      value.parent.count$.subscribe((c) => console.log({ c }));
       const s = value.foo$.subscribe((value) =>
         console.log(`hello from ${i} with value of ${value}`)
       );
