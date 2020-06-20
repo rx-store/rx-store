@@ -83,6 +83,15 @@ export const effect = (store) => {
 };
 ```
 
+Although you can also choose to do this declaratively, with RxJs!
+
+```tsx
+export const effect = (store) => {
+  const subscription = merge(...new Array(3).fill(store.count$));
+  return () => subscriptions.forEach((s) => s.unsubscribe());
+};
+```
+
 ## Other Examples
 
 ### Example 1
