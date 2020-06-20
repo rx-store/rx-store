@@ -48,20 +48,19 @@ const childEffect = (i) => (value) => {
   return () => subscription.unsubscribe();
 };
 
-const childValue: (parentStore, i) = (parentStore, i) => ({
+const childValue = (parentStore, i) => ({
   parent$: parentStore.count$,
   foo$: interval(1000 * (i + 1)),
 });
 
-const Child: React.FC<{ i: number }> = ({ i }) => {
+const Child = ({ i }) => {
   // use the parent store
   const rootStore = useStore(parentContext);
 
   // create a child store, which knows its index & has a
   // access to a subject provided by the parent store
   const { Manager } = useMemo(
-    () =>
-      store(childValue(rootStore, i), childEffect(i)),
+    () => store(childValue(rootStore, i), childEffect(i)),
     [i, rootStore]
   );
 
