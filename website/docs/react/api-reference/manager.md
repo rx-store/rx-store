@@ -26,8 +26,8 @@ None.
 
 ```jsx
 import { Provider } from "@rx-store/react-rx-store";
-const storeValue = {};
-const { Manager, context } = store(value);
+const storeValue = { $foo: new Subject() };
+const { Manager, context } = store(storeValue);
 export const rootContext = context;
 
 <Manager>
