@@ -1,6 +1,6 @@
 import { scan, startWith } from "rxjs/operators";
 import { RxStoreEffect } from "@rx-store/rx-store";
-import { AppContextValue } from "../../types";
+import { RootContextValue } from "../../types";
 
 /**
  * For any "global side effects", you'd create effects, and nest
@@ -19,7 +19,7 @@ import { AppContextValue } from "../../types";
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: RxStoreEffect<AppContextValue> = (store) => {
+export const appRootEffect: RxStoreEffect<RootContextValue> = (store) => {
   const subscription = store.counterChange$
     .pipe(
       scan((acc, val) => acc + val, 0),

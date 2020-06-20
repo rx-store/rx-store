@@ -1,6 +1,6 @@
 {
   "name": "@rx-store/react-rx-store",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "./lib/index.js",
   "module": "es/index.js",
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@rx-store/rx-store": "^0.0.1"
+    "@rx-store/rx-store": "^0.0.4"
   },
   "types": "types/",
   "devDependencies": {
@@ -42,8 +42,9 @@
     "typescript": "^3.9.5"
   },
   "peerDependencies": {
-    "@rx-store/rx-store": "^0.0.1",
+    "@rx-store/rx-store": "^0.0.3",
     "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "rxjs": "^6.5.5"
   }
 }

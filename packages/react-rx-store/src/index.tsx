@@ -1,49 +1,81 @@
-import React, { createContext, useEffect, useState, useContext } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  useContext,
+  Context,
+} from "react";
 import { Observable } from "rxjs";
 import { RxStoreEffect } from "@rx-store/rx-store";
 
-export const context = createContext<any>(null);
+/**
+ * A React hook that consumes from the passed Rx Store context,
+ * asserts the store value is present, and returns it.
+ */
+export const useStore = <T extends {}>(context: Context<T>): T => {
+  const value = useContext(context);
+  if (!value) throw new Error();
+  return value;
+};
 
-export const createStore = <T extends {}>(
+/**
+ * Creates a store, with the provided value & optional effect.
+ * Returns a Manager component, that when mounted will subscribe
+ * to your effect.
+ *
+ * Also returns a React context, to be re-exported
+ * by the consuming code, for downstream components to import in
+ * order for them to consume & publish to streams in the store value.
+ */
+export const store = <T extends {}>(
   value: T,
   rootEffect?: RxStoreEffect<T>
-) => {
+): { Manager: React.ComponentType<{}>; context: Context<T> } => {
+  /** Each store gets a React context */
   const context = createContext<T>(value);
 
   /**
-   * Mount this at the top of your app, or nest them to build a tree of stores.
+   * This Manager must be mounted at most once, wrap your children
+   * where you want the store to be accessible within (eg. top of app).
    *
-   * It subscribes your Rx Store's root effect, and provides a context
+   * It subscribes your store's root effect, and provides a context
    * allowing children components to subscribe to the streams in the
    * context value.
    */
+  let mounted = 0;
   const Manager: React.FC<{}> = ({ children }) => {
-    if (!rootEffect) {
-      if (typeof rootEffect !== "function") {
-        throw new Error("rootEffect, if supplied, must be a function");
-      }
-      rootEffect = () => () => null;
-    }
+    // Enforce singleton component instance of the Manager
+    // within the store closure, [<=1 manager per store may be mounted].
     useEffect(() => {
-      const cleanupFn = rootEffect!(value);
+      mounted++;
+      if (mounted > 1) {
+        throw new Error("The Manager component must only be mounted once!");
+      }
+      return () => mounted--;
+    }, []);
+
+    // handle subscribing / unsubscribing to the store's effect, if any
+    // also does some runtime validation checks
+    useEffect(() => {
+      if (!rootEffect) {
+        if (typeof rootEffect !== "function") {
+          throw new Error("rootEffect, if supplied, must be a function");
+        }
+        rootEffect = () => () => null;
+      }
+      const cleanupFn = rootEffect(value);
       if (typeof cleanupFn !== "function") {
         throw new Error("rootEffect must return a cleanup function");
       }
       return cleanupFn;
     }, [value]);
+
+    // Wraps the children in the context provider, supplying
+    // the Rx store value.
     return <context.Provider value={value}>{children}</context.Provider>;
   };
 
-  /**
-   * Re-export this for children to consume the store value off the context
-   */
-  const useStore = (): T => {
-    const value = useContext(context);
-    if (!value) throw new Error();
-    return value;
-  };
-
-  return { Manager, useStore };
+  return { Manager, context };
 };
 
 /**
