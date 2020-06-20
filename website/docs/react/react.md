@@ -7,7 +7,7 @@ title: Usage with React
 
 You create your store value, which is a plain old javascript object, then use `createStore()` passing in the store value, and the optional root effect.
 
-You get back a `Manager` and a hook. Wrap your app at the top level using the `Manager` as shown here, and ex-export the hook:
+You get back a `Manager` and a hook. Wrap your app at the top level using the `Manager` as shown here, and re-export the hook:
 
 ```tsx
 import { Provider } from "@rx-store/react-rx-store";
