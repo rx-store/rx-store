@@ -53,16 +53,14 @@ Observables, just like subjects, can be subscribed to, [read more about observab
 
 ### Effects
 
-Effects are global subscriptions, normally producing side effects, or handling some cross cutting concerns.
-
-We can subscribe directly to our subjects (event emitters), subscribe directly to observables, or create combos and higher order streams using RxJs creation operators such as `merge()`, `combineLatest()`, `bufferWhen()` etc.
+Effects are functions called by `Rx Store` that handle subscriptions, normally producing side effects, or handling some cross cutting concerns.
 
 Here is an effect that subscribes to the `count$` stream, and emits the values onto the `countCopy$` subject:
 
 ```tsx
 export const effect = (store) => {
   const subscription = store.count$.subscribe((count) => {
-    store.countCopy$.emit(count);
+    store.countCopy$.next(count);
   });
   return () => subscription.unsubscribe();
 };
