@@ -6,9 +6,9 @@ title: store()
 **Args**:
 
 - `value`: {}
-  - The store value is a plain javascript object, containing RxJs (containing [RxJs subjects](../../basics/subjects) & [observables](../../basics/observables)).
+  - The store value is a plain javascript object (containing [RxJs subjects](../../basics/subjects) & [observables](../../basics/observables)).
 - `effect`: `() => () => void`
-  - A function that when called, subscribes to the streams in your store value, runs side effects for the duration it is subscribed. The [../../basics/effects](effect function) should return another function that calls unsubscribe on it's RxJs subscription(s) to tear down any effects once the [Manager unmounts](./manager).
+  - A function that when called, subscribes to the streams in your store value, runs side effects for the duration it is subscribed. The [effect function](../../basics/effects) should return another function that calls unsubscribe on it's RxJs subscription(s) to tear down any effects once the [Manager unmounts](./manager).
 
 You create your store value, which is a plain old javascript object (containing [RxJs subjects](../../basics/subjects) & [observables](../../basics/observables)), then use `createStore()` passing in the store value, and the optional root effect.
 
