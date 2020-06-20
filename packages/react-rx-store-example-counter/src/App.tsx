@@ -17,9 +17,7 @@ const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
 };
 
 const Child: React.FC<{ i: number }> = ({ i }) => {
-  const LastManager = useRef<any>();
   const { Manager } = useMemo(() => {
-    console.log("memo ran", i);
     const value = { foo$: interval(1000 * (i + 1)) };
     return createStore<{ foo$: Observable<number> }>(value, (value) => {
       // @ts-ignore
@@ -30,9 +28,6 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
       return () => s.unsubscribe();
     });
   }, [i]);
-
-  console.log("render", i, Manager === LastManager.current);
-  LastManager.current = Manager;
 
   const [n, setN] = useState(1);
   useEffect(() => {
