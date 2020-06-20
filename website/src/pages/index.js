@@ -19,7 +19,7 @@ const features = [
     description: (
       <>
         The primitive source of truth are individual event emitters. Combine
-        them to build "up" streams instead of "parring down" state (like with
+        them to build "up" streams instead of "paring down" state (like with
         other state managers).
       </>
     ),
