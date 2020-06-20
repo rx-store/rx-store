@@ -11,18 +11,16 @@ import { RxStoreEffect } from "@rx-store/rx-store";
 
 export const _context = createContext<any>({});
 
-const useStore = <T extends { parent?: {} }>(
-  context: Context<T> = _context
-): T => {
+const useStore = <T extends {}>(context: Context<T> = _context): T => {
   const value = useContext(context);
   if (!value) throw new Error();
   return value;
 };
 
-export const createStore = <T extends {}>(
+export const createStore = <T extends {}, P>(
   value: T,
-  rootEffect?: RxStoreEffect<T & { parent?: {} }>,
-  context: Context<T> = _context
+  rootEffect?: RxStoreEffect<T & { parent: P }>,
+  context: Context<P> = _context
 ) => {
   /**
    * Mount this at the top of your app, or nest them to build a tree of stores.
@@ -32,19 +30,19 @@ export const createStore = <T extends {}>(
    * context value.
    */
   const Manager: React.FC<{}> = ({ children }) => {
-    const parent = useStore(context);
+    const parent: P = useStore<P>(context);
     const extendedValue = useMemo(() => ({ ...value, parent }), [
       value,
       parent,
     ]);
-    // if (!rootEffect) {
-    //   if (typeof rootEffect !== "function") {
-    //     throw new Error("rootEffect, if supplied, must be a function");
-    //   }
-    //   rootEffect = () => () => null;
-    // }
 
     useEffect(() => {
+      if (!rootEffect) {
+        if (typeof rootEffect !== "function") {
+          throw new Error("rootEffect, if supplied, must be a function");
+        }
+        rootEffect = () => () => null;
+      }
       const cleanupFn = rootEffect(extendedValue);
       if (typeof cleanupFn !== "function") {
         throw new Error("rootEffect must return a cleanup function");
@@ -52,8 +50,11 @@ export const createStore = <T extends {}>(
       return cleanupFn;
     }, [extendedValue]);
 
+    const extendedContext = (context as unknown) as Context<T>;
     return (
-      <context.Provider value={extendedValue}>{children}</context.Provider>
+      <extendedContext.Provider value={extendedValue}>
+        {children}
+      </extendedContext.Provider>
     );
   };
 

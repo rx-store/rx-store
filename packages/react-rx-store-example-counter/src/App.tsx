@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { interval, Observable } from "rxjs";
 import { createStore } from "@rx-store/react-rx-store";
+import { AppContextValue } from "./types";
 
 const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
   console.log("render", i, j);
   useEffect(() => {
     console.log("child mount", i, j);
     return () => console.log("child unmount", i, j);
-  }, []);
+  }, [i, j]);
   return (
     <>
       <hr />
@@ -16,11 +17,14 @@ const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
   );
 };
 
+interface ChildContext {
+  foo$: Observable<number>;
+}
+
 const Child: React.FC<{ i: number }> = ({ i }) => {
   const { Manager } = useMemo(() => {
     const value = { foo$: interval(1000 * (i + 1)) };
-    return createStore<{ foo$: Observable<number> }>(value, (value) => {
-      // @ts-ignore
+    return createStore<ChildContext, AppContextValue>(value, (value) => {
       value.parent.count$.subscribe((c) => console.log({ c }));
       const s = value.foo$.subscribe((value) =>
         console.log(`hello from ${i} with value of ${value}`)
@@ -33,7 +37,7 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
   useEffect(() => {
     console.log("child mount", i);
     return () => console.log("child unmount", i);
-  }, []);
+  }, [i]);
   return (
     <Manager>
       <button onClick={() => setN(n + 1)}>add a grand child to {i}</button>
