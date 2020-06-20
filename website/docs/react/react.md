@@ -52,7 +52,7 @@ import { useSubscription, useStore } from "@rx-store/react-rx-store";
 function Component() {
   const store = useStore(rootContext);
 
-  // or also render error / completion information
+  // render error / completion information
   const [next, error, complete] = useSubscription(store.websocketMessage$);
 
   return (
