@@ -4,6 +4,7 @@ import React, {
   useState,
   useContext,
   Context,
+  useMemo,
 } from "react";
 import { Observable } from "rxjs";
 import { RxStoreEffect } from "@rx-store/rx-store";
@@ -32,8 +33,10 @@ export const createStore = <T extends {}>(
    */
   const Manager: React.FC<{}> = ({ children }) => {
     const parent = useStore(context);
-    console.log("create", parent);
-    const extendedValue = { ...value, parent };
+    const extendedValue = useMemo(() => ({ ...value, parent }), [
+      value,
+      parent,
+    ]);
     // if (!rootEffect) {
     //   if (typeof rootEffect !== "function") {
     //     throw new Error("rootEffect, if supplied, must be a function");

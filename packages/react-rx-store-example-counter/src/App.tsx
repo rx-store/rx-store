@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { interval, Observable } from "rxjs";
 import { createStore } from "@rx-store/react-rx-store";
 
@@ -17,21 +17,24 @@ const GrandChild: React.FC<{ i: number; j: number }> = ({ i, j }) => {
 };
 
 const Child: React.FC<{ i: number }> = ({ i }) => {
-  const value = { foo$: interval(1000) };
-  const { Manager } = createStore<{ foo$: Observable<number> }>(
-    value,
-    (value) => {
+  const LastManager = useRef<any>();
+  const { Manager } = useMemo(() => {
+    console.log("memo ran", i);
+    const value = { foo$: interval(1000 * (i + 1)) };
+    return createStore<{ foo$: Observable<number> }>(value, (value) => {
       // @ts-ignore
       // value.parent.count$.subscribe((c) => console.log({ c }));
       const s = value.foo$.subscribe((value) =>
         console.log(`hello from ${i} with value of ${value}`)
       );
       return () => s.unsubscribe();
-    }
-  );
+    });
+  }, [i]);
 
-  console.log("render", i);
-  const [n, setN] = useState(3);
+  console.log("render", i, Manager === LastManager.current);
+  LastManager.current = Manager;
+
+  const [n, setN] = useState(1);
   useEffect(() => {
     console.log("child mount", i);
     return () => console.log("child unmount", i);
@@ -49,7 +52,7 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
 };
 
 const App: React.FC<{}> = () => {
-  const [n, setN] = useState(3);
+  const [n, setN] = useState(1);
 
   return (
     <>
