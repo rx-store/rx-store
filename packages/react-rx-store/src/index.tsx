@@ -12,11 +12,22 @@ export const context = createContext<any>(null);
  * context value.
  */
 export const Provider: React.FC<{
-  value: any;
-  rootEffect?: RxStoreEffect<any>;
-}> = ({ children, rootEffect, value }) => {
-  useEffect(rootEffect ? rootEffect(value) : () => {}, [value]);
-  return <context.Provider value={value}>{children}</context.Provider>;
+  store: any;
+  rootEffect: RxStoreEffect<any>;
+}> = ({ children, rootEffect, store }) => {
+  if (rootEffect) {
+    if (typeof rootEffect !== "function") {
+      throw new Error("rootEffect, if supplied, must be a function");
+    }
+    useEffect(() => {
+      const cleanupFn = rootEffect(store);
+      if (typeof cleanupFn !== "function") {
+        throw new Error("rootEffect must return a cleanup function");
+      }
+      return cleanupFn;
+    }, [store]);
+  }
+  return <context.Provider value={store}>{children}</context.Provider>;
 };
 
 export function useRxStore<T>(): T {
