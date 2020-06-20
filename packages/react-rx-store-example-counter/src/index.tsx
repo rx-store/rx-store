@@ -3,10 +3,12 @@ import ReactDOM from "react-dom";
 import { createStoreValue } from "./store/value";
 import { appRootEffect } from "./store/effects";
 import App from "./App";
-import { createStore } from "@rx-store/react-rx-store";
+import { store } from "@rx-store/react-rx-store";
 
 const value = createStoreValue();
-const { Manager } = createStore(value, appRootEffect);
+const { Manager, context } = store(value, appRootEffect);
+
+export const rootContext = context;
 
 ReactDOM.render(
   <React.StrictMode>
