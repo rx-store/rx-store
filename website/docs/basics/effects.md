@@ -90,7 +90,7 @@ export const effect = (store) => {
   const subscription = merge(
     ...new Array(3).fill(store.count$)
   ).subscribe((count) => console.log({ count }));
-  return () => subscriptions.forEach((s) => s.unsubscribe());
+  return () => subscription.unsubscribe());
 };
 ```
 
