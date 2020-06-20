@@ -1,6 +1,6 @@
 {
-  "name": "react-rx-store-counter-example",
-  "version": "0.0.2",
+  "name": "react-rx-store-example-nested-stores",
+  "version": "0.0.4",
   "private": true,
   "dependencies": {
     "@rx-store/react-rx-store": "^0.0.4",
