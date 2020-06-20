@@ -3,11 +3,17 @@ id: effects
 title: Effects
 ---
 
-Effects are global subscriptions, normally producing side effects, or handling some cross cutting concerns. Effects runs as soon as the app boots, until it unmounts. You can use filtering operators in RxJS such as `skipWhile()`, `takeUntil()` to limit when your effect does work.
+`Rx Store` effects are simply functions that subscribe to [RxJs subscriptions](https://rxjs-dev.firebaseapp.com/guide/subscription), and return functions to unsubscribe.
+
+---
+
+Each store has one root effect, and you may nest them, building a directed cyclic graph your data flows through, triggering side effects as they go!
+
+Effects will normally produce side effects, or handle some cross cutting concern. Effects are long lived, until your store is torn down & disposed of. You can use filtering operators in RxJS such as `skipWhile()`, `takeUntil()` to use other streams in the store to control & limit when & how your effect does work.
 
 ## Processing a stream of changes, and creating a stream of state
 
-Here is an effect that subscribes to the `counterChange$`, each time it emits `1` or `-1`, it'll add that to an accumulator with a `scan()` operator, and emit the running total onto the `count$` subject:
+Here is an effect that subscribes to the `counterChange$`, each time it emits `1` or `-1`, it'll add that to an accumulator with a `scan()` operator, and emit the running total onto the `count$` subject. It returns a function that calls unsubscribe on the subscription:
 
 ```tsx
 export const effect = (store) => {
