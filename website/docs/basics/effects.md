@@ -87,7 +87,9 @@ Although you can also choose to do this declaratively, with RxJs!
 
 ```tsx
 export const effect = (store) => {
-  const subscription = merge(...new Array(3).fill(store.count$));
+  const subscription = merge(
+    ...new Array(3).fill(store.count$)
+  ).subscribe((count) => console.log({ count }));
   return () => subscriptions.forEach((s) => s.unsubscribe());
 };
 ```
