@@ -1,4 +1,4 @@
-import { scan, startWith } from "rxjs/operators";
+import { scan, startWith, tap } from "rxjs/operators";
 import { RxStoreEffect } from "@rx-store/rx-store";
 import { RootContextValue } from "../../types";
 
@@ -20,11 +20,9 @@ import { RootContextValue } from "../../types";
  * subscribing. See the <Provider /> component for an example.
  */
 export const appRootEffect: RxStoreEffect<RootContextValue> = (store) => {
-  const subscription = store.counterChange$
-    .pipe(
-      scan((acc, val) => acc + val, 0),
-      startWith(0)
-    )
-    .subscribe((count) => store.count$.next(count));
+  const subscription = store.mount$
+    .pipe(tap((value) => console.log(value)))
+    .subscribe();
+  console.log("subscribe root effect");
   return () => subscription.unsubscribe();
 };

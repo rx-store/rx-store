@@ -5,29 +5,8 @@ import { RootContextValue } from "./types";
 import { RxStoreEffect } from "@rx-store/rx-store/types";
 import { rootContext } from ".";
 
-export interface ChildContextValue extends RootContextValue {
-  foo$: Observable<number>;
-}
-
-const createChildEffect: (i: number) => RxStoreEffect<ChildContextValue> = (
-  i
-) => (value) => {
-  value.count$.subscribe((count) => console.log({ c: count }));
-  const subscription = value.foo$.subscribe((value) =>
-    console.log(`hello from ${i} with value of ${value}`)
-  );
-  return () => subscription.unsubscribe();
-};
-
-const createChildValue: (
-  parentStore: RootContextValue,
-  i: number
-) => ChildContextValue = (parentStore, i) => ({
-  ...parentStore,
-  foo$: interval(1000 * (i + 1)),
-});
-
 const Child: React.FC<{ i: number }> = ({ i }) => {
+  console.log("child render", i);
   // debugging logs
   useEffect(() => {
     console.log("child mount", i);
@@ -37,21 +16,15 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
   // use the root store
   const rootStore = useStore(rootContext);
 
-  // create a child store
-  const { Manager } = useMemo(
-    () =>
-      store<ChildContextValue>(
-        createChildValue(rootStore, i),
-        createChildEffect(i)
-      ),
-    [i, rootStore]
-  );
+  useEffect(() => {
+    rootStore.mount$.next(`child ${i}`);
+  });
 
   return (
-    <Manager>
+    <>
       child {i}
       <hr />
-    </Manager>
+    </>
   );
 };
 

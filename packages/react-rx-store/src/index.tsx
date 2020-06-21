@@ -4,9 +4,10 @@ import React, {
   useState,
   useContext,
   Context,
+  useRef,
 } from "react";
 import { Observable } from "rxjs";
-import { RxStoreEffect } from "@rx-store/rx-store";
+import { RxStoreEffect, RxEffectCleanupFn } from "@rx-store/rx-store";
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -28,7 +29,7 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
  * order for them to consume & publish to streams in the store value.
  */
 export const store = <T extends {}>(
-  value: T,
+  value: T & { subscribed?: boolean },
   rootEffect?: RxStoreEffect<T>
 ): { Manager: React.ComponentType<{}>; context: Context<T> } => {
   /** Each store gets a React context */
@@ -44,9 +45,13 @@ export const store = <T extends {}>(
    */
   let mounted = 0;
   const Manager: React.FC<{}> = ({ children }) => {
+    const cleanupFn = useRef<RxEffectCleanupFn>();
+
+    console.log("Manager render", value.subscribed);
     // Enforce singleton component instance of the Manager
     // within the store closure, [<=1 manager per store may be mounted].
     useEffect(() => {
+      console.log("Manager mount");
       mounted++;
       if (mounted > 1) {
         throw new Error("The Manager component must only be mounted once!");
@@ -56,19 +61,20 @@ export const store = <T extends {}>(
 
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
-    useEffect(() => {
+
+    if (!value.subscribed) {
+      value.subscribed = true;
       if (!rootEffect) {
         if (typeof rootEffect !== "function") {
           throw new Error("rootEffect, if supplied, must be a function");
         }
         rootEffect = () => () => null;
       }
-      const cleanupFn = rootEffect(value);
-      if (typeof cleanupFn !== "function") {
+      cleanupFn.current = rootEffect(value);
+      if (typeof cleanupFn.current !== "function") {
         throw new Error("rootEffect must return a cleanup function");
       }
-      return cleanupFn;
-    }, [value]);
+    }
 
     // Wraps the children in the context provider, supplying
     // the Rx store value.
