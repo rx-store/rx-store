@@ -1,6 +1,6 @@
 # RX Store
 
-Reactive store for frontend UI libraries, like React, using Rxjs.
+Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/docs/
 
 # Motivation
 
