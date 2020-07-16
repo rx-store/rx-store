@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular-rx-store-example-counter"
+    }
+  },
+  "defaultProject": "angular-rx-store-example-counter",
+  "cli": {
+    "analytics": "9f5c079c-a042-445a-a857-9dc6b3b9806a"
+  }
 }
