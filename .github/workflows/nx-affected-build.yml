@@ -1,13 +1,9 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Build affected packages
+name: Build affected apps and libraries
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -20,9 +16,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }} with yarn to build all projects
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i -g yarn
-
+      - name: Install Dependencies
+        run: |
+          npm i -g yarn
+          yarn
+      - name: Build affected projects
+        shell: bash
+        run: node_modules/.bin/nx affected:build --parallel --base=origin/master

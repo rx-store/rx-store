@@ -1,0 +1,549 @@
+{
+  "version": 1,
+  "projects": {
+    "react-example-counter": {
+      "root": "apps/react-example-counter",
+      "sourceRoot": "apps/react-example-counter/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/apps/react-example-counter",
+            "index": "apps/react-example-counter/src/index.html",
+            "main": "apps/react-example-counter/src/main.tsx",
+            "polyfills": "apps/react-example-counter/src/polyfills.ts",
+            "tsConfig": "apps/react-example-counter/tsconfig.app.json",
+            "assets": [
+              "apps/react-example-counter/src/favicon.ico",
+              "apps/react-example-counter/src/assets"
+            ],
+            "styles": [],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/react-example-counter/src/environments/environment.ts",
+                  "with": "apps/react-example-counter/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "react-example-counter:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "react-example-counter:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/react-example-counter/tsconfig.app.json",
+              "apps/react-example-counter/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/react-example-counter/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/react-example-counter/jest.config.js",
+            "tsConfig": "apps/react-example-counter/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-example-counter-e2e": {
+      "root": "apps/react-example-counter-e2e",
+      "sourceRoot": "apps/react-example-counter-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/react-example-counter-e2e/cypress.json",
+            "tsConfig": "apps/react-example-counter-e2e/tsconfig.e2e.json",
+            "devServerTarget": "react-example-counter:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "react-example-counter:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": ["apps/react-example-counter-e2e/tsconfig.e2e.json"],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/react-example-counter-e2e/**/*"
+            ]
+          }
+        }
+      }
+    },
+    "rx-store": {
+      "root": "libs/rx-store",
+      "sourceRoot": "libs/rx-store/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "libs/rx-store/tsconfig.lib.json",
+              "libs/rx-store/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/rx-store/**/*"]
+          }
+        },
+        "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/rx-store",
+            "tsConfig": "libs/rx-store/tsconfig.lib.json",
+            "project": "libs/rx-store/package.json",
+            "entryFile": "libs/rx-store/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/rx-store/jest.config.js",
+            "tsConfig": "libs/rx-store/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-rx-store": {
+      "root": "libs/react-rx-store",
+      "sourceRoot": "libs/react-rx-store/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "libs/react-rx-store/tsconfig.lib.json",
+              "libs/react-rx-store/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/react-rx-store/**/*"]
+          }
+        },
+        "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/react-rx-store",
+            "tsConfig": "libs/react-rx-store/tsconfig.lib.json",
+            "project": "libs/react-rx-store/package.json",
+            "entryFile": "libs/react-rx-store/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/react-rx-store/jest.config.js",
+            "tsConfig": "libs/react-rx-store/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-example-nested-stores": {
+      "root": "apps/react-example-nested-stores",
+      "sourceRoot": "apps/react-example-nested-stores/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/apps/react-example-nested-stores",
+            "index": "apps/react-example-nested-stores/src/index.html",
+            "main": "apps/react-example-nested-stores/src/main.tsx",
+            "polyfills": "apps/react-example-nested-stores/src/polyfills.ts",
+            "tsConfig": "apps/react-example-nested-stores/tsconfig.app.json",
+            "assets": [
+              "apps/react-example-nested-stores/src/favicon.ico",
+              "apps/react-example-nested-stores/src/assets"
+            ],
+            "styles": [],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/react-example-nested-stores/src/environments/environment.ts",
+                  "with": "apps/react-example-nested-stores/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "react-example-nested-stores:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "react-example-nested-stores:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/react-example-nested-stores/tsconfig.app.json",
+              "apps/react-example-nested-stores/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/react-example-nested-stores/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/react-example-nested-stores/jest.config.js",
+            "tsConfig": "apps/react-example-nested-stores/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "react-example-nested-stores-e2e": {
+      "root": "apps/react-example-nested-stores-e2e",
+      "sourceRoot": "apps/react-example-nested-stores-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/react-example-nested-stores-e2e/cypress.json",
+            "tsConfig": "apps/react-example-nested-stores-e2e/tsconfig.e2e.json",
+            "devServerTarget": "react-example-nested-stores:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "react-example-nested-stores:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/react-example-nested-stores-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/react-example-nested-stores-e2e/**/*"
+            ]
+          }
+        }
+      }
+    },
+    "angular-example-counter": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/angular-example-counter",
+      "sourceRoot": "apps/angular-example-counter/src",
+      "prefix": "rx-store",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/angular-example-counter",
+            "index": "apps/angular-example-counter/src/index.html",
+            "main": "apps/angular-example-counter/src/main.ts",
+            "polyfills": "apps/angular-example-counter/src/polyfills.ts",
+            "tsConfig": "apps/angular-example-counter/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/angular-example-counter/src/favicon.ico",
+              "apps/angular-example-counter/src/assets"
+            ],
+            "styles": ["apps/angular-example-counter/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/angular-example-counter/src/environments/environment.ts",
+                  "with": "apps/angular-example-counter/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angular-example-counter:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "angular-example-counter:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angular-example-counter:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/angular-example-counter/tsconfig.app.json",
+              "apps/angular-example-counter/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/angular-example-counter/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/angular-example-counter/jest.config.js",
+            "tsConfig": "apps/angular-example-counter/tsconfig.spec.json",
+            "passWithNoTests": true,
+            "setupFile": "apps/angular-example-counter/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "angular-example-counter-e2e": {
+      "root": "apps/angular-example-counter-e2e",
+      "sourceRoot": "apps/angular-example-counter-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/angular-example-counter-e2e/cypress.json",
+            "tsConfig": "apps/angular-example-counter-e2e/tsconfig.e2e.json",
+            "devServerTarget": "angular-example-counter:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-example-counter:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/angular-example-counter-e2e/tsconfig.e2e.json"],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/angular-example-counter-e2e/**/*"
+            ]
+          }
+        }
+      }
+    },
+    "rx-store-website": {
+      "projectType": "application",
+      "root": "apps/rx-store-website",
+      "sourceRoot": "apps/rx-store-website/src",
+      "architect": {
+        "docusaurus": {
+          "builder": "@nx-plus/docusaurus:docusaurus",
+          "options": {
+            "port": 3000
+          }
+        },
+        "build-docusaurus": {
+          "builder": "@nx-plus/docusaurus:build-docusaurus",
+          "options": {
+            "outputPath": "dist/docusaurus/rx-store-website"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "schematics": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/cypress": {
+      "cypress-project": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/react": {
+      "application": {
+        "style": "styled-components",
+        "linter": "eslint",
+        "babel": true
+      },
+      "library": {
+        "style": "styled-components",
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      },
+      "component": {
+        "style": "styled-components"
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/web": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/node": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/nx-plugin": {
+      "plugin": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/nest": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/express": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "react-example-counter"
+}
