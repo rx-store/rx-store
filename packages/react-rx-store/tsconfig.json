@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "jsx": "react",
-    "declaration": true,
-    "outDir": "types",
-    "emitDeclarationOnly": true,
-    "esModuleInterop": true
-  }
-}

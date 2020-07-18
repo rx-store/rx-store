@@ -1,0 +1,51 @@
+{
+  "npmScope": "rx-store",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    
+  },
+  "projects": {
+    "react-example-counter": {
+      "tags": []
+    },
+    "react-example-counter-e2e": {
+      "tags": [],
+      "implicitDependencies": ["react-example-counter"]
+    },
+    "rx-store": {
+      "tags": []
+    },
+    "react-rx-store": {
+      "tags": []
+    },
+    "react-example-nested-stores": {
+      "tags": []
+    },
+    "react-example-nested-stores-e2e": {
+      "tags": [],
+      "implicitDependencies": ["react-example-nested-stores"]
+    },
+    "angular-example-counter": {
+      "tags": []
+    },
+    "angular-example-counter-e2e": {
+      "tags": [],
+      "implicitDependencies": ["angular-example-counter"]
+    },
+    "rx-store-website": {
+      "tags": []
+    }
+  }
+}
