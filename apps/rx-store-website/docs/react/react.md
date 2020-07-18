@@ -73,4 +73,4 @@ There is also a [HOC provided](../api-reference/with-subscription) if you want t
 
 ## React Example app
 
-Check out the full [example counter app](https://github.com/rx-store/rx-store/tree/master/packages/react-rx-store-example-counter)
+Check out the full [example counter app](https://github.com/rx-store/rx-store/tree/master/apps/react-example-counter)
