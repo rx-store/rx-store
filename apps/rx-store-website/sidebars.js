@@ -3,6 +3,7 @@ module.exports = {
     Introduction: ["introduction/getting-started", "introduction/installation"],
     ["Basics"]: ["basics/subjects", "basics/observables", "basics/effects"],
     React: [
+      "react/react-installation",
       "react/react",
       {
         "API Reference": [
