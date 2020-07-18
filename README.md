@@ -66,3 +66,63 @@ With `Rx Store`, we do not have 1 top level state object that is always changing
 Check out the full [example counter app](https://github.com/rx-store/rx-store/tree/master/packages/react-rx-store-example-counter)
 
 Head on over to the website to [Get Started](https://rx-store.github.io/rx-store/docs/)!
+
+## Development
+
+First, clone the monorepo onto your machine:
+
+```
+git clone git@github.com:rx-store/rx-store.git
+```
+
+Then, install the monorepo dependencies:
+
+```
+yarn
+```
+
+This monorepo uses [Nx](https://nx.dev/react), which allows:
+
+- Visualizing the dependencies between packages
+- Automatically compiling affected packages when there are changes
+- Run CI checks only for affected packages when there are changes.
+
+To develop locally, you may install `Nx` globally:
+
+```
+npm install -g @nrwl/cli
+```
+
+The packages are organized into `apps` folder, which are runnable, and `libs` for library code. To generate a new app or lib, see the [Nx docs](https://nx.dev/react/cli/generate).
+
+### Running the "Examples" in the "apps" folder
+
+Replace `rx-store-counter-example` with the name of the project in the `apps` folder you want to run.
+
+Develop:
+
+```
+nx serve rx-store-counter-example
+```
+
+When editing files in the core during development, the example you are running will re-compile. Nx builds a dependency graph, and runs webpack from the top level. If changes are made in a package that the example app depends on, or any package it in turn depends on, Nx will figure it out & re-build the affected packages.
+
+Build:
+
+```
+nx build --with-deps rx-store-counter-example
+```
+
+By passing `--with-deps`, we are telling Nx to build a dependency graph & compile all of the package(s) the example project depends on, and all of the package(s) those in turn depend on.
+
+### Developing on the Website / Docs
+
+Develop:
+```
+nx run rx-store-website:docusaurus
+```
+
+Build:
+```
+nx build rx-store-website:docusaurus
+```
