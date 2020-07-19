@@ -1,13 +1,7 @@
 ---
-id: getting-started
-title: Getting Started
+id: rxjs-concepts
+title: RxJS Concepts
 ---
-
-`Rx Store` is a reactive store for frontend UI libraries (such as React), allowing you to model apps using [RxJs](https://rxjs-dev.firebaseapp.com/) streams. If you are not yet familiar with RxJs, [this video](https://www.youtube.com/watch?v=ewcoEYS85Co) is a great introduction!
-
-## Concepts
-
-Let's walk through the `Rx Store` concepts using some examples:
 
 ### Subjects
 
@@ -50,18 +44,3 @@ const store = {
 ```
 
 Observables, just like subjects, can be subscribed to, [read more about observables in Rx Store](basics/observables.md).
-
-### Effects
-
-Effects are functions called by `Rx Store` that handle subscriptions, normally producing side effects, or handling some cross cutting concerns.
-
-Here is an effect that subscribes to the `count$` stream, and emits the values onto the `countCopy$` subject:
-
-```tsx
-export const effect = (store) => {
-  const subscription = store.count$.subscribe((count) => {
-    store.countCopy$.next(count);
-  });
-  return () => subscription.unsubscribe();
-};
-```
