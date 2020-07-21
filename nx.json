@@ -9,20 +9,20 @@
       "dependencies": "*",
       "devDependencies": "*"
     },
-    "tsconfig.json": "*",
     "tslint.json": "*",
-    "nx.json": "*"
+    "nx.json": "*",
+    "tsconfig.base.json": "*"
   },
-  "tasksRunnerOptions": {
-    
-  },
+  "tasksRunnerOptions": {},
   "projects": {
     "react-example-counter": {
       "tags": []
     },
     "react-example-counter-e2e": {
       "tags": [],
-      "implicitDependencies": ["react-example-counter"]
+      "implicitDependencies": [
+        "react-example-counter"
+      ]
     },
     "rx-store": {
       "tags": []
@@ -35,14 +35,18 @@
     },
     "react-example-nested-stores-e2e": {
       "tags": [],
-      "implicitDependencies": ["react-example-nested-stores"]
+      "implicitDependencies": [
+        "react-example-nested-stores"
+      ]
     },
     "angular-example-counter": {
       "tags": []
     },
     "angular-example-counter-e2e": {
       "tags": [],
-      "implicitDependencies": ["angular-example-counter"]
+      "implicitDependencies": [
+        "angular-example-counter"
+      ]
     },
     "rx-store-website": {
       "tags": []
