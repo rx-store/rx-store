@@ -11,9 +11,9 @@ module.exports = {
       title: 'Rx Store',
       links: [
         {
-          to: 'docs/',
+          to: 'docs/introduction/getting-started',
           activeBasePath: 'docs',
-          label: 'Core Concepts',
+          label: 'Getting Started',
           position: 'left',
         },
         {
