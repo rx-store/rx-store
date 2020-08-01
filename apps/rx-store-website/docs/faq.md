@@ -116,7 +116,7 @@ function component(props) {
     }, [fn])
 })
 ```
-However may find that now you have a similar issue to the example above where you may need to add refs. For example, if you need to add dependencies to the `useCallback` logic, you'll need to add a depdency array for the `useCallback` hook, which in turn causes the `fn` reference to be changed anytime it's dependencies changes. Now you must decide if you're ok removing & re-adding the event listeners anytime data changes, paying a perfromance cost so you can store your state in the hook's closures, or your other option is to add refs to your code, making it harder to read.
+However you may find that now you have a similar issue to the example above where you may need to add refs. For example, if you need to add dependencies to the `useCallback` logic, you'll need to add a depdency array for the `useCallback` hook, which in turn causes the `fn` reference to be changed anytime it's dependencies changes. Now you must decide if you're ok removing & re-adding the event listeners anytime data changes, paying a perfromance cost so you can store your state in the hook's closures, or your other option is to add refs to your code, making it harder to read.
 
 With RxJS, we can pass around immutable streams. The parent could pass down a stream of clicks:
 
@@ -153,7 +153,7 @@ function child({clicks: click$}) {
 }
 ```
 
-In this way the parents component does not need to be aware of or call `fetchData`, nor do we run into kludges with React's limitations. The consumers sit at the bottom of a metaphorical funnel, and at the top of our funnel the parent component is entirely unaware of whatever is happening downstream, it just provides down streams of clicks.
+In this way the parent component does not need to be aware of or call `fetchData`, nor do we run into kludges with React's limitations. The consumers sit at the bottom of a metaphorical funnel, and at the top of our funnel the parent component is entirely unaware of whatever is happening downstream, it just provides down streams of clicks.
 
 
 
@@ -170,5 +170,5 @@ While mobx uses the observable pattern like RxJS, it is more focused on imperati
 
 You can use RxJS store & mobx together, you can subscribe to your RxJS store subjects & update mobx when they emit values, or vice versa.
 
-Mobx is a great alternative to something like Redux if you merely have issues with high frequency events that you want to map 1:1 with your UI, that is you still want to render affected UI elements on every event. It is more effective than Redux in figuring out which UI elements were affected, because mobx uses observables instead of immutability for its reactivity model. However if you are not mappings events to UI 1:1, or you have more complex async logic, the expressive power of RxJS will be a key advantage of using RxStore.
+Mobx is a great alternative to something like Redux if you merely have issues with high frequency events that you want to map 1:1 with your UI, that is you still want to render affected UI elements on every event. It is more effective than Redux in figuring out which UI elements were affected, because mobx uses observables instead of immutability for its reactivity model. However if you are not mapping events to UI updates 1:1, or you have more complex async logic, the expressive power of RxJS will be a key advantage of using RxStore.
 
