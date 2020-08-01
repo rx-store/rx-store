@@ -3,7 +3,7 @@ id: getting-started
 title: Getting Started with Rx Store
 ---
 
-`Rx Store` is a reactive store for frontend UI libraries (such as React), making it easy for you to build your application's logic using [RxJs](https://rxjs-dev.firebaseapp.com/) streams. If you are not yet familiar with RxJs, [this video](https://www.youtube.com/watch?v=ewcoEYS85Co) is a great introduction!
+`Rx Store` is a reactive store for frontend UI libraries (such as React), making it easy for you to build your application's logic using [RxJs](https://rxjs.dev/) streams. If you are not yet familiar with RxJs, [this video](https://www.youtube.com/watch?v=ewcoEYS85Co) is a great introduction!
 
 Unlike a state management library, `Rx Store` is a stream management library. It is better suited to managing data that changes frequently or in complex ways over time, such as in real-time applications.
 
