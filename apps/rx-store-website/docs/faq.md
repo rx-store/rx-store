@@ -73,7 +73,7 @@ function component({ channelID }) {
     const [foo, setFoo] = useState(123)
     useEffect(() => {
         if(foo !== prevFoo) {
-            // reacts to changes in either foo or channelID
+            // reacts to changes in foo only
         }
         prevFoo.current = foo
     }, [foo])
