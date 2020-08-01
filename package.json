@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.1000.5",
+    "@angular/cli": "~10.0.0",
     "@angular/compiler-cli": "10.0.7",
     "@angular/language-service": "10.0.7",
     "@babel/core": "7.9.6",
@@ -92,7 +93,7 @@
     "ts-jest": "25.2.1",
     "ts-node": "~7.0.0",
     "tslib": "^1.13.0",
-    "tslint": "~6.0.0",
+    "tslint": "~6.1.0",
     "typescript": "3.9.7"
   }
 }

@@ -77,7 +77,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/react-example-counter/jest.config.js",
-            "tsConfig": "apps/react-example-counter/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -154,7 +153,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/rx-store/jest.config.js",
-            "tsConfig": "libs/rx-store/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -200,7 +198,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "libs/react-rx-store/jest.config.js",
-            "tsConfig": "libs/react-rx-store/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -282,7 +279,6 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/react-example-nested-stores/jest.config.js",
-            "tsConfig": "apps/react-example-nested-stores/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }
@@ -413,9 +409,7 @@
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/angular-example-counter/jest.config.js",
-            "tsConfig": "apps/angular-example-counter/tsconfig.spec.json",
-            "passWithNoTests": true,
-            "setupFile": "apps/angular-example-counter/src/test-setup.ts"
+            "passWithNoTests": true
           }
         }
       }
