@@ -23,6 +23,9 @@ module.exports = {
         ],
       },
     ],
+    Angular: [
+      "angular/angular"
+    ],
     Other: ["faq", "principles", "motivation"],
   },
 };
