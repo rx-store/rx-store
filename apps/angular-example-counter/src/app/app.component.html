@@ -1,7 +1,4 @@
-<app-counter
-  *ngFor="let i of a(n)"
-  [store]="store"
-></app-counter>
+<app-counter *ngFor="let i of a(n)"></app-counter>
 
 <button (click)="addCounter()">add a counter</button>
 <button (click)="removeCounter()">remove a counter</button>
