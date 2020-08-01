@@ -13,9 +13,7 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "tasksRunnerOptions": {
-    
-  },
+  "tasksRunnerOptions": {},
   "projects": {
     "react-example-counter": {
       "tags": []
@@ -45,6 +43,9 @@
       "implicitDependencies": ["angular-example-counter"]
     },
     "rx-store-website": {
+      "tags": []
+    },
+    "angular-rx-store": {
       "tags": []
     }
   }
