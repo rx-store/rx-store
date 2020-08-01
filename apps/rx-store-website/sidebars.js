@@ -1,7 +1,15 @@
 module.exports = {
   someSidebar: {
-    Introduction: ["introduction/getting-started", "introduction/installation"],
-    ["Basics"]: ["basics/subjects", "basics/observables", "basics/effects"],
+    "Introduction": [
+      "introduction/getting-started",
+      "introduction/rxjs-concepts",
+      "introduction/installation"
+    ],
+    ["Core Concepts"]: [
+      "basics/subjects",
+      "basics/observables",
+      "basics/effects"
+    ],
     React: [
       "react/react-installation",
       "react/react",
