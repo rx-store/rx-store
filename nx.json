@@ -13,9 +13,7 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "tasksRunnerOptions": {
-    
-  },
+  "tasksRunnerOptions": {},
   "projects": {
     "react-example-counter": {
       "tags": []
@@ -46,6 +44,13 @@
     },
     "rx-store-website": {
       "tags": []
+    },
+    "react-example-chat": {
+      "tags": []
+    },
+    "react-example-chat-e2e": {
+      "tags": [],
+      "implicitDependencies": ["react-example-chat"]
     }
   }
 }

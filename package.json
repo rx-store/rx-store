@@ -61,7 +61,7 @@
     "@nrwl/jest": "9.5.1",
     "@nrwl/nx-cloud": "latest",
     "@nrwl/react": "9.5.1",
-    "@nrwl/web": "9.5.1",
+    "@nrwl/web": "10.0.7",
     "@nrwl/workspace": "9.5.1",
     "@nx-plus/docusaurus": "^0.0.4",
     "@testing-library/react": "10.4.1",
