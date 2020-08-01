@@ -24,8 +24,7 @@
     "workspace-schematic": "nx workspace-schematic",
     "deploy-website": "cd apps/rx-store-website && ../../node_modules/.bin/docusaurus deploy",
     "dep-graph": "nx dep-graph",
-    "help": "nx help",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "help": "nx help"
   },
   "private": true,
   "dependencies": {
