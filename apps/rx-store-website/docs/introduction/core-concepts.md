@@ -55,3 +55,26 @@ export const effect = (store) => {
 ### Components
 
 In addition to subscribing to the stream(s) in your store as part of an effect, you can subscribe directly from your components. This allows you to re-render a component whenever a stream emits a value, or synchronize your component's state with your stream(s).
+
+
+React Example:
+
+```js
+function Component() {
+  const store = useStore(rootContext);
+
+  // render error / completion information
+  const [next, error, complete] = useSubscription(store.viewerCount$);
+
+  return (
+    <>
+      Latest viewer count: {next}
+      
+      Stream had an error?: {error}
+      Stream is ended?: {complete}
+    </>
+  );
+}
+```
+
+Read more about the [useSubscription hook](../api-reference/use-subscription) in the API reference.
