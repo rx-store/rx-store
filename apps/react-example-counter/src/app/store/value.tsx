@@ -1,6 +1,6 @@
-import { Subject, BehaviorSubject } from "rxjs";
-import { scanSum } from "./operators/scan-sum";
-import {AppContextValue} from "../app-context-value.interface";
+import { Subject, BehaviorSubject } from 'rxjs';
+import { scanSum } from './operators/scan-sum';
+import { AppContextValue } from '../app-context-value.interface';
 
 export const createStoreValue = () => {
   const counterChange$ = new Subject<number>();
@@ -9,7 +9,8 @@ export const createStoreValue = () => {
   const storeValue: AppContextValue = {
     counterChange$,
     count$: new BehaviorSubject(0),
-    localCount$: counterChange$.pipe(scanSum()),
+    // localCount$: counterChange$.pipe(scanSum()),
   };
+
   return storeValue;
 };

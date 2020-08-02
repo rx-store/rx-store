@@ -4,9 +4,9 @@ import React, {
   useState,
   useContext,
   Context,
-} from "react";
-import { Observable } from "rxjs";
-import { RxStoreEffect } from "@rx-store/rx-store";
+} from 'react';
+import { Observable, Subject } from 'rxjs';
+import { RxStoreEffect } from '@rx-store/rx-store';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -49,7 +49,7 @@ export const store = <T extends {}>(
     useEffect(() => {
       mounted++;
       if (mounted > 1) {
-        throw new Error("The Manager component must only be mounted once!");
+        throw new Error('The Manager component must only be mounted once!');
       }
       return () => mounted--;
     }, []);
@@ -58,16 +58,24 @@ export const store = <T extends {}>(
     // also does some runtime validation checks
     useEffect(() => {
       if (!rootEffect) {
-        if (typeof rootEffect !== "function") {
-          throw new Error("rootEffect, if supplied, must be a function");
-        }
-        rootEffect = () => () => null;
+        return null;
       }
-      const cleanupFn = rootEffect(value);
-      if (typeof cleanupFn !== "function") {
-        throw new Error("rootEffect must return a cleanup function");
-      }
-      return cleanupFn;
+      const sources = Object.keys(value).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: (value[key] as Subject<any>).asObservable(),
+        }),
+        {}
+      );
+      const sinks = Object.keys(value).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: (...args) => value[key].next(...args),
+        }),
+        {}
+      );
+      const subscription = rootEffect(sources as T, sinks as T).subscribe();
+      return () => subscription.unsubscribe();
     }, [value]);
 
     // Wraps the children in the context provider, supplying

@@ -1,5 +1,4 @@
-/** A function that will unsubscribe a effect */
-export type RxEffectCleanupFn = () => void;
+import {Observable} from 'rxjs'
 
 /** A function that will subscribe to an effect */
-export type RxStoreEffect<T> = (storeValue: T) => RxEffectCleanupFn;
+export type RxStoreEffect<T> = (sources: T, sinks: T) => Observable<any>;
