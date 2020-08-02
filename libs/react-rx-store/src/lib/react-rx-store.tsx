@@ -5,6 +5,7 @@ import React, {
   useContext,
   Context,
 } from 'react';
+import { tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { RxStoreEffect } from '@rx-store/rx-store';
 
@@ -63,14 +64,21 @@ export const store = <T extends {}>(
       const sources = Object.keys(value).reduce(
         (acc, key) => ({
           ...acc,
-          [key]: (value[key] as Subject<any>).asObservable(),
+          [key]: (value[key] as Subject<any>)
+            .asObservable()
+            .pipe(
+              tap((value) => console.log(`root effect source ${key}:`, value))
+            ),
         }),
         {}
       );
       const sinks = Object.keys(value).reduce(
         (acc, key) => ({
           ...acc,
-          [key]: (...args) => value[key].next(...args),
+          [key]: (...args) => {
+            console.log(`rook effect sink ${key}: `, ...args);
+            value[key].next(...args);
+          },
         }),
         {}
       );
