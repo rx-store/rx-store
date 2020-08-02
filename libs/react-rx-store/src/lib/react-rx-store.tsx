@@ -59,15 +59,7 @@ export const runRootEffect = <T extends {}>(
     return effectFn(sources, sinks, childRunEffect);
   };
 
-  console.log('runRootEffect:', debugKey);
-  const sources = createSources(debugKey, storeValue);
-  const sinks = createSinks(debugKey, storeValue);
-  return rootEffectFn(
-    sources,
-    sinks,
-    (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
-      runEffect(debugKey + '-' + childDebugKey, childEffectFn)
-  );
+  return runEffect(debugKey, rootEffectFn);
 };
 
 /**
