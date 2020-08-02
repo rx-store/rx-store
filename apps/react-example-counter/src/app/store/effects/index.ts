@@ -3,6 +3,11 @@ import { RxStoreEffect } from '@rx-store/rx-store';
 import { AppContextValue } from '../../app-context-value.interface';
 import { range, timer } from 'rxjs';
 
+const childEffect: (count: number) => RxStoreEffect<AppContextValue> = (
+  count
+) => (sources, sinks) =>
+  range(0, count).pipe(delayWhen((value) => timer(value * 100)));
+
 /**
  * Rx Store will subscribe to the effect for us.
  *
@@ -12,14 +17,16 @@ import { range, timer } from 'rxjs';
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const appRootEffect: RxStoreEffect<AppContextValue> = (sources, sinks) =>
+export const appRootEffect: RxStoreEffect<AppContextValue> = (
+  sources,
+  sinks,
+  createChildEffect
+) =>
   sources.counterChange$.pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    switchMap((count) => createChildEffect(count)),
+    switchMap((count) => {
+      return createChildEffect(childEffect(count));
+    }),
     tap((count: number) => sinks.count$(count))
   );
-
-function createChildEffect(count: number) {
-  return range(1, 5).pipe(delayWhen((value) => timer(value * 100)));
-}

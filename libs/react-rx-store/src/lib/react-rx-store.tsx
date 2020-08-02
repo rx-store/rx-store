@@ -28,21 +28,24 @@ export const createEffect = <T extends {}>(
       ...acc,
       [key]: (value[key] as Subject<any>)
         .asObservable()
-        .pipe(tap((value) => console.log(`root effect source ${key}:`, value))),
+        .pipe(tap((value) => console.log(`effect source ${key}:`, value))),
     }),
     {}
-  );
+  ) as T;
   const sinks = Object.keys(value).reduce(
     (acc, key) => ({
       ...acc,
       [key]: (...args) => {
-        console.log(`rook effect sink ${key}: `, ...args);
+        console.log(`effect sink ${key}: `, ...args);
         value[key].next(...args);
       },
     }),
     {}
-  );
-  return effectFn(sources as T, sinks as T);
+  ) as T;
+  const createChildEffect = (childEffect: RxStoreEffect<T>) => {
+    return childEffect(sources, sinks, createChildEffect);
+  };
+  return effectFn(sources, sinks, createChildEffect);
 };
 
 /**
