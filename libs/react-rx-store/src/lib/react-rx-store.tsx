@@ -19,6 +19,32 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
+export const createEffect = <T extends {}>(
+  value: T,
+  effectFn: RxStoreEffect<T>
+) => {
+  const sources = Object.keys(value).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: (value[key] as Subject<any>)
+        .asObservable()
+        .pipe(tap((value) => console.log(`root effect source ${key}:`, value))),
+    }),
+    {}
+  );
+  const sinks = Object.keys(value).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: (...args) => {
+        console.log(`rook effect sink ${key}: `, ...args);
+        value[key].next(...args);
+      },
+    }),
+    {}
+  );
+  return effectFn(sources as T, sinks as T);
+};
+
 /**
  * Creates a store, with the provided value & optional effect.
  * Returns a Manager component, that when mounted will subscribe
@@ -61,28 +87,7 @@ export const store = <T extends {}>(
       if (!rootEffect) {
         return null;
       }
-      const sources = Object.keys(value).reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: (value[key] as Subject<any>)
-            .asObservable()
-            .pipe(
-              tap((value) => console.log(`root effect source ${key}:`, value))
-            ),
-        }),
-        {}
-      );
-      const sinks = Object.keys(value).reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: (...args) => {
-            console.log(`rook effect sink ${key}: `, ...args);
-            value[key].next(...args);
-          },
-        }),
-        {}
-      );
-      const subscription = rootEffect(sources as T, sinks as T).subscribe();
+      const subscription = createEffect(value, rootEffect).subscribe();
       return () => subscription.unsubscribe();
     }, [value]);
 
