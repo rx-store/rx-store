@@ -5,7 +5,7 @@ import React, {
   useContext,
   Context,
 } from 'react';
-import { tap } from 'rxjs/operators';
+import { tap, finalize } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { RxStoreEffect, createSinks, createSources } from '@rx-store/rx-store';
 
@@ -60,7 +60,11 @@ export const spawnRootEffect = <T extends {}>(
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
-    return effectFn(sources, sinks, childspawnEffect);
+    return effectFn(sources, sinks, childspawnEffect).pipe(
+      finalize(() => {
+        console.log('teardownEffect:', debugKey);
+      })
+    );
   };
 
   return spawnEffect(debugKey, rootEffectFn);
