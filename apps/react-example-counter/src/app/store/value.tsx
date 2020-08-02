@@ -9,7 +9,6 @@ export const createStoreValue = () => {
   const storeValue: AppContextValue = {
     counterChange$,
     count$: new BehaviorSubject(0),
-    // localCount$: counterChange$.pipe(scanSum()),
   };
 
   return storeValue;
