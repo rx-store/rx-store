@@ -19,21 +19,44 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
+/**
+ * The runRootEffect method is differs from runEffect method in that
+ * the former accepts the storeValue as an argument, and closes over the latter.
+ *
+ * runRootEffect calls the rootEffectFn, passing in sinks, sources, and an
+ *
+ * @param debugKey
+ * @param storeValue
+ * @param rootEffectFn
+ */
 export const runRootEffect = <T extends {}>(
   debugKey: string,
   storeValue: T,
   rootEffectFn: RxStoreEffect<T>
 ) => {
+  /**
+   * runEffect closes over the `storeValue` and parent `debugKey`.
+   * Runs the effectFn w / curried sources, sinks, and runEffect
+   * function. Appends the given debugKey to the curried effect
+   * from the parent effect.
+   */
   const runEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
+    // TODO - add a devtools hook here
     console.log('runEffect:', debugKey);
+
+    // Curries the sources and sinks with the debug key, to track this
+    // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(debugKey, storeValue);
     const sinks = createSinks(debugKey, storeValue);
-    return effectFn(
-      sources,
-      sinks,
-      (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
-        runEffect(debugKey + '-' + childDebugKey, childEffectFn)
-    );
+
+    // Keeps the "context" intact, by appending to debugKey to create a path
+    // each time an effect creates a child effect by running it's curried `runEffect()`
+    const childRunEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
+      runEffect(debugKey + '-' + childDebugKey, childEffectFn);
+
+    // Run the effect function passing in the curried sources, sinks, and
+    // runEffect function for the effectFn to run any of its children effectFn
+    return effectFn(sources, sinks, childRunEffect);
   };
 
   console.log('runRootEffect:', debugKey);
