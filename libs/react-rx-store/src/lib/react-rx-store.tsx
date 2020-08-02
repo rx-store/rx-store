@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { RxStoreEffect } from '@rx-store/rx-store';
+import { RxStoreEffect, createSinks } from '@rx-store/rx-store';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -30,19 +30,6 @@ const createSources = <T extends {}>(debugKey: string, value: T) => {
             console.log(`${debugKey} source ${subjectName}:`, value)
           )
         ),
-    }),
-    {}
-  ) as T;
-};
-
-const createSinks = <T extends {}>(debugKey: string, value: T) => {
-  return Object.keys(value).reduce(
-    (acc, subjectName) => ({
-      ...acc,
-      [subjectName]: (...args) => {
-        console.log(`${debugKey} sink ${subjectName}: `, ...args);
-        value[subjectName].next(...args);
-      },
     }),
     {}
   ) as T;

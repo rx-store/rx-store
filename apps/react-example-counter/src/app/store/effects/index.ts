@@ -3,7 +3,6 @@ import {
   startWith,
   tap,
   delayWhen,
-  switchMap,
   withLatestFrom,
   map,
   exhaustMap,
