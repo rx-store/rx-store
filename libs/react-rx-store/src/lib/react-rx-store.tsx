@@ -20,29 +20,33 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
 };
 
 /**
- * The runRootEffect method is differs from runEffect method in that
- * the former accepts the storeValue as an argument, and closes over the latter.
+ * The spawnRootEffect runs the root effect which means the effectFn is called
+ * with curried sources, sinks, and its own spawnEffect function used
+ * to spawn child effects recursively.
  *
- * runRootEffect calls the rootEffectFn, passing in sinks, sources, and an
+ * Running effects does not involve subscribing to the observables they return,
+ * which is the responsibility of the <Manager /> component to subscribe/unsubscribe.
+ * Running the effects only involves calling the effectFn, passing in curried sources, sinks
+ * and spawnEffect function.
  *
  * @param debugKey
  * @param storeValue
  * @param rootEffectFn
  */
-export const runRootEffect = <T extends {}>(
+export const spawnRootEffect = <T extends {}>(
   debugKey: string,
   storeValue: T,
   rootEffectFn: RxStoreEffect<T>
 ) => {
   /**
-   * runEffect closes over the `storeValue` and parent `debugKey`.
-   * Runs the effectFn w / curried sources, sinks, and runEffect
+   * spawnEffect closes over the `storeValue` and parent `debugKey`.
+   * Runs the effectFn w / curried sources, sinks, and spawnEffect
    * function. Appends the given debugKey to the curried effect
    * from the parent effect.
    */
-  const runEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
+  const spawnEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
     // TODO - add a devtools hook here
-    console.log('runEffect:', debugKey);
+    console.log('spawnEffect:', debugKey);
 
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
@@ -50,16 +54,16 @@ export const runRootEffect = <T extends {}>(
     const sinks = createSinks(debugKey, storeValue);
 
     // Keeps the "context" intact, by appending to debugKey to create a path
-    // each time an effect creates a child effect by running it's curried `runEffect()`
-    const childRunEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
-      runEffect(debugKey + '-' + childDebugKey, childEffectFn);
+    // each time an effect creates a child effect by running it's curried `spawnEffect()`
+    const childspawnEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
+      spawnEffect(debugKey + '-' + childDebugKey, childEffectFn);
 
     // Run the effect function passing in the curried sources, sinks, and
-    // runEffect function for the effectFn to run any of its children effectFn
-    return effectFn(sources, sinks, childRunEffect);
+    // spawnEffect function for the effectFn to run any of its children effectFn
+    return effectFn(sources, sinks, childspawnEffect);
   };
 
-  return runEffect(debugKey, rootEffectFn);
+  return spawnEffect(debugKey, rootEffectFn);
 };
 
 /**
@@ -104,7 +108,11 @@ export const store = <T extends {}>(
       if (!rootEffect) {
         return null;
       }
-      const subscription = runRootEffect('root', value, rootEffect).subscribe();
+      const subscription = spawnRootEffect(
+        'root',
+        value,
+        rootEffect
+      ).subscribe();
       return () => subscription.unsubscribe();
     }, [value]);
 
