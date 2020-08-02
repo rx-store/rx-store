@@ -19,11 +19,8 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
-export const createEffect = <T extends {}>(
-  value: T,
-  effectFn: RxStoreEffect<T>
-) => {
-  const sources = Object.keys(value).reduce(
+const createSources = <T extends {}>(value: T) => {
+  return Object.keys(value).reduce(
     (acc, key) => ({
       ...acc,
       [key]: (value[key] as Subject<any>)
@@ -32,7 +29,10 @@ export const createEffect = <T extends {}>(
     }),
     {}
   ) as T;
-  const sinks = Object.keys(value).reduce(
+};
+
+const createSinks = <T extends {}>(value: T) => {
+  return Object.keys(value).reduce(
     (acc, key) => ({
       ...acc,
       [key]: (...args) => {
@@ -42,6 +42,14 @@ export const createEffect = <T extends {}>(
     }),
     {}
   ) as T;
+};
+
+export const runEffect = <T extends {}>(
+  value: T,
+  effectFn: RxStoreEffect<T>
+) => {
+  const sources = createSources(value);
+  const sinks = createSinks(value);
   const createChildEffect = (childEffect: RxStoreEffect<T>) => {
     return childEffect(sources, sinks, createChildEffect);
   };
@@ -90,7 +98,7 @@ export const store = <T extends {}>(
       if (!rootEffect) {
         return null;
       }
-      const subscription = createEffect(value, rootEffect).subscribe();
+      const subscription = runEffect(value, rootEffect).subscribe();
       return () => subscription.unsubscribe();
     }, [value]);
 
