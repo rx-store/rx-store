@@ -19,41 +19,61 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
-const createSources = <T extends {}>(value: T) => {
+const createSources = <T extends {}>(debugKey: string, value: T) => {
   return Object.keys(value).reduce(
-    (acc, key) => ({
+    (acc, subjectName) => ({
       ...acc,
-      [key]: (value[key] as Subject<any>)
+      [subjectName]: (value[subjectName] as Subject<any>)
         .asObservable()
-        .pipe(tap((value) => console.log(`effect source ${key}:`, value))),
+        .pipe(
+          tap((value) =>
+            console.log(`${debugKey} source ${subjectName}:`, value)
+          )
+        ),
     }),
     {}
   ) as T;
 };
 
-const createSinks = <T extends {}>(value: T) => {
+const createSinks = <T extends {}>(debugKey: string, value: T) => {
   return Object.keys(value).reduce(
-    (acc, key) => ({
+    (acc, subjectName) => ({
       ...acc,
-      [key]: (...args) => {
-        console.log(`effect sink ${key}: `, ...args);
-        value[key].next(...args);
+      [subjectName]: (...args) => {
+        console.log(`${debugKey} sink ${subjectName}: `, ...args);
+        value[subjectName].next(...args);
       },
     }),
     {}
   ) as T;
 };
 
-export const runEffect = <T extends {}>(
-  value: T,
-  effectFn: RxStoreEffect<T>
+export const runRootEffect = <T extends {}>(
+  debugKey: string,
+  storeValue: T,
+  rootEffectFn: RxStoreEffect<T>
 ) => {
-  const sources = createSources(value);
-  const sinks = createSinks(value);
-  const createChildEffect = (childEffect: RxStoreEffect<T>) => {
-    return childEffect(sources, sinks, createChildEffect);
+  const runEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
+    console.log('runEffect:', debugKey);
+    const sources = createSources(debugKey, storeValue);
+    const sinks = createSinks(debugKey, storeValue);
+    return effectFn(
+      sources,
+      sinks,
+      (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
+        runEffect(debugKey + '-' + childDebugKey, childEffectFn)
+    );
   };
-  return effectFn(sources, sinks, createChildEffect);
+
+  console.log('runRootEffect:', debugKey);
+  const sources = createSources(debugKey, storeValue);
+  const sinks = createSinks(debugKey, storeValue);
+  return rootEffectFn(
+    sources,
+    sinks,
+    (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
+      runEffect(debugKey + '-' + childDebugKey, childEffectFn)
+  );
 };
 
 /**
@@ -98,7 +118,7 @@ export const store = <T extends {}>(
       if (!rootEffect) {
         return null;
       }
-      const subscription = runEffect(value, rootEffect).subscribe();
+      const subscription = runRootEffect('root', value, rootEffect).subscribe();
       return () => subscription.unsubscribe();
     }, [value]);
 

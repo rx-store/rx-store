@@ -4,5 +4,5 @@ import { Observable } from 'rxjs';
 export type RxStoreEffect<T> = (
   sources: T,
   sinks: T,
-  createChildEffect: (effect: RxStoreEffect<T>) => Observable<any>
+  runEffect: (debugKey: string, effect: RxStoreEffect<T>) => Observable<any>
 ) => Observable<any>;
