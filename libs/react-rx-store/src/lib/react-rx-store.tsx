@@ -62,6 +62,7 @@ export const spawnRootEffect = <T extends {}>(
     // spawnEffect function for the effectFn to run any of its children effectFn
     return effectFn(sources, sinks, childspawnEffect).pipe(
       finalize(() => {
+        // TODO - add a devtools hook here
         console.log('teardownEffect:', debugKey);
       })
     );
