@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { RxStoreEffect, createSinks } from '@rx-store/rx-store';
+import { RxStoreEffect, createSinks, createSources } from '@rx-store/rx-store';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -17,22 +17,6 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   const value = useContext(context);
   if (!value) throw new Error();
   return value;
-};
-
-const createSources = <T extends {}>(debugKey: string, value: T) => {
-  return Object.keys(value).reduce(
-    (acc, subjectName) => ({
-      ...acc,
-      [subjectName]: (value[subjectName] as Subject<any>)
-        .asObservable()
-        .pipe(
-          tap((value) =>
-            console.log(`${debugKey} source ${subjectName}:`, value)
-          )
-        ),
-    }),
-    {}
-  ) as T;
 };
 
 export const runRootEffect = <T extends {}>(
