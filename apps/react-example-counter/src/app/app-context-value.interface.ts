@@ -1,4 +1,4 @@
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 /** Our context value, which contains subjects & observables */
 export interface AppContextValue {
@@ -10,12 +10,4 @@ export interface AppContextValue {
    */
   counterChange$: Subject<number>;
   count$: Subject<number>;
-
-  /**
-   * These "observables" are your app's "selectors".
-   *
-   * They derive state, manipulate time, are lazy &
-   * uni-cast, and are read only.
-   */
-  localCount$: Observable<number>;
 }
