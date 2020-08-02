@@ -55,12 +55,12 @@ export const spawnRootEffect = <T extends {}>(
 
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
-    const childspawnEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
+    const childSpawnEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
       spawnEffect(debugKey + '-' + childDebugKey, childEffectFn);
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
-    return effectFn(sources, sinks, childspawnEffect).pipe(
+    return effectFn(sources, sinks, childSpawnEffect).pipe(
       finalize(() => {
         // TODO - add a devtools hook here
         console.log('teardownEffect:', debugKey);
