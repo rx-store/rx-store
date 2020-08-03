@@ -195,7 +195,7 @@ export function useSubscription<T>(
       (error) => setError(error),
       () => setComplete(true)
     );
-    return subscription.unsubscribe;
+    return () => subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
 }
