@@ -20,6 +20,30 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
+// Creates an observable that will be subscribed to *before*
+// the underlying effect is subscribed to, will immediately
+// run a devtools hook & complete.
+const before$ = (debugKey: string) =>
+  of(null).pipe(
+    tap(() => {
+      // TODO - add a devtools hook here
+      debug(`rx-store:${debugKey}`)('spawn');
+    }),
+    filter(() => false)
+  );
+
+// Creates an observable that will be subscribed to *after*
+// the underlying effect is subscribed to, will immediately
+// run a devtools hook & complete.
+const after$ = (debugKey: string) =>
+  of(null).pipe(
+    tap(() => {
+      // TODO - add a devtools hook here
+      debug(`rx-store:${debugKey}`)('teardown');
+    }),
+    filter(() => false)
+  );
+
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
  * with curried sources, sinks, and its own spawnEffect function used
@@ -40,10 +64,20 @@ export const spawnRootEffect = <T extends {}>(
   rootEffectFn: RxStoreEffect<T>
 ) => {
   /**
-   * spawnEffect closes over the `storeValue` and parent `debugKey`.
-   * Runs the effectFn w / curried sources, sinks, and spawnEffect
-   * function. Appends the given debugKey to the curried effect
-   * from the parent effect.
+   * spawnEffect closes over the `storeValue`. It takes in a `debugKey`
+   * and an effectFn.
+   *
+   * It curries sources, sinks, and a spawnEffect specific to the effectFn
+   * being spawned, such that we retain the stack or context of where each
+   * effect was spawned, all the way back to the root effect, for any effect,
+   * like a stack trace.
+   *
+   * The effect (observable) is also wrapped in before and after "hooks" for
+   * devtools, so devtools can known when the effect is actuall subscribed & torn down.
+   *
+   * The curried sources and sinks also have devtools hooks embedded in them such
+   * that devtools knows when each effect receives value(s), which subject(s) they came
+   * from, and which subject(s) each effect sinks data back into.
    */
   const spawnEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
     // Curries the sources and sinks with the debug key, to track this
@@ -58,21 +92,11 @@ export const spawnRootEffect = <T extends {}>(
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
-    return concat(
-      of(null).pipe(
-        tap(() => {
-          // TODO - add a devtools hook here
-          debug(`rx-store:${debugKey}`)('spawn');
-        }),
-        filter(() => false)
-      ),
-      effectFn(sources, sinks, childSpawnEffect).pipe(
-        finalize(() => {
-          // TODO - add a devtools hook here
-          debug(`rx-store:${debugKey}`)('teardown');
-        })
-      )
-    );
+    const effect$ = effectFn(sources, sinks, childSpawnEffect);
+
+    // Sandwich the effect between before and after streams, allowing devools
+    // hooks to run when the effect is subscribed & torn down.
+    return concat(before$(debugKey), effect$, after$(debugKey));
   };
 
   return spawnEffect(debugKey, rootEffectFn);
