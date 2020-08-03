@@ -3,6 +3,7 @@
   "version": "0.0.4",
   "license": "ISC",
   "dependencies": {
-    "@rx-store/rx-store": "^0.0.4"
+    "@rx-store/rx-store": "^0.0.4",
+    "debug": "^4.1.1"
   }
 }

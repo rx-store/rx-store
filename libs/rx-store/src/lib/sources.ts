@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { RxStoreValue } from '..';
+import { debug } from 'debug';
 
 /**
  * Sources are a read-only interface from the subjects
@@ -40,7 +41,9 @@ export const createSources = <T extends {}>(
         .asObservable()
         .pipe(
           tap((value) =>
-            console.log(`${debugKey} source ${subjectName}:`, value)
+            debug(`rx-store:${debugKey}`)(
+              `source ${subjectName} value: ${value}`
+            )
           )
         ),
     }),

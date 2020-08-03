@@ -1,4 +1,5 @@
 import { RxStoreValue } from '..';
+import { debug } from 'debug';
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -34,9 +35,9 @@ export const createSinks = <StoreValue extends {}>(
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
-      [subjectName]: (...args) => {
-        console.log(`${debugKey} sink ${subjectName}: `, ...args);
-        storeValue[subjectName].next(...args);
+      [subjectName]: (value: any) => {
+        debug(`rx-store:${debugKey}`)(`sink ${subjectName}: ${value}`);
+        storeValue[subjectName].next(value);
       },
     }),
     {}

@@ -5,19 +5,19 @@ import {
   delayWhen,
   withLatestFrom,
   map,
-  exhaustMap,
+  switchMap,
 } from 'rxjs/operators';
 import { RxStoreEffect } from '@rx-store/rx-store';
 import { AppContextValue } from '../../app-context-value.interface';
-import { range, timer } from 'rxjs';
+import { range, timer, merge } from 'rxjs';
 
-const countUpEffect: (count: number) => RxStoreEffect<AppContextValue> = (
+const animateNumbers: (count: number) => RxStoreEffect<AppContextValue> = (
   count
-) => (sources, sinks, runEffect) =>
+) => (sources) =>
   range(0, count).pipe(
-    delayWhen((value) => timer(value * 1000)),
-    withLatestFrom(sources.counterChange$), // this is just here so you can see the "devtools" shows we used a source
-    map(([a, b]) => a)
+    delayWhen((value) => timer(value * 100)),
+    withLatestFrom(sources.time$), // this is just here so you can see the "devtools" shows we used a source
+    map(([a]) => a)
   );
 
 /**
@@ -29,7 +29,7 @@ const countUpEffect: (count: number) => RxStoreEffect<AppContextValue> = (
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const appRootEffect: RxStoreEffect<AppContextValue> = (
+export const counter: RxStoreEffect<AppContextValue> = (
   sources,
   sinks,
   spawnEffect
@@ -37,9 +37,18 @@ export const appRootEffect: RxStoreEffect<AppContextValue> = (
   sources.counterChange$.pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    exhaustMap((count) => {
+    switchMap((count) => {
       // TODO - send args to runEffect instead of childEffect for introspection?
-      return spawnEffect('count-up', countUpEffect(count));
+      return spawnEffect('count-up', animateNumbers(count));
     }),
-    tap((count: number) => sinks.count$(count))
+    tap((value) => sinks.count$(value))
   );
+
+export const time: RxStoreEffect<AppContextValue> = (sources, sinks) =>
+  timer(0, 1000).pipe(tap((value) => sinks.time$(value)));
+
+export const appRootEffect: RxStoreEffect<AppContextValue> = (
+  sources,
+  sinks,
+  spawnEffect
+) => merge(spawnEffect('time', time), spawnEffect('counter', counter));

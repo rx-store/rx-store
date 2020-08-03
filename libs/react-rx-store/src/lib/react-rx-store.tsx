@@ -5,8 +5,9 @@ import React, {
   useContext,
   Context,
 } from 'react';
-import { tap, finalize } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
+import { debug } from 'debug';
+import { finalize, filter, tap } from 'rxjs/operators';
+import { Observable, of, concat } from 'rxjs';
 import { RxStoreEffect, createSinks, createSources } from '@rx-store/rx-store';
 
 /**
@@ -45,9 +46,6 @@ export const spawnRootEffect = <T extends {}>(
    * from the parent effect.
    */
   const spawnEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
-    // TODO - add a devtools hook here
-    console.log('spawnEffect:', debugKey);
-
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(debugKey, storeValue);
@@ -56,15 +54,24 @@ export const spawnRootEffect = <T extends {}>(
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
-      spawnEffect(debugKey + '-' + childDebugKey, childEffectFn);
+      spawnEffect(debugKey + ':' + childDebugKey, childEffectFn);
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
-    return effectFn(sources, sinks, childSpawnEffect).pipe(
-      finalize(() => {
-        // TODO - add a devtools hook here
-        console.log('teardownEffect:', debugKey);
-      })
+    return concat(
+      of(null).pipe(
+        tap(() => {
+          // TODO - add a devtools hook here
+          debug(`rx-store:${debugKey}`)('spawn');
+        }),
+        filter(() => false)
+      ),
+      effectFn(sources, sinks, childSpawnEffect).pipe(
+        finalize(() => {
+          // TODO - add a devtools hook here
+          debug(`rx-store:${debugKey}`)('teardown');
+        })
+      )
     );
   };
 

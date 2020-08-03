@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { RxStoreValue } from '@rx-store/rx-store';
 
 /** Our context value, which contains subjects & observables */
@@ -11,4 +11,5 @@ export interface AppContextValue extends RxStoreValue {
    */
   counterChange$: Subject<number>;
   count$: Subject<number>;
+  time$: BehaviorSubject<number>;
 }

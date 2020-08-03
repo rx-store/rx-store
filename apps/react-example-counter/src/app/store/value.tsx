@@ -1,5 +1,4 @@
 import { Subject, BehaviorSubject } from 'rxjs';
-import { scanSum } from './operators/scan-sum';
 import { AppContextValue } from '../app-context-value.interface';
 
 export const createStoreValue = () => {
@@ -9,6 +8,7 @@ export const createStoreValue = () => {
   const storeValue: AppContextValue = {
     counterChange$,
     count$: new BehaviorSubject(0),
+    time$: new BehaviorSubject<number>(0),
   };
 
   return storeValue;
