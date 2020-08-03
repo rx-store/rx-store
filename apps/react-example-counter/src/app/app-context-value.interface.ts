@@ -10,6 +10,6 @@ export interface AppContextValue extends RxStoreValue {
    * they are multi-cast, read & write.
    */
   counterChange$: Subject<number>;
-  count$: Subject<number>;
+  count$: BehaviorSubject<number>;
   time$: BehaviorSubject<number>;
 }

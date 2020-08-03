@@ -1,5 +1,7 @@
 import { RxStoreValue } from '..';
 import { debug } from 'debug';
+import { tap } from 'rxjs/operators';
+import { Observable, MonoTypeOperatorFunction } from 'rxjs';
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -9,9 +11,12 @@ import { debug } from 'debug';
  * Each effect gets its own specialized or curried version
  * of the subject's "next" method, with closure state that
  * references the effect's debug key, used for devtools.
+ *
+ * The next method from the subject is then wrapped in an operator
+ * such that it can be consumed by referencing it from a pipeline
  */
 export type Sinks<T extends RxStoreValue> = {
-  [P in keyof T]?: T[P]['next'];
+  [P in keyof T]?: MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
 };
 
 /**
@@ -35,9 +40,13 @@ export const createSinks = <StoreValue extends {}>(
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
-      [subjectName]: (value: any) => {
-        debug(`rx-store:${debugKey}`)(`sink ${subjectName}: ${value}`);
-        storeValue[subjectName].next(value);
+      [subjectName]: (source: Observable<any>) => {
+        return source.pipe(
+          tap((value) => {
+            debug(`rx-store:${debugKey}`)(`sink ${subjectName}: ${value}`);
+            storeValue[subjectName].next(value);
+          })
+        );
       },
     }),
     {}
