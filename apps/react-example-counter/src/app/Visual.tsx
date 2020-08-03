@@ -27,8 +27,30 @@ const Subject = ({ x, y, width, height, name, subject }, i) => {
   );
 };
 
+const Effect = ({ x, y, width, height, name }, i) => {
+  return (
+    <div
+      key={i}
+      style={{
+        position: 'absolute',
+        left: x - width * 0.5,
+        top: y - height * 0.5,
+        width,
+        height,
+        backgroundColor: 'red',
+        borderRadius: 5,
+        border: '1px black solid',
+      }}
+    >
+      {name}
+    </div>
+  );
+};
+
 export const Visual = () => {
   const store = useStore(rootContext);
+
+  // todo useMemo??
   const subjects = Object.entries(store).reduce(
     (acc, [name, subject]) => [
       ...acc,
@@ -36,18 +58,28 @@ export const Visual = () => {
     ],
     []
   );
+
+  const effects = (window.__devtools_effects || []).map((name) => ({
+    name,
+    width: 160,
+    height: 40,
+    effect: true,
+  }));
+
   const [_, forceRender] = useReducer((n) => n + 1, 0);
 
   useEffect(() => {
     const tick = () => {
       requestAnimationFrame(() => {
+        // todo avoid if nothing has changed in the store??
+        // console.log(window.__devtools_effects);
         forceRender();
         tick();
       });
     };
     tick();
     return () => {
-      debugger;
+      alert('unmount');
     };
   }, []);
   return (
@@ -89,30 +121,40 @@ export const Visual = () => {
               />
             );
           })}
-          {layout.nodes().map((props) => (
-            <Subject key={props.name} {...props} />
-          ))}
+          {layout
+            .nodes()
+            .map((props) =>
+              props.subject ? (
+                <Subject key={props.name} {...props} />
+              ) : (
+                <Effect key={props.name} {...props} />
+              )
+            )}
         </>
       )}
-      nodes={[
-        ...subjects,
-        // { name: 'b', width: 60, height: 40 },
-        // { name: 'c', width: 60, height: 40 },
-        // { name: 'd', width: 60, height: 40 },
-        // { name: 'e', width: 60, height: 40 },
+      nodes={[...subjects, ...effects]}
+      links={[
+        // { source: 1, target: 2 },
+        // { source: 2, target: 0 },
+        // { source: 2, target: 3 },
+        // { source: 2, target: 4 },
+        ...effects.map((effect, i) => ({
+          source: i + subjects.length,
+          target: 0,
+        })),
+        ...effects.map((effect, i) => ({
+          source: i + subjects.length,
+          target: 1,
+        })),
+        ...effects.map((effect, i) => ({
+          source: i + subjects.length,
+          target: 2,
+        })),
       ]}
-      links={
-        [
-          // { source: 1, target: 2 },
-          // { source: 2, target: 0 },
-          // { source: 2, target: 3 },
-          // { source: 2, target: 4 },
-        ]
-      }
       constraints={[
         {
           type: 'alignment',
-          axis: 'x',
+          axis: 'y',
           offsets: subjects.map((_, i) => ({ node: i, offset: 0 })),
         },
       ]}

@@ -80,6 +80,11 @@ export const spawnRootEffect = <T extends {}>(
    * from, and which subject(s) each effect sinks data back into.
    */
   const spawnEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
+    if (undefined === window.__devtools_effects) {
+      window.__devtools_effects = [];
+    }
+    window.__devtools_effects.push(debugKey);
+
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(debugKey, storeValue);
