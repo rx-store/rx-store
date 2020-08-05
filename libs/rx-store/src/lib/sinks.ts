@@ -1,7 +1,7 @@
 import { RxStoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
-import { Observable, MonoTypeOperatorFunction } from 'rxjs';
+import { Observable, MonoTypeOperatorFunction, Subject } from 'rxjs';
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -44,6 +44,10 @@ export const createSinks = <StoreValue extends {}>(
         return source.pipe(
           tap((value) => {
             debug(`rx-store:${debugKey}`)(`sink ${subjectName}: ${value}`);
+            if(!window.__devtools_sinks) {
+              window.__devtools_sinks = new Subject<any>()
+            }
+            window.__devtools_sinks.next({subjectName, debugKey})
             storeValue[subjectName].next(value);
           })
         );

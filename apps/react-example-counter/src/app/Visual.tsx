@@ -12,7 +12,7 @@ import { rootContext } from './Manager';
 
 import { Canvas, useFrame, useThree, useResource } from 'react-three-fiber';
 import * as THREE from 'three';
-import {OrbitControls} from "drei"
+import { OrbitControls } from 'drei';
 
 // Geometry
 function GroundPlane() {
@@ -40,11 +40,7 @@ function Subject(props, i) {
   // subscribe to the rx store subject that this 3D object represents
   const [next] = useSubscription(props.subject);
   return (
-    <BoxWithText
-      text={`${props.name}: ${next}`}
-      {...props}
-      boxColor="red"
-    />
+    <BoxWithText text={`${props.name}: ${next}`} {...props} boxColor="red" />
   );
 }
 
@@ -120,16 +116,15 @@ function BoxWithText({ x, y, width, height, text, boxColor }, i) {
 }
 
 function Line({ x0, y0, x1, y1 }, i) {
-  const boxMeshRef = useRef();
   const { viewport, size } = useThree();
   const [ref, object] = useResource();
   const points = useMemo(
-    () => [new THREE.Vector3(0, 0, 0), new THREE.Vector3(x1-x0, y1-y0, 0)],
+    () => [new THREE.Vector3(0, 0, 0), new THREE.Vector3(x1 - x0, y1 - y0, 0)],
     [x0, x1, y0, y1]
   );
   const onUpdate = useCallback((self) => self.setFromPoints(points), [points]);
-  console.log(viewport.width, viewport.height);
-  console.log(x0, y0, x1, y1);
+  // console.log(viewport.width, viewport.height);
+  // console.log(x0, y0, x1, y1);
 
   return (
     <line
@@ -168,7 +163,7 @@ export const Visual = () => {
 
 export const Legacy = () => {
   const { viewport, size } = useThree();
-  const { effects, subjects } = useDevtools();
+  const { effects, subjects, links } = useDevtools();
   return (
     <WebCola
       // onTick={console.log}
@@ -220,34 +215,36 @@ export const Legacy = () => {
           })}
           {layout
             .nodes()
-            .map((props) =>
+            .map((props, i) =>
               props.subject ? (
-                <Subject key={props.name} {...props} />
+                <Subject key={i} {...props} />
               ) : (
-                <Effect key={props.name} {...props} />
+                <Effect key={i} {...props} />
               )
             )}
         </>
       )}
       nodes={[...subjects, ...effects]}
-      links={[
-        // { source: 1, target: 2 },
-        // { source: 2, target: 0 },
-        // { source: 2, target: 3 },
-        // { source: 2, target: 4 },
-        ...effects.map((effect, i) => ({
-          source: i + subjects.length,
-          target: 0,
-        })),
-        ...effects.map((effect, i) => ({
-          source: i + subjects.length,
-          target: 1,
-        })),
-        ...effects.map((effect, i) => ({
-          source: i + subjects.length,
-          target: 2,
-        })),
-      ]}
+      links={
+        [
+          // { source: 1, target: 2 },
+          // { source: 2, target: 0 },
+          // { source: 2, target: 3 },
+          // { source: 2, target: 4 },
+          ...Array.from(links).map((value) => console.log(value, effects, subjects)||({
+            source: subjects.length + effects.findIndex(effect=>effect.name === value.debugKey),
+            target: subjects.findIndex(subject=>subject.name === value.subjectName)
+          })),
+          // ...effects.map((effect, i) => ({
+          //   source: i + subjects.length,
+          //   target: 1,
+          // })),
+          // ...effects.map((effect, i) => ({
+          //   source: i + subjects.length,
+          //   target: 2,
+          // })),
+        ]
+      }
       // constraints={[
       //   {
       //     type: 'alignment',
@@ -274,12 +271,25 @@ export const useDevtools = () => {
   );
 
   // const effects = [];
-  const effects = (window.__devtools_effects || []).map((name) => ({
-    name,
-    width: 0.5,
-    height: 0.5,
-    effect: true,
-  }));
+  const effects = Array.from(window.__devtools_effects || new Set()).map(
+    (ref) => ({
+      name: ref.debugKey,
+      width: 0.5,
+      height: 0.5,
+      effect: true,
+    })
+  );
+
+  // todo force render when links change?
+  // const [links, setLinks] = useState(new Set())
+  const links = useRef(new Set())
+  useEffect(() => {
+    const subscription = window.__devtools_sinks.subscribe((value)=>{
+      links.current.add(value)
+      setTimeout(()=>links.current.delete(value), 1000)
+    });
+    return () => subscription.unsubscribe()
+  }, []);
 
   const [_, forceRender] = useReducer((n) => n + 1, 0);
 
@@ -298,5 +308,5 @@ export const useDevtools = () => {
     };
   }, []);
 
-  return { effects, subjects };
+  return { effects, subjects, links: links.current };
 };

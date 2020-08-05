@@ -5,6 +5,7 @@ import {
   map,
   switchMap,
   startWith,
+  mergeMap,
 } from 'rxjs/operators';
 import { RxStoreEffect } from '@rx-store/rx-store';
 import { AppContextValue } from '../../app-context-value.interface';
@@ -36,7 +37,7 @@ export const counter: RxStoreEffect<AppContextValue> = (
   sources.counterChange$.pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    switchMap((count) => {
+    mergeMap((count) => {
       // TODO - send args to runEffect instead of childEffect for introspection?
       return spawnEffect('count-up', animateNumbers(count));
     }),

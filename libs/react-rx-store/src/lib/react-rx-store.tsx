@@ -23,11 +23,15 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
 // Creates an observable that will be subscribed to *before*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const before$ = (debugKey: string) =>
+const before$ = (ref: { debugKey: string }) =>
   of(null).pipe(
     tap(() => {
       // TODO - add a devtools hook here
-      debug(`rx-store:${debugKey}`)('spawn');
+      debug(`rx-store:${ref.debugKey}`)('spawn');
+      if (undefined === window.__devtools_effects) {
+        window.__devtools_effects = new Set();
+      }
+      window.__devtools_effects.add(ref);
     }),
     filter(() => false)
   );
@@ -35,14 +39,12 @@ const before$ = (debugKey: string) =>
 // Creates an observable that will be subscribed to *after*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const after$ = (debugKey: string) =>
-  of(null).pipe(
-    tap(() => {
-      // TODO - add a devtools hook here
-      debug(`rx-store:${debugKey}`)('teardown');
-    }),
-    filter(() => false)
-  );
+const after = (ref: { debugKey: string }) => {
+  // TODO - add a devtools hook here
+  debug(`rx-store:${ref.debugKey}`)('teardown');
+  // TODO this won't cleanup on unsubscribe!
+  window.__devtools_effects.delete(ref);
+};
 
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
@@ -80,11 +82,6 @@ export const spawnRootEffect = <T extends {}>(
    * from, and which subject(s) each effect sinks data back into.
    */
   const spawnEffect = (debugKey: string, effectFn: RxStoreEffect<T>) => {
-    if (undefined === window.__devtools_effects) {
-      window.__devtools_effects = [];
-    }
-    window.__devtools_effects.push(debugKey);
-
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(debugKey, storeValue);
@@ -101,7 +98,8 @@ export const spawnRootEffect = <T extends {}>(
 
     // Sandwich the effect between before and after streams, allowing devools
     // hooks to run when the effect is subscribed & torn down.
-    return concat(before$(debugKey), effect$, after$(debugKey));
+    const ref = { debugKey };
+    return concat(before$(ref), effect$).pipe(finalize(()=>after(ref)));
   };
 
   return spawnEffect(debugKey, rootEffectFn);
