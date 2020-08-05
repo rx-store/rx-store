@@ -173,14 +173,14 @@ export const Legacy = () => {
     <WebCola
       // onTick={console.log}
       onHandleLayout={(cola, nodes, links, constraints, groups) => {
-        return new cola.Layout3D(nodes,links, 4);
-          // .nodes(nodes)
-          // .links(links)
-          // .groups(groups)
-          // .constraints(constraints)
-          // .linkDistance(3)
-          // .avoidOverlaps(true)
-          // .handleDisconnected(false);
+        return cola
+          .nodes(nodes)
+          .links(links)
+          .groups(groups)
+          .constraints(constraints)
+          .linkDistance(3)
+          .avoidOverlaps(true)
+          .handleDisconnected(false);
       }}
       renderLayout={(layout) => (
         /*console.log(layout.nodes().map((n) => `${n.x} x ${n.y}`)) ||*/ <>
