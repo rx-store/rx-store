@@ -19,12 +19,11 @@ import { RootAppStore } from '../../types';
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: RxStoreEffect<RootAppStore> = (store) => {
-  const subscription = store.counterChange$
+export const appRootEffect: RxStoreEffect<RootAppStore> = ({sources, sinks}) => {
+  return sources.counterChange$()
     .pipe(
       scan((acc, val) => acc + val, 0),
-      startWith(0)
+      startWith(0),
+      sinks.count$()
     )
-    .subscribe((count) => store.count$.next(count));
-  return () => subscription.unsubscribe();
 };
