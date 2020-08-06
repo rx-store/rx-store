@@ -13,6 +13,8 @@ import { rootContext } from './Manager';
 import { Canvas, useFrame, useThree, useResource } from 'react-three-fiber';
 import * as THREE from 'three';
 import { OrbitControls } from 'drei';
+import { useSpring } from '@react-spring/core';
+import { animated } from '@react-spring/three';
 
 // Geometry
 function GroundPlane() {
@@ -115,31 +117,29 @@ function BoxWithText({ x, y, width, height, text, boxColor }, i) {
   );
 }
 
-function Line({ x0, y0, x1, y1 }, i) {
+function Line({ x0, y0, x1, y1, isActive }, i) {
   const { viewport, size } = useThree();
   const [ref, object] = useResource();
   const points = useMemo(
     () => [new THREE.Vector3(0, 0, 0), new THREE.Vector3(x1 - x0, y1 - y0, 0)],
     [x0, x1, y0, y1]
   );
+  const { color } = useSpring({
+    color: isActive ? 'red' : 'black',
+  });
   const onUpdate = useCallback((self) => self.setFromPoints(points), [points]);
-  // console.log(viewport.width, viewport.height);
-  // console.log(x0, y0, x1, y1);
 
   return (
-    <line
+    <animated.line
       position={[x0 - viewport.width / 2, y0 - viewport.height / 2, 2]}
       ref={ref}
     >
       <bufferGeometry attach="geometry" onUpdate={onUpdate} />
-      <lineBasicMaterial
+      <animated.lineBasicMaterial
         attach="material"
-        color={'#9c88ff'}
-        linewidth={10}
-        linecap={'round'}
-        linejoin={'round'}
+        color={color}
       />
-    </line>
+    </animated.line>
   );
 }
 
@@ -163,7 +163,7 @@ export const Visual = () => {
 
 export const Legacy = () => {
   const { viewport, size } = useThree();
-  const { effects, subjects, links } = useDevtools();
+  const { effects, subjects, links, activeLinks } = useDevtools();
   return (
     <WebCola
       // onTick={console.log}
@@ -199,18 +199,18 @@ export const Legacy = () => {
             );
           })}
           {layout.links().map(({ source, target }, i) => {
+            const isActive =
+              Array.from(activeLinks).findIndex(
+                (obj) =>
+                  obj.subjectName === target.name &&
+                  obj.debugKey === source.name
+              ) !== -1;
+
             const { x, y } = source;
             const { x: x2, y: y2 } = target;
+
             return (
-              <Line
-                key={i}
-                x0={x}
-                y0={y}
-                x1={x2}
-                y1={y2}
-                borderColor="blue"
-                zIndex={-1}
-              />
+              <Line key={i} x0={x} y0={y} x1={x2} y1={y2} isActive={isActive} />
             );
           })}
           {layout
@@ -225,26 +225,28 @@ export const Legacy = () => {
         </>
       )}
       nodes={[...subjects, ...effects]}
-      links={
-        [
-          // { source: 1, target: 2 },
-          // { source: 2, target: 0 },
-          // { source: 2, target: 3 },
-          // { source: 2, target: 4 },
-          ...Array.from(links).map((value) => console.log(value, effects, subjects)||({
-            source: subjects.length + effects.findIndex(effect=>effect.name === value.debugKey),
-            target: subjects.findIndex(subject=>subject.name === value.subjectName)
-          })),
-          // ...effects.map((effect, i) => ({
-          //   source: i + subjects.length,
-          //   target: 1,
-          // })),
-          // ...effects.map((effect, i) => ({
-          //   source: i + subjects.length,
-          //   target: 2,
-          // })),
-        ]
-      }
+      links={[
+        // { source: 1, target: 2 },
+        // { source: 2, target: 0 },
+        // { source: 2, target: 3 },
+        // { source: 2, target: 4 },
+        ...Array.from(links).map((value) => ({
+          source:
+            subjects.length +
+            effects.findIndex((effect) => effect.name === value.debugKey),
+          target: subjects.findIndex(
+            (subject) => subject.name === value.subjectName
+          ),
+        })),
+        // ...effects.map((effect, i) => ({
+        //   source: i + subjects.length,
+        //   target: 1,
+        // })),
+        // ...effects.map((effect, i) => ({
+        //   source: i + subjects.length,
+        //   target: 2,
+        // })),
+      ]}
       // constraints={[
       //   {
       //     type: 'alignment',
@@ -280,16 +282,30 @@ export const useDevtools = () => {
     })
   );
 
-  // todo force render when links change?
-  // const [links, setLinks] = useState(new Set())
-  const links = useRef(new Set())
+  const links = useRef([]);
+  const activeLinks = useRef(new Set());
   useEffect(() => {
-    const subscription = window.__devtools_sinks.subscribe((value)=>{
-      links.current.add(value)
-      setTimeout(()=>links.current.delete(value), 1000)
+    if (!window.__devtools_sinks) return;
+    const subscription = window.__devtools_sinks.subscribe((value) => {
+      const existingLink = links.current.find(
+        (link) =>
+          value.subjectName === link.subjectName &&
+          value.debugKey === link.debugKey
+      );
+      if (!existingLink) {
+        links.current.push(value);
+      } else {
+        clearTimeout(existingLink.timeout)
+      }
+      activeLinks.current.add(value);
+      forceRender();
+      value.timeout = setTimeout(() => {
+        activeLinks.current.delete(value);
+        forceRender();
+      }, 1000);
     });
-    return () => subscription.unsubscribe()
-  }, []);
+    return () => subscription.unsubscribe();
+  }, [window.__devtools_sinks]);
 
   const [_, forceRender] = useReducer((n) => n + 1, 0);
 
@@ -304,9 +320,14 @@ export const useDevtools = () => {
     };
     tick();
     return () => {
-      alert('unmount');
+      // alert('unmount');
     };
   }, []);
 
-  return { effects, subjects, links: links.current };
+  return {
+    effects,
+    subjects,
+    links: links.current,
+    activeLinks: activeLinks.current,
+  };
 };
