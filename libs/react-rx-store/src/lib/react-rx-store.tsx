@@ -44,7 +44,7 @@ const after = (ref: { debugKey: string }) => {
   debug(`rx-store:${ref.debugKey}`)('teardown');
 };
 
-const ids: Record<string, number> = {}
+const ids: Record<string, number> = {};
 
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
@@ -56,12 +56,10 @@ const ids: Record<string, number> = {}
  * Running the effects only involves calling the effectFn, passing in curried sources, sinks
  * and spawnEffect function.
  *
- * @param effectName
  * @param storeValue
  * @param rootEffectFn
  */
 export const spawnRootEffect = <T extends {}>(
-  effectName: string,
   storeValue: T,
   rootEffectFn: RxStoreEffect<T>
 ) => {
@@ -81,7 +79,7 @@ export const spawnRootEffect = <T extends {}>(
    * that devtools knows when each effect receives value(s), which subject(s) they came
    * from, and which subject(s) each effect sinks data back into.
    */
-  const spawnEffect: SpawnEffect<T> = ({ name, effect }) => {
+  const spawnEffect: SpawnEffect<T> = (effect, { name }) => {
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(name, storeValue);
@@ -89,22 +87,18 @@ export const spawnRootEffect = <T extends {}>(
 
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
-    const childSpawnEffect: SpawnEffect<T> = ({
-      name: childName,
-      effect,
-    }) => {
-      const curriedName = name + ':' + childName
-      if(undefined === ids[curriedName]) {
-        ids[curriedName] = 1
-      }else {
-        ids[curriedName]++
+    const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
+      const curriedName = name + ':' + childName;
+      if (undefined === ids[curriedName]) {
+        ids[curriedName] = 1;
+      } else {
+        ids[curriedName]++;
       }
-      const id = ids[curriedName]
-      return spawnEffect({
+      const id = ids[curriedName];
+      return spawnEffect(effect, {
         name: `${curriedName}${id === 1 ? '' : id}`,
-        effect
       });
-    }
+    };
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
@@ -116,7 +110,7 @@ export const spawnRootEffect = <T extends {}>(
     return concat(before$(ref), effect$).pipe(finalize(() => after(ref)));
   };
 
-  return spawnEffect({name: effectName, effect: rootEffectFn});
+  return spawnEffect(rootEffectFn, { name: 'root' });
 };
 
 /**
@@ -162,7 +156,6 @@ export const store = <T extends {}>(
         return null;
       }
       const subscription = spawnRootEffect(
-        'root',
         value,
         rootEffect
       ).subscribe();
