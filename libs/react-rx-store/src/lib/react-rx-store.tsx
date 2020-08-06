@@ -44,6 +44,8 @@ const after = (ref: { debugKey: string }) => {
   debug(`rx-store:${ref.debugKey}`)('teardown');
 };
 
+const ids: Record<string, number> = {}
+
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
  * with curried sources, sinks, and its own spawnEffect function used
@@ -79,36 +81,42 @@ export const spawnRootEffect = <T extends {}>(
    * that devtools knows when each effect receives value(s), which subject(s) they came
    * from, and which subject(s) each effect sinks data back into.
    */
-  const spawnEffect: SpawnEffect<T> = ({ effectName, effect: effectFn }) => {
-    console.log(effectName);
-    
+  const spawnEffect: SpawnEffect<T> = ({ name, effect }) => {
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
-    const sources = createSources(effectName, storeValue);
-    const sinks = createSinks(effectName, storeValue);
+    const sources = createSources(name, storeValue);
+    const sinks = createSinks(name, storeValue);
 
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect: SpawnEffect<T> = ({
-      effectName: childDebugKey,
+      name: childName,
       effect,
-    }) =>
-      spawnEffect({
-        effectName: effectName + ':' + childDebugKey + ':' + Math.random(),
+    }) => {
+      const curriedName = name + ':' + childName
+      if(undefined === ids[curriedName]) {
+        ids[curriedName] = 1
+      }else {
+        ids[curriedName]++
+      }
+      const id = ids[curriedName]
+      return spawnEffect({
+        name: `${curriedName}${id === 1 ? '' : id}`,
         effect
       });
+    }
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
-    const effect$ = effectFn({ sources, sinks, spawnEffect: childSpawnEffect });
+    const effect$ = effect({ sources, sinks, spawnEffect: childSpawnEffect });
 
     // Sandwich the effect between before and after streams, allowing devools
     // hooks to run when the effect is subscribed & torn down.
-    const ref = { debugKey: effectName };
+    const ref = { debugKey: name };
     return concat(before$(ref), effect$).pipe(finalize(() => after(ref)));
   };
 
-  return spawnEffect({effectName, effect: rootEffectFn});
+  return spawnEffect({name: effectName, effect: rootEffectFn});
 };
 
 /**

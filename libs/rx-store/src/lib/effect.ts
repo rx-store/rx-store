@@ -7,7 +7,7 @@ interface StoreValue {
 }
 
 export type SpawnEffect<T extends StoreValue> = (obj: {
-  effectName: string,
+  name: string,
   effect: RxStoreEffect<T>
 }) => Observable<any>;
 

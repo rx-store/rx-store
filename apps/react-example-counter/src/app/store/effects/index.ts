@@ -21,7 +21,7 @@ export const counter: RxStoreEffect<AppContextValue> = ({
     scan((acc, val) => acc + val, 0),
     startWith(0),
     switchMap(() =>
-      spawnEffect({ effectName: 'timer', effect: () => timer(0, 1000) })
+      spawnEffect({ name: 'timer', effect: () => timer(0, 1000) })
     ),
     sinks.count$()
   );
@@ -33,6 +33,6 @@ export const appRootEffect: RxStoreEffect<AppContextValue> = ({
   spawnEffect,
 }) =>
   merge(
-    spawnEffect({ effectName: 'time', effect: time }),
-    spawnEffect({ effectName: 'counter', effect: counter })
+    spawnEffect({ name: 'time', effect: time }),
+    spawnEffect({ name: 'counter', effect: counter })
   );
