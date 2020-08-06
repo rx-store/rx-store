@@ -7,7 +7,7 @@ import { rootContext } from './Manager';
 import { tap } from 'rxjs/operators';
 
 export interface ChildContextValue extends RootContextValue {
-  foo$: Observable<number>;
+  foo$: Subject<number>;
 }
 
 const createChildEffect: (i: number) => RxStoreEffect<ChildContextValue> = (
