@@ -1,6 +1,6 @@
-import { scan, startWith } from "rxjs/operators";
-import { RxStoreEffect } from "@rx-store/rx-store";
-import { RootContextValue } from "../../types";
+import { scan, startWith } from 'rxjs/operators';
+import { RxStoreEffect } from '@rx-store/rx-store';
+import { RootContextValue } from '../../types';
 
 /**
  * For any "global side effects", you'd create effects, and nest
@@ -19,12 +19,12 @@ import { RootContextValue } from "../../types";
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: RxStoreEffect<RootContextValue> = (store) => {
-  const subscription = store.counterChange$
-    .pipe(
-      scan((acc, val) => acc + val, 0),
-      startWith(0)
-    )
-    .subscribe((count) => store.count$.next(count));
-  return () => subscription.unsubscribe();
-};
+export const appRootEffect: RxStoreEffect<RootContextValue> = ({
+  sources,
+  sinks,
+}) =>
+  sources.counterChange$().pipe(
+    scan((acc, val) => acc + val, 0),
+    startWith(0),
+    sinks.count$()
+  );
