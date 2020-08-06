@@ -23,11 +23,11 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
 // Creates an observable that will be subscribed to *before*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const before$ = (debugKey: string) =>
+const before$ = (ref: { debugKey: string }) =>
   of(null).pipe(
     tap(() => {
       // TODO - add a devtools hook here
-      debug(`rx-store:${debugKey}`)('spawn');
+      debug(`rx-store:${ref.debugKey}`)('spawn');
     }),
     filter(() => false)
   );
@@ -35,14 +35,9 @@ const before$ = (debugKey: string) =>
 // Creates an observable that will be subscribed to *after*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const after$ = (debugKey: string) =>
-  of(null).pipe(
-    tap(() => {
-      // TODO - add a devtools hook here
-      debug(`rx-store:${debugKey}`)('teardown');
-    }),
-    filter(() => false)
-  );
+const after = (ref: { debugKey: string }) => {
+  debug(`rx-store:${ref.debugKey}`)('teardown');
+};
 
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
@@ -88,7 +83,7 @@ export const spawnRootEffect = <T extends {}>(
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect = (childDebugKey, childEffectFn: RxStoreEffect<T>) =>
-      spawnEffect(debugKey + ':' + childDebugKey, childEffectFn);
+      spawnEffect(debugKey + ':' + childDebugKey + ':' + Math.random(), childEffectFn);
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
@@ -96,7 +91,8 @@ export const spawnRootEffect = <T extends {}>(
 
     // Sandwich the effect between before and after streams, allowing devools
     // hooks to run when the effect is subscribed & torn down.
-    return concat(before$(debugKey), effect$, after$(debugKey));
+    const ref = { debugKey };
+    return concat(before$(ref), effect$).pipe(finalize(()=>after(ref)));
   };
 
   return spawnEffect(debugKey, rootEffectFn);
@@ -195,7 +191,7 @@ export function useSubscription<T>(
       (error) => setError(error),
       () => setComplete(true)
     );
-    return subscription.unsubscribe;
+    return () => subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
 }
