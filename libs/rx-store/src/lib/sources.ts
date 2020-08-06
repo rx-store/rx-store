@@ -13,7 +13,7 @@ import { debug } from 'debug';
  * references the effect's debug key, used for devtools.
  */
 export type Sources<T extends RxStoreValue> = {
-  [P in keyof T]?: ReturnType<T[P]['asObservable']>;
+  [P in keyof T]?: () => ReturnType<T[P]['asObservable']>;
 };
 
 /**
@@ -25,27 +25,30 @@ export type Sources<T extends RxStoreValue> = {
  *
  * Each effect should get its own sources object, with its own debug key.
  *
- * @param debugKey A debug key used for devtools
+ * @param effectName A debug key used for devtools
  * @param storeValue The Rx Store value, object containing subjects
  * @returns An object matching the shape of the original storeValue, but with observables
  * instead of the subjects themselves.
  */
 export const createSources = <T extends {}>(
-  debugKey: string,
+  effectName: string,
   value: T
 ): Sources<T> => {
   return Object.keys(value).reduce(
     (acc, subjectName) => ({
       ...acc,
-      [subjectName]: (value[subjectName] as Subject<any>)
-        .asObservable()
-        .pipe(
-          tap((value) =>
-            debug(`rx-store:${debugKey}`)(
-              `source ${subjectName} value: ${value}`
+      [subjectName]: () => {
+        debug(`rx-store:${effectName}`)(`source ${subjectName}`)
+        return (value[subjectName] as Subject<any>)
+          .asObservable()
+          .pipe(
+            tap((value) =>
+              debug(`rx-store:${effectName}`)(
+                `source ${subjectName} value: ${value}`
+              )
             )
-          )
-        ),
+          );
+      },
     }),
     {}
   ) as Sources<T>;

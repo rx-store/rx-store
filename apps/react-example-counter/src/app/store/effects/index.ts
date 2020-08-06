@@ -18,14 +18,14 @@ import { timer, merge } from 'rxjs';
 export const counter: RxStoreEffect<AppContextValue> = (
   sources,
   sinks) =>
-  sources.counterChange$.pipe(
+  sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    sinks.count$
+    sinks.count$()
   );
 
 export const time: RxStoreEffect<AppContextValue> = (sources, sinks) =>
-  timer(0, 1000).pipe(sinks.time$);
+  timer(0, 1000).pipe(sinks.time$());
 
 export const appRootEffect: RxStoreEffect<AppContextValue> = (
   sources,
