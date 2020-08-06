@@ -1,7 +1,4 @@
-import {
-  scan,
-  startWith,
-} from 'rxjs/operators';
+import { scan, startWith, switchMap } from 'rxjs/operators';
 import { RxStoreEffect } from '@rx-store/rx-store';
 import { AppContextValue } from '../../app-context-value.interface';
 import { timer, merge } from 'rxjs';
@@ -15,20 +12,27 @@ import { timer, merge } from 'rxjs';
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const counter: RxStoreEffect<AppContextValue> = (
+export const counter: RxStoreEffect<AppContextValue> = ({
   sources,
-  sinks) =>
+  sinks,
+  spawnEffect,
+}) =>
   sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
+    switchMap(() =>
+      spawnEffect({ effectName: 'timer', effect: () => timer(0, 1000) })
+    ),
     sinks.count$()
   );
 
-export const time: RxStoreEffect<AppContextValue> = (sources, sinks) =>
+export const time: RxStoreEffect<AppContextValue> = ({ sinks }) =>
   timer(0, 1000).pipe(sinks.time$());
 
-export const appRootEffect: RxStoreEffect<AppContextValue> = (
-  sources,
-  sinks,
-  spawnEffect
-) => merge(spawnEffect('time', time), spawnEffect('counter', counter));
+export const appRootEffect: RxStoreEffect<AppContextValue> = ({
+  spawnEffect,
+}) =>
+  merge(
+    spawnEffect({ effectName: 'time', effect: time }),
+    spawnEffect({ effectName: 'counter', effect: counter })
+  );
