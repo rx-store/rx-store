@@ -16,25 +16,28 @@ Effects will normally produce side effects, or handle some cross cutting concern
 Here is an effect that subscribes to the `counterChange$`, each time it emits `1` or `-1`, it'll add that to an accumulator with a `scan()` operator, and emit the running total onto the `count$` subject. It returns a function that calls unsubscribe on the subscription:
 
 ```tsx
-export const effect = (store) => {
-  const subscription = store.counterChange$
-    .pipe(scan((acc, val) => acc + val, 0))
-    .subscribe((count) => store.count$.next(count));
-  return () => subscription.unsubscribe();
+export const effect = ({sources, sinks}) =>
+  sources.counterChange$()
+    .pipe(
+      scan((acc, val) => acc + val, 0)
+      startWith(0),
+      sinks.count$()
+    )
 };
 ```
 
+`Sources` are like the inputs, where the data flows from Rx Store into the effect. `Sinks` are like the outputs, where the data can flow out of the effect (back into your Rx Store). These allow Rx Store to track all data flow in your app enabling things such as devtools to assist in debugging.
+
 ## Effects that manipulate time
 
-Here is an effect that subscribes to the `count$` stream, it delays each value by one second, and logs them to console.
+Here is an effect that subscribes to the `count$` stream, it delays each value by one second, and logs them to console as a side effect.
 
 ```tsx
-export const effect = (store) => {
-  const subscription = store.count$.pipe(delay(1000)).subscribe((count) => {
-    console.log({ count });
-  });
-  return () => subscription.unsubscribe();
-};
+export const effect = ({sources, sinks}) =>
+  sources.count$().pipe(
+    delay(1000),
+    tap(console.log)
+  );
 ```
 
 ## Recursive effects
@@ -42,14 +45,11 @@ export const effect = (store) => {
 Here is an effect that resets the count back to 1 with a 50% probability anytime it emits. Be careful not to create an infinite loop by having a stream recursively emit back onto itself with 100% probability, with no base case to stop it!
 
 ```tsx
-export const effect = (store) => {
-  const subscription = store.count$.subscribe((count) => {
-    if (Math.random() > 0.5 && count !== 1) {
-      store.count$.next(1);
-    }
-  });
-  return () => subscription.unsubscribe();
-};
+export const effect = ({sources, sinks}) =>
+  sources.count$().pipe(
+    filter((count) => Math.random() > 0.5 && count !== 1))
+    sinks.count$()
+  )
 ```
 
 ## Combining data producers in complex ways
@@ -57,41 +57,30 @@ export const effect = (store) => {
 We can subscribe directly to subjects, observables, or create combos and higher order streams by combining them and using creation operators such as `merge()`, `combineLatest()`, and higher order operators such as `bufferWhen()`:
 
 ```tsx
-export const effect = (store) => {
-  const subscription = merge(store.myClick$, store.yourClick$).subscribe(
-    (clickEvent) => {
+export const effect = ({sources, sinks}) =>
+  merge(
+    sources.myClick$(),
+    sources.yourClick$()
+  ).pipe(
+    tap((clickEvent) => {
       console.log({ clickEvent });
-    }
-  );
-  return () => subscription.unsubscribe();
-};
+    })
+  )
 ```
 
 ## Nesting multiple effects
 
-If you want multiple effects & subscriptions, it is up to you to nest them like so:
+If you want multiple effects & subscriptions, it is up to you to nest them using RxJs operators. Rx Store just expects to have one root subscription, and it does not care about values emitted on this subscription. Using `sinks` is required to "return" data from effects back to the store.
 
 ```tsx
-export const effect = (store) => {
-  const subscriptions = []
-  subscriptions.push(
-    store.count$.subscribe((count) => console.log({ count })),
-    store.count$.subscribe((count) => console.log({ count })),
-    store.count$.subscribe((count) => console.log({ count })),
-  });
-  return () => subscriptions.forEach(s => s.unsubscribe());
-};
-```
+export const appRootEffect = ({
+  spawnEffect,
+}) =>
+  merge(
+    spawnEffect(time, { name: 'time' }),
+    spawnEffect(counter, { name: 'counter' })
+  );
 
-Although you can also choose to do this declaratively, with RxJs!
-
-```tsx
-export const effect = (store) => {
-  const subscription = merge(
-    ...new Array(3).fill(store.count$)
-  ).subscribe((count) => console.log({ count }));
-  return () => subscription.unsubscribe());
-};
 ```
 
 ## Other Examples

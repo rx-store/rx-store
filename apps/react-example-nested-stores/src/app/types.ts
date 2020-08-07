@@ -1,7 +1,8 @@
-import { Subject, Observable } from "rxjs";
+import { Subject, Observable } from 'rxjs';
+import { RxStoreValue } from '@rx-store/rx-store';
 
 /** Our context value, which contains subjects & observables */
-export interface RootContextValue {
+export interface RootContextValue extends RxStoreValue {
   /**
    * These "subjects" are your app's "state"
    *
@@ -17,5 +18,5 @@ export interface RootContextValue {
    * They derive state, manipulate time, are lazy &
    * uni-cast, and are read only.
    */
-  localCount$: Observable<number>;
+  // localCount$: Observable<number>;
 }

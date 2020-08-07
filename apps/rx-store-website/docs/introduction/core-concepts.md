@@ -42,15 +42,15 @@ Effects produce side effects. These are functions called by `Rx Store` that subs
 Here is an example of an effect that subscribes to the `count$` stream, and emits the values onto the `countCopy$` subject with 1 second delay:
 
 ```tsx
-export const effect = (store) => {
-  const subscription = store.count$
-    .pipe(delay(1000))
-    .subscribe((count) => {
-      store.countCopy$.next(count);
-    });
-  return () => subscription.unsubscribe();
-};
+export const effect = ({sources, sinks}) =>
+  sources.count$()
+    .pipe(
+      delay(1000),
+      sinks.countCopy$()
+    )
 ```
+
+The store's subjects are accessed via sources and sinks, which are read only and write only interfaces for the subjects. This allows Rx Store to track your data flow.
 
 ### Components
 

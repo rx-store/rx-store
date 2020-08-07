@@ -4,5 +4,8 @@
   "license": "ISC",
   "peerDependencies": {
     "rxjs": "^6.5.5"
+  },
+  "dependencies": {
+    "debug": "^4.1.1"
   }
 }

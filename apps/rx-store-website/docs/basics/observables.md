@@ -26,12 +26,6 @@ const yourClicks$ = new Subject();
 
 // observable derived from 2 subjects:
 const bothClicks$ = merge(myClick$, yourClick$).pipe(delay(100));
-
-const store = {
-  myClick$,
-  yourClick$,
-  bothClick$,
-};
 ```
 
 ## Imperative Example
@@ -47,10 +41,6 @@ const timer$ = new Observable((subscriber) => {
   }, 1000);
   return () => clearInterval(int);
 });
-
-const store = {
-  timer$,
-};
 ```
 
 ## Declarative Example
@@ -58,9 +48,7 @@ const store = {
 Its often much nicer to make it declarative! This does the same thing!
 
 ```tsx
-const store = {
-  timer$: interval(1000),
-};
+const timer$ = interval(1000)
 ```
 
 ## Uni-cast vs Multi-cast

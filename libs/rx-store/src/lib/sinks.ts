@@ -16,7 +16,7 @@ import { Observable, MonoTypeOperatorFunction, Subject } from 'rxjs';
  * such that it can be consumed by referencing it from a pipeline
  */
 export type Sinks<T extends RxStoreValue> = {
-  [P in keyof T]?: MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
+  [P in keyof T]?: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
 };
 
 /**
@@ -28,29 +28,32 @@ export type Sinks<T extends RxStoreValue> = {
  *
  * Each effect should get its own sinks object, with its own debug key.
  *
- * @param debugKey A debug key used for devtools
+ * @param effectName A debug key used for devtools
  * @param storeValue The Rx Store value, object containing subjects
  * @returns An object matching the shape of the original storeValue, but with "next" methods
  * instead of the subjects themselves.
  */
 export const createSinks = <StoreValue extends {}>(
-  debugKey: string,
+  effectName: string,
   storeValue: StoreValue
 ): Sinks<StoreValue> => {
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
-      [subjectName]: (source: Observable<any>) => {
-        return source.pipe(
-          tap((value) => {
-            debug(`rx-store:${debugKey}`)(`sink ${subjectName}: ${value}`);
-            if(!window.__devtools_sinks) {
-              window.__devtools_sinks = new Subject<any>()
-            }
-            window.__devtools_sinks.next({subjectName, debugKey})
-            storeValue[subjectName].next(value);
-          })
-        );
+      [subjectName]: () => {
+        debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
+        return (source: Observable<any>) => {
+          return source.pipe(
+            tap((value) => {
+              debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
+              if (!window.__devtools_sinks) {
+                window.__devtools_sinks = new Subject<any>();
+              }
+              window.__devtools_sinks.next({ subjectName, debugKey });
+              storeValue[subjectName].next(value);
+            })
+          );
+        };
       },
     }),
     {}
