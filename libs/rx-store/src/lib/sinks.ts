@@ -49,7 +49,7 @@ export const createSinks = <StoreValue extends {}>(
               if (!window.__devtools_sinks) {
                 window.__devtools_sinks = new Subject<any>();
               }
-              window.__devtools_sinks.next({ subjectName, debugKey });
+              window.__devtools_sinks.next({ subjectName, effectName });
               storeValue[subjectName].next(value);
             })
           );

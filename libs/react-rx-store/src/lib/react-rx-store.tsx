@@ -51,6 +51,8 @@ const after = (ref: { debugKey: string }) => {
   window.__devtools_effects.delete(ref);
 };
 
+const ids = {}
+
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
  * with curried sources, sinks, and its own spawnEffect function used
