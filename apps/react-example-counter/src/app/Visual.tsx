@@ -45,12 +45,6 @@ function Subject(props, i) {
 
   // subscribe to the rx store subject that this 3D object represents
   const [next, error, complete] = useSubscription(store[props.name]);
-  // console.log(next,error,complete);
-
-  useEffect(() => {
-    // console.log(('subject mount'));
-    // return () => console.log(('subject unmount'));
-  }, []);
 
   return (
     <BoxWithText text={`${props.name}: ${next}`} {...props} boxColor="red" />
@@ -60,16 +54,6 @@ function Subject(props, i) {
 function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
   // This reference will give us direct access to the mesh
   const boxMeshRef = useRef();
-
-  // Set up state for the hovered and active state
-  // const [hovered, setHover] = useState(false);
-  // const [active, setActive] = useState(false);
-
-  // Rotate mesh every frame, this is outside of React without overhead
-  // useFrame(() => {
-  //   if (undefined === boxMeshRef.current) return;
-  //   boxMeshRef.current.rotation.y += 0.01;
-  // });
 
   const { viewport } = useThree();
 
@@ -87,33 +71,12 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
     // config: { mass: 10, tension: 10, friction: 100, precision: 0.00001 }
   });
 
-  // const textPos = [
-  //   // x - width * 0.5 - viewport.width / 2 + 0.1,
-  //   // y - height * 0.5 - viewport.height / 2 - 0.1,
-  //   // 3,
-  //   x - width / 2,
-  //   y - height / 2,
-  //   1,
-  // ];
-  // const boxPos = [
-  //   // x - width * 0.5 - viewport.width / 2,
-  //   // y - height * 0.5 - viewport.height / 2,
-  //   // 2,
-  //   x,
-  //   y,
-  //   0,
-  // ];
-
   if (!font) return null;
 
   return (
     <group>
       <animated.mesh
         position={textPos}
-        scale={true ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-        // onClick={(e) => setActive(!active)}
-        // onPointerOver={(e) => setHover(true)}
-        // onPointerOut={(e) => setHover(false)}
       >
         <textBufferGeometry
           attach="geometry"
@@ -131,11 +94,6 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
       <animated.mesh
         position={boxPos}
         ref={boxMeshRef}
-        scale={true ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-        // onClick={(e) => setActive(!active)}
-        // onPointerOver={(e) => setHover(true)}
-        // onPointerOut={(e) => setHover(false)}
-        
       >
         <boxBufferGeometry attach="geometry" args={[width, height, 1]} />
         <meshStandardMaterial attach="material" color={boxColor} wireframe />
@@ -206,135 +164,6 @@ export const Visual = () => {
     </div>
   );
 };
-
-// export const Legacy = () => {
-//   const { viewport, size } = useThree();
-//   const { effects, subjects, links, activeLinks } = useDevtools();
-//   // console.log({ effects, subjects, links });
-
-//   return (
-//     <WebCola
-//       // onTick={console.log}
-//       onHandleLayout={(cola, nodes, links, constraints, groups) => {
-//         return cola
-//         .nodes(nodes)
-//         .links(links)
-//         .groups(groups)
-//         .constraints(constraints)
-//           .flowLayout('y', 50)
-//           .linkDistance(30)
-//           .avoidOverlaps(true)
-//           .handleDisconnected(true)
-
-//       }}
-//       renderLayout={(layout) => (
-//         <>
-//           {/* {layout.groups().map(({ bounds: { x, X, y, Y } }, i) => {
-//             const width = X - x;
-//             const height = Y - y;
-//             return (
-//               <div
-//                 key={i}
-//                 style={{
-//                   position: 'absolute',
-//                   left: x,
-//                   top: y,
-//                   width,
-//                   height,
-//                   backgroundColor: 'orange',
-//                   borderRadius: 5,
-//                   zIndex: -2,
-//                 }}
-//               />
-//             );
-//           })} */}
-//           {layout.links().map(({ source, target }, i) => {
-//             const isActive =
-//               Array.from(activeLinks).findIndex(
-//                 (obj) =>
-//                   obj.subjectName === target.name &&
-//                   obj.debugKey === source.name
-//               ) !== -1;
-
-//             const { x, y } = source;
-//             const { x: x2, y: y2 } = target;
-
-//             return (
-//               <Line key={i} x0={x} y0={y} x1={x2} y1={y2} isActive={isActive} />
-//             );
-//           })}
-//           {layout
-//             .nodes()
-//             .map((props, i) =>
-//               props.subject ? (
-//                 <Subject key={i} {...props} />
-//               ) : (
-//                 <Effect key={i} {...props} />
-//               )
-//             )}
-//         </>
-//       )}
-//       nodes={[
-//         ...subjects,
-//         ...effects.map((effectName) => ({
-//           name: effectName,
-//           width: 0.5,
-//           height: 0.5,
-//           effect: true,
-//         })),
-//       ]}
-//       links={[
-//         ...Array.from(links).map(({ from, to }) => {
-//           const findIndex = (obj) => {
-//             switch (obj.type) {
-//               case 'effect':
-//                 return (
-//                   subjects.length +
-//                   Array.from(effects).findIndex((name) => name === obj.name)
-//                 );
-//               case 'subject':
-//                 return subjects.findIndex(({ name }) => name === obj.name);
-//             }
-//           };
-
-//           // console.log(from, findIndex(from), to, findIndex(to));
-
-//           return {
-//             source: findIndex(from),
-//             // subjects.length +
-//             // effects.findIndex((effect) => effect.name === value.debugKey),
-//             target: findIndex(to),
-//             //  subjects.findIndex(
-//             //   (subject) => subject.name === value.subjectName          ),
-//           };
-//         }),
-
-//         // ...effects.map((effect, i) => ({
-//         //   source: i + subjects.length,
-//         //   target: 1,
-//         // })),
-//         // ...effects.map((effect, i) => ({
-//         //   source: i + subjects.length,
-//         //   target: 2,
-//         // })),
-//       ]}
-//       groups={[
-//         {
-//           leaves: subjects.map((_, i) => i),
-//         },
-//       ]}
-//       // constraints={[
-//       //   {
-//       //     type: 'alignment',
-//       //     axis: 'y',
-//       //     offsets: subjects.map((_, i) => ({ node: i, offset: 0 })),
-//       //   },
-//       // ]}
-//       width={viewport.width}
-//       height={viewport.height}
-//     />
-//   );
-// };
 
 export const New = () => {
   const store = useStore(rootContext);
@@ -511,55 +340,8 @@ export const New = () => {
             y1={y2 - size.height / 2}
             isActive={false}
           />
-          // <Line key={i} x0={x} y0={y} x1={x2} y1={y2} isActive={false} />
         );
       })}
     </>
   );
 };
-
-// export const useDevtools = () => {
-//   const store = useStore(rootContext);
-
-//   const subjects = useMemo(() => {
-//     const subjects = Object.keys(store).reduce(
-//       (acc, name) => [...acc, name],
-//       []
-//     );
-//     // console.log('subjects changed',subjects)
-//     return subjects;
-//   }, [store]);
-//   // console.log(subjects);
-
-//   const [_, forceRender] = useReducer((n) => n + 1, 0);
-
-//   useEffect(() => {
-//     forceRender();
-//   }, [subjects]);
-
-//   const links = useRef(new Set());
-//   useEffect(() => {
-//     if (!window.__rxStoreLinks) return;
-
-//     const subscription = window.__rxStoreLinks
-//       .pipe(
-//         tap((value) => {
-//           debugger;
-//           if (!links.current.has(value)) {
-//             links.current.add(value);
-//             // console.log('link add', JSON.stringify(value));
-//             forceRender();
-//           }
-//         })
-//       )
-//       .subscribe();
-//     return () => subscription.unsubscribe();
-//   }, [window.__rxStoreLinks]);
-
-//   return {
-//     // effects: Array.from(effects.current),
-//     subjects,
-//     links: Array.from(links.current),
-//     activeLinks: [], //activeLinks.current,
-//   };
-// };
