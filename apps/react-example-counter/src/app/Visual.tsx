@@ -75,9 +75,7 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
 
   return (
     <group>
-      <animated.mesh
-        position={textPos}
-      >
+      <animated.mesh position={textPos}>
         <textBufferGeometry
           attach="geometry"
           args={[
@@ -91,10 +89,7 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
         />
         <animated.meshStandardMaterial attach="material" color="black" />
       </animated.mesh>
-      <animated.mesh
-        position={boxPos}
-        ref={boxMeshRef}
-      >
+      <animated.mesh position={boxPos} ref={boxMeshRef}>
         <boxBufferGeometry attach="geometry" args={[width, height, 1]} />
         <meshStandardMaterial attach="material" color={boxColor} wireframe />
       </animated.mesh>
@@ -137,7 +132,14 @@ function Line({ x0, y0, x1, y1, isActive }, i) {
       {/* <bufferGeometry attach="geometry" onUpdate={onUpdate} /> */}
       {/* <animated.standardMaterial attach="material" color={color} /> */}
       <arrowHelper
-        args={[new THREE.Vector3(normX, normY, 0), undefined, dist - 5, 'black',2,2]}
+        args={[
+          new THREE.Vector3(normX, normY, 0),
+          undefined,
+          dist - 5,
+          'black',
+          2,
+          2,
+        ]}
       />
     </animated.mesh>
   );
