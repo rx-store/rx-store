@@ -82,16 +82,8 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
   }, []);
 
   const { textPos, boxPos } = useSpring({
-    textPos: [
-      x - width/2,
-      y ,
-      1
-    ],
-    boxPos: [
-      x,
-      y,
-      0
-    ],
+    textPos: [x - width / 2, y, 1],
+    boxPos: [x, y, 0],
     // config: { mass: 10, tension: 10, friction: 100, precision: 0.00001 }
   });
 
@@ -145,10 +137,7 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
         // onPointerOut={(e) => setHover(false)}
       >
         <boxBufferGeometry attach="geometry" args={[width, height, 1]} />
-        <meshStandardMaterial
-          attach="material"
-          color={boxColor}
-        />
+        <meshStandardMaterial attach="material" color={boxColor} />
       </animated.mesh>
     </group>
   );
@@ -156,13 +145,9 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
 
 function Line({ x0, y0, x1, y1, isActive }, i) {
   const { viewport, size } = useThree();
-  const [ref, object] = useResource();
-
 
   const { pos1 } = useSpring({
-    pos1: [
-      x1-x0,y1-y0,0
-    ],
+    pos1: [x1 - x0, y1 - y0, 0],
     // config: { mass: 100, tension: 100, friction: 100, precision: 0.00001 }
   });
 
@@ -175,20 +160,27 @@ function Line({ x0, y0, x1, y1, isActive }, i) {
   });
 
   const { pos } = useSpring({
-    pos: [
-      x0,y0,0
-    ],
+    pos: [x0, y0, 0],
     // config: { mass: 100, tension: 100, friction: 100, precision: 0.00001 }
   });
   // const pos = [x0, y0, 0];
 
   const onUpdate = useCallback((self) => self.setFromPoints(points), [points]);
 
+  const deltaX = x1 - x0;
+  const deltaY = y1 - y0;
+  const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  const normX = deltaX / dist;
+  const normY = deltaY / dist;
+
   return (
-    <animated.line position={pos} ref={ref}>
-      <bufferGeometry attach="geometry" onUpdate={onUpdate} />
-      <animated.lineBasicMaterial attach="material" color={color} />
-    </animated.line>
+    <animated.mesh position={pos}>
+      {/* <bufferGeometry attach="geometry" onUpdate={onUpdate} /> */}
+      {/* <animated.standardMaterial attach="material" color={color} /> */}
+      <arrowHelper
+        args={[new THREE.Vector3(normX, normY, 0), undefined, dist - 5, 'black',2,2]}
+      />
+    </animated.mesh>
   );
 }
 
@@ -400,10 +392,10 @@ export const New = () => {
             console.log('effects delete', name);
           }
         }),
-        throttleTime(100,undefined, {trailing: true}),
+        throttleTime(100, undefined, { trailing: true }),
         tap(() => {
           // forceRender();
-          layout.stop()
+          layout.stop();
           layout.start(10);
         })
       )
@@ -432,8 +424,8 @@ export const New = () => {
     const subscription = window.__rxStoreLinks
       .pipe(
         map(({ from, to }) => {
-          console.log('links add',from,to);
-          
+          console.log('links add', from, to);
+
           // debugger;
           const findIndex = ({ type, name }) => {
             switch (type) {
@@ -461,15 +453,14 @@ export const New = () => {
         }),
         filter((v) => !!v),
         tap((link) => {
-          links.current.push(link)
+          links.current.push(link);
         }),
-        throttleTime(100, undefined, {trailing: true}),
-        tap(()=>{
-          
+        throttleTime(100, undefined, { trailing: true }),
+        tap(() => {
           // forceRender()
-          console.log('run layout', links.current.length, nodes.current.length)
-          layout.stop()
-          layout.start()
+          console.log('run layout', links.current.length, nodes.current.length);
+          layout.stop();
+          layout.start();
         })
       )
       .subscribe();
