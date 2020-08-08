@@ -4,15 +4,17 @@ import React, {
   useState,
   useContext,
   Context,
+  useRef,
 } from 'react';
 import { debug } from 'debug';
 import { finalize, filter, tap } from 'rxjs/operators';
-import { Observable, of, concat } from 'rxjs';
+import { Observable, of, concat, Subject, ReplaySubject } from 'rxjs';
 import {
   RxStoreEffect,
   createSinks,
   createSources,
   SpawnEffect,
+  ensureDevtools,
 } from '@rx-store/rx-store';
 
 /**
@@ -25,30 +27,38 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
+
+declare global {
+  interface Window {
+    __rxStoreSubjects: Subject<{
+      name: string
+    }>;
+    __rxStoreEffects: Subject<{
+      name: string,
+      event: 'spawn'|'teardown'
+    }>;
+  }
+}
+
 // Creates an observable that will be subscribed to *before*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const before$ = (ref: { debugKey: string }) =>
-  of(null).pipe(
-    tap(() => {
-      // TODO - add a devtools hook here
-      debug(`rx-store:${ref.debugKey}`)('spawn');
-      if (undefined === window.__devtools_effects) {
-        window.__devtools_effects = new Set();
-      }
-      window.__devtools_effects.add(ref);
-    }),
-    filter(() => false)
-  );
+// const before$ = (ref: { name: string }) =>
+//   of(null).pipe(
+//     tap(() => {
+      
+//     }),
+//     filter(() => false)
+//   );
 
 // Creates an observable that will be subscribed to *after*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const after = (ref: { debugKey: string }) => {
+const after = (ref: { name: string }) => {
   // TODO - add a devtools hook here
-  debug(`rx-store:${ref.debugKey}`)('teardown');
+  debug(`rx-store:${ref.name}`)('teardown');
   // TODO this won't cleanup on unsubscribe!
-  window.__devtools_effects.delete(ref);
+  window.__rxStoreEffects.next({...ref, event: 'teardown'});
 };
 
 const ids = {}
@@ -95,17 +105,32 @@ export const spawnRootEffect = <T extends {}>(
     // Keeps the "context" intact, by appending to debugKey to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
-      const curriedName = name + ':' + childName;
+      const curriedName = `${name}:${childName}`
       if (undefined === ids[curriedName]) {
         ids[curriedName] = 1;
       } else {
         ids[curriedName]++;
       }
       const id = ids[curriedName];
+    
+      ensureDevtools()
+      
+
+      debug(`rx-store:${curriedName}:${id}`)('spawn');
+
+      window.__rxStoreEffects.next({name: `${curriedName}:${id}`, event: 'spawn'});
+
+      window.__rxStoreLinks.next({
+        from: {type:'effect', name:name},
+        to: {type:'effect', name:`${curriedName}:${id}`},
+      })
+
       return spawnEffect(effect, {
-        name: `${curriedName}${id === 1 ? '' : id}`,
+        name: `${curriedName}:${id}`,
       });
     };
+
+
 
     // Run the effect function passing in the curried sources, sinks, and
     // spawnEffect function for the effectFn to run any of its children effectFn
@@ -113,10 +138,12 @@ export const spawnRootEffect = <T extends {}>(
 
     // Sandwich the effect between before and after streams, allowing devools
     // hooks to run when the effect is subscribed & torn down.
-    const ref = { debugKey: name };
-    return concat(before$(ref), effect$).pipe(finalize(() => after(ref)));
+    
+    return effect$.pipe(finalize(() => after({name})));
   };
 
+  ensureDevtools()
+  window.__rxStoreEffects.next({name: `root`, event: 'spawn'});
   return spawnEffect(rootEffectFn, { name: 'root' });
 };
 
@@ -206,13 +233,19 @@ export function useSubscription<T>(
   const [next, setNext] = useState<T | undefined>();
   const [error, setError] = useState<any>();
   const [complete, setComplete] = useState<boolean>(false);
+  const prev = useRef()
   useEffect(() => {
+    console.log('mount')
+    if(prev.current && prev.current!== source){
+      // debugger;
+    }
+    prev.current = source
     const subscription = source.subscribe(
       (value) => setNext(value),
       (error) => setError(error),
       () => setComplete(true)
     );
-    return () => subscription.unsubscribe();
+    return () => console.log('unmount')||subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
 }

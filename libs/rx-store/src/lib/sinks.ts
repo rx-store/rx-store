@@ -1,7 +1,21 @@
 import { RxStoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
-import { Observable, MonoTypeOperatorFunction, Subject } from 'rxjs';
+import { Observable, MonoTypeOperatorFunction, Subject, ReplaySubject } from 'rxjs';
+
+declare global {
+  interface Window {
+    __rxStoreLinks: Subject<{
+      from: { type: 'subject'|'effect'; name: string };
+      to: { type: 'subject'|'effect'; name: string };
+    }>;
+    __rxStoreValues: Subject<{
+      from: { type: 'subject'|'effect'; name: string };
+      to: { type: 'subject'|'effect'; name: string };
+      value: any;
+    }>;
+  }
+}
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -37,19 +51,25 @@ export const createSinks = <StoreValue extends {}>(
   effectName: string,
   storeValue: StoreValue
 ): Sinks<StoreValue> => {
+  ensureDevtools();
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
+        window.__rxStoreLinks.next({
+          from: { type: 'subject', name: subjectName },
+          to: { type: 'effect', name: effectName },
+        })
         return (source: Observable<any>) => {
           return source.pipe(
             tap((value) => {
               debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
-              if (!window.__devtools_sinks) {
-                window.__devtools_sinks = new Subject<any>();
-              }
-              window.__devtools_sinks.next({ subjectName, effectName });
+              window.__rxStoreValues.next({
+                from: { type: 'subject', name: subjectName },
+                to: { type: 'effect', name: effectName },
+                value,
+              });
               storeValue[subjectName].next(value);
             })
           );
@@ -59,3 +79,15 @@ export const createSinks = <StoreValue extends {}>(
     {}
   ) as Sinks<StoreValue>;
 };
+
+export function ensureDevtools() {
+  if (!window.__rxStoreValues) {
+    window.__rxStoreValues = new Subject<any>();
+  }
+  if (!window.__rxStoreLinks) {
+    window.__rxStoreLinks = new ReplaySubject<any>();
+  }
+  if (!window.__rxStoreEffects) {
+    window.__rxStoreEffects = new ReplaySubject<any>();
+  }
+}

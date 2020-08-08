@@ -39,14 +39,23 @@ export const createSources = <T extends {}>(
       ...acc,
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`source ${subjectName}`)
+        window.__rxStoreLinks.next({
+          from: { type: 'subject', name: subjectName },
+          to: { type: 'effect', name: effectName },
+        })
         return (value[subjectName] as Subject<any>)
           .asObservable()
           .pipe(
-            tap((value) =>
+            tap((value) =>{
               debug(`rx-store:${effectName}`)(
                 `source ${subjectName} value: ${value}`
               )
-            )
+              window.__rxStoreValues.next({
+                from: { type: 'subject', name: subjectName },
+                to: { type: 'effect', name: effectName },
+                value,
+              });
+            })
           );
       },
     }),

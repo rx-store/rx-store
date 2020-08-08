@@ -2,10 +2,24 @@ import {
   scan,
   startWith,
   mergeMap,
+  switchMap,
+  delay,
+  delayWhen,
+  withLatestFrom,
+  map,
 } from 'rxjs/operators';
 import { RxStoreEffect } from '@rx-store/rx-store';
 import { AppContextValue } from '../../app-context-value.interface';
-import { timer, merge } from 'rxjs';
+import { timer, merge, range, Observable } from 'rxjs';
+
+const animateNumbers: (count: number) => RxStoreEffect<AppContextValue> = (	
+  count	
+) => ({sources}): Observable<number> =>	
+  range(0, count).pipe(	
+    delayWhen((value) => timer(value * 1000)),	
+    // withLatestFrom(sources.time$()), // this is just here so you can see the "devtools" shows we used a source	
+    // map(([a]) => a)	
+  );
 
 /**
  * Rx Store will subscribe to the effect for us.
@@ -24,8 +38,8 @@ export const counter: RxStoreEffect<AppContextValue> = ({
   sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    mergeMap(() =>
-      spawnEffect(() => timer(0, 1000), { name: 'timer'})
+    mergeMap((count) =>
+      spawnEffect(animateNumbers(count), { name: 'count-up'})
     ),
     sinks.count$()
   );
