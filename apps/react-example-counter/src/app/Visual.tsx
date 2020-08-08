@@ -135,9 +135,10 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
         // onClick={(e) => setActive(!active)}
         // onPointerOver={(e) => setHover(true)}
         // onPointerOut={(e) => setHover(false)}
+        
       >
         <boxBufferGeometry attach="geometry" args={[width, height, 1]} />
-        <meshStandardMaterial attach="material" color={boxColor} />
+        <meshStandardMaterial attach="material" color={boxColor} wireframe />
       </animated.mesh>
     </group>
   );
@@ -349,8 +350,8 @@ export const New = () => {
       .nodes(nodes.current)
       .links(links.current)
       .size([size.width, size.height])
-      .flowLayout('x', 10)
-      .linkDistance(30)
+      .flowLayout('y', 0)
+      .linkDistance(50)
       .avoidOverlaps(true)
       .handleDisconnected(true)
       .on('end', forceRender);

@@ -58,16 +58,16 @@ export const createSinks = <StoreValue extends {}>(
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
         window.__rxStoreLinks.next({
-          from: { type: 'subject', name: subjectName },
-          to: { type: 'effect', name: effectName },
+          to: { type: 'subject', name: subjectName },
+          from: { type: 'effect', name: effectName },
         })
         return (source: Observable<any>) => {
           return source.pipe(
             tap((value) => {
               debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
               window.__rxStoreValues.next({
-                from: { type: 'subject', name: subjectName },
-                to: { type: 'effect', name: effectName },
+                to: { type: 'subject', name: subjectName },
+                from: { type: 'effect', name: effectName },
                 value,
               });
               storeValue[subjectName].next(value);
