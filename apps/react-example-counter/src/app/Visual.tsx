@@ -17,6 +17,7 @@ import { useSpring } from '@react-spring/core';
 import { animated } from '@react-spring/three';
 import { Layout } from 'webcola';
 import { tap, delay, map, filter, throttleTime } from 'rxjs/operators';
+import { Line3, Vector3 } from 'three';
 
 // Geometry
 function GroundPlane() {
@@ -147,7 +148,7 @@ function Line({ x0, y0, x1, y1, isActive }, i) {
 
 export const Visual = () => {
   return (
-    <div style={{ border: '1px red solid', width: 1000, height: 1000 }}>
+    <div style={{ border: '1px red solid', width: 1350, height: 500 }}>
       <Canvas
         style={{ background: '#aaccee' }}
         camera={{ position: [0, 0, 10] }}
@@ -157,11 +158,7 @@ export const Visual = () => {
         <New />
         {/* <GroundPlane />
         <BackDrop /> */}
-        <OrbitControls
-          target={[0, 0, 0]}
-          maxDistance={1000}
-          minDistance={100}
-        />
+        <OrbitControls target={[0, 0, 0]} maxDistance={1000} minDistance={60} />
       </Canvas>
     </div>
   );
@@ -182,11 +179,65 @@ export const New = () => {
       .links(links.current)
       .size([size.width, size.height])
       .flowLayout('y', 0)
-      .linkDistance(50)
+      .linkDistance(35)
       .avoidOverlaps(true)
       .handleDisconnected(true)
       .on('end', forceRender);
   }, []);
+
+  const bullets = useRef([]);
+  useEffect(() => {
+    if (!window.__rxStoreValues) return;
+    const subscription = window.__rxStoreValues
+      .pipe(
+        tap((event) => {
+          const findNode = ({ type, name }) => {
+            switch (type) {
+              case 'effect':
+                return nodes.current.find(
+                  (node) => node.effect && node.name === name
+                );
+              case 'subject':
+                return nodes.current.find(
+                  (node) => node.subject && node.name === name
+                );
+            }
+          };
+
+          const source = findNode(event.from);
+          const target = findNode(event.to);
+          const line = new Line3(
+            new Vector3(source.x, source.y, 0),
+            new Vector3(target.x, target.y, 0)
+          );
+
+          const bullet = { x: source.x, y: source.y, z: 0 };
+          bullets.current.push(bullet);
+
+          let i = 0;
+          const interval = setInterval(() => {
+            i += 0.1;
+            if (i > 1) {
+              clearInterval(interval);
+              bullets.current.splice(bullets.current.findIndex(b => b === bullet),1)
+            }
+            const out = new Vector3()
+            line.at(i, out)
+            bullet.x = out.x
+            bullet.y = out.y
+            forceRender()
+          }, 50);
+        }),
+        throttleTime(100, undefined, { trailing: true }),
+        tap(() => {
+          // forceRender();
+          layout.stop();
+          layout.start(10);
+        })
+      )
+      .subscribe();
+    return () => subscription.unsubscribe();
+  }, [window.__rxStoreValues]);
 
   useEffect(() => {
     if (!window.__rxStoreEffects) return;
@@ -259,7 +310,7 @@ export const New = () => {
           console.log('links add', from, to);
 
           // debugger;
-          const findIndex = ({ type, name }) => {
+          const findNode = ({ type, name }) => {
             switch (type) {
               case 'effect':
                 return nodes.current.find(
@@ -272,15 +323,15 @@ export const New = () => {
             }
           };
 
-          if (!findIndex(from) || !findIndex(to)) {
+          if (!findNode(from) || !findNode(to)) {
             // debugger;
             console.warn(from, to);
             return null;
           }
 
           return {
-            source: findIndex(from),
-            target: findIndex(to),
+            source: findNode(from),
+            target: findNode(to),
           };
         }),
         filter((v) => !!v),
@@ -308,6 +359,14 @@ export const New = () => {
   // return null;
   return (
     <>
+      {bullets.current.map((bullet) => {
+        return (
+          <mesh position={[bullet.x-size.width/2, bullet.y-size.height/2, bullet.z]}>
+            <sphereBufferGeometry attach="geometry" />
+            <meshStandardMaterial attach="material" />
+          </mesh>
+        );
+      })}
       {layout
         .nodes()
         .map((obj) => ({
