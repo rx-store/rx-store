@@ -12,7 +12,7 @@ import { rootContext } from './Manager';
 
 import { Canvas, useFrame, useThree, useResource } from 'react-three-fiber';
 import * as THREE from 'three';
-import { OrbitControls } from 'drei';
+import { MapControls } from 'drei';
 import { useSpring } from '@react-spring/core';
 import { animated } from '@react-spring/three';
 import { Layout } from 'webcola';
@@ -66,14 +66,9 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
     });
   }, []);
 
-  const { textPos, boxPos } = useSpring({
-    textPos: [x - width / 2, y, 1],
-    boxPos: [x, y, 0],
-    // config: { mass: 10, tension: 10, friction: 100, precision: 0.00001 }
-  });
-
+  const textPos=  [x - width / 2, y, 2]
+  const boxPos = [x, y, 0]
   if (!font) return null;
-
   return (
     <group>
       <animated.mesh position={textPos}>
@@ -91,8 +86,8 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
         <animated.meshStandardMaterial attach="material" color="black" />
       </animated.mesh>
       <animated.mesh position={boxPos} ref={boxMeshRef}>
-        <boxBufferGeometry attach="geometry" args={[width, height, 1]} />
-        <meshStandardMaterial attach="material" color={boxColor} wireframe />
+        <sphereBufferGeometry attach="geometry" args={[2]} />
+        <meshStandardMaterial attach="material" color={boxColor} />
       </animated.mesh>
     </group>
   );
@@ -101,10 +96,7 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
 function Line({ x0, y0, x1, y1, isActive }, i) {
   const { viewport, size } = useThree();
 
-  const { pos1 } = useSpring({
-    pos1: [x1 - x0, y1 - y0, 0],
-    // config: { mass: 100, tension: 100, friction: 100, precision: 0.00001 }
-  });
+  const pos1 = [x1 - x0, y1 - y0, 0]
 
   const points = useMemo(
     () => [new THREE.Vector3(0, 0, 0), new THREE.Vector3(x1 - x0, y1 - y0, 0)],
@@ -114,12 +106,7 @@ function Line({ x0, y0, x1, y1, isActive }, i) {
     color: isActive ? 'red' : 'black',
   });
 
-  const { pos } = useSpring({
-    pos: [x0, y0, 0],
-    // config: { mass: 100, tension: 100, friction: 100, precision: 0.00001 }
-  });
-  // const pos = [x0, y0, 0];
-
+  const pos= [x0, y0, 0]
   const onUpdate = useCallback((self) => self.setFromPoints(points), [points]);
 
   const deltaX = x1 - x0;
@@ -158,7 +145,7 @@ export const Visual = () => {
         <New />
         {/* <GroundPlane />
         <BackDrop /> */}
-        <OrbitControls target={[0, 0, 0]} maxDistance={1000} minDistance={60} />
+        <MapControls target={[0, 0, 0]} maxDistance={1000} minDistance={50} />
       </Canvas>
     </div>
   );
@@ -178,10 +165,10 @@ export const New = () => {
       .nodes(nodes.current)
       .links(links.current)
       .size([size.width, size.height])
-      .flowLayout('y', 0)
-      .linkDistance(35)
-      .avoidOverlaps(true)
-      .handleDisconnected(true)
+      // .flowLayout('y', 30)
+      // .symmetricDiffLinkLengths(5)
+      // .avoidOverlaps(true)
+      // .handleDisconnected(true)
       .on('end', forceRender);
   }, []);
 
@@ -211,28 +198,14 @@ export const New = () => {
             new Vector3(target.x, target.y, 0)
           );
 
-          const bullet = { x: source.x, y: source.y, z: 0 };
+          const bullet = { x: source.x, y: source.y, z: 0, target, timeout: 1000 };
           bullets.current.push(bullet);
-
-          let i = 0;
-          const interval = setInterval(() => {
-            i += 0.1;
-            if (i > 1) {
-              clearInterval(interval);
-              bullets.current.splice(bullets.current.findIndex(b => b === bullet),1)
-            }
-            const out = new Vector3()
-            line.at(i, out)
-            bullet.x = out.x
-            bullet.y = out.y
-            forceRender()
-          }, 50);
         }),
         throttleTime(100, undefined, { trailing: true }),
         tap(() => {
           // forceRender();
           layout.stop();
-          layout.start(10);
+          layout.start(100);
         })
       )
       .subscribe();
@@ -279,7 +252,7 @@ export const New = () => {
         tap(() => {
           // forceRender();
           layout.stop();
-          layout.start(10);
+          layout.start(100);
         })
       )
       .subscribe();
@@ -352,16 +325,40 @@ export const New = () => {
 
   useEffect(() => {
     layout.stop();
-    layout.start(10);
+    layout.start(100);
   }, [layout]);
   // console.log(JSON.stringify(layout.nodes(), null, 2), layout.nodes().length);
+
+  useFrame((_,timeDelta) => {
+    console.log(bullets.current.length,'bullets')
+    bullets.current.forEach(bullet => {
+
+      const from = new Vector3(bullet.x, bullet.y, 0)
+      const to = new Vector3(bullet.target.x, bullet.target.y, 0)
+      const delta = to.sub(from)
+      const dist = delta.length()
+      const dir = delta.normalize() 
+      
+      // eslint-disable-next-line no-cond-assign
+      if((bullet.timeout -= timeDelta) < 0 || dist <= 10) {
+        bullets.current.splice(bullets.current.findIndex(b => b === bullet),1)
+      }
+
+      bullet.x += dir.x*timeDelta*30
+      bullet.y += dir.y*timeDelta*30
+      
+ 
+      
+    })
+    forceRender()
+  });
 
   // return null;
   return (
     <>
-      {bullets.current.map((bullet) => {
+      {bullets.current.map((bullet,i) => {
         return (
-          <mesh position={[bullet.x-size.width/2, bullet.y-size.height/2, bullet.z]}>
+          <mesh position={[bullet.x-size.width/2, bullet.y-size.height/2, bullet.z]} key={i}>
             <sphereBufferGeometry attach="geometry" />
             <meshStandardMaterial attach="material" />
           </mesh>
