@@ -13,9 +13,7 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "tasksRunnerOptions": {
-
-  },
+  "tasksRunnerOptions": {},
   "projects": {
     "react-example-counter": {
       "tags": []
@@ -27,7 +25,7 @@
     "core": {
       "tags": []
     },
-    "react-rx-store": {
+    "react": {
       "tags": []
     },
     "react-example-nested-stores": {

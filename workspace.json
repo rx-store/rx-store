@@ -160,9 +160,9 @@
         }
       }
     },
-    "react-rx-store": {
-      "root": "libs/react-rx-store",
-      "sourceRoot": "libs/react-rx-store/src",
+    "react": {
+      "root": "libs/react",
+      "sourceRoot": "libs/react/src",
       "projectType": "library",
       "schematics": {},
       "architect": {
@@ -171,19 +171,19 @@
           "options": {
             "linter": "eslint",
             "tsConfig": [
-              "libs/react-rx-store/tsconfig.lib.json",
-              "libs/react-rx-store/tsconfig.spec.json"
+              "libs/react/tsconfig.lib.json",
+              "libs/react/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/react-rx-store/**/*"]
+            "exclude": ["**/node_modules/**", "!libs/react/**/*"]
           }
         },
         "build": {
           "builder": "@nrwl/web:package",
           "options": {
-            "outputPath": "dist/libs/react-rx-store",
-            "tsConfig": "libs/react-rx-store/tsconfig.lib.json",
-            "project": "libs/react-rx-store/package.json",
-            "entryFile": "libs/react-rx-store/src/index.ts",
+            "outputPath": "dist/libs/react",
+            "tsConfig": "libs/react/tsconfig.lib.json",
+            "project": "libs/react/package.json",
+            "entryFile": "libs/react/src/index.ts",
             "external": ["react", "react-dom", "react-is", "styled-components"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
@@ -199,8 +199,8 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/react-rx-store/jest.config.js",
-            "tsConfig": "libs/react-rx-store/tsconfig.spec.json",
+            "jestConfig": "libs/react/jest.config.js",
+            "tsConfig": "libs/react/tsconfig.spec.json",
             "passWithNoTests": true
           }
         }

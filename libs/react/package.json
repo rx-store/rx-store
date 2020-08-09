@@ -1,5 +1,5 @@
 {
-  "name": "@rx-store/react-rx-store",
+  "name": "@rx-store/react",
   "version": "0.0.4",
   "license": "ISC",
   "dependencies": {

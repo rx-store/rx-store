@@ -6,7 +6,7 @@ title: Usage with React
 ## store() factory
 
 ```tsx
-import { store } from "@rx-store/react-rx-store";
+import { store } from '@rx-store/react';
 
 const storeValue = {};
 const { Manager, context } = store(storeValue);
@@ -47,7 +47,7 @@ Read more about the [&lt;Manager /&gt; component](../api-reference/manager) in t
 In your components, you can access the store, and subscribe to any observable or subject in your store, using the provided hooks:
 
 ```tsx
-import { useSubscription, useStore } from "@rx-store/react-rx-store";
+import { useSubscription, useStore } from '@rx-store/react';
 
 function Component() {
   const store = useStore(rootContext);

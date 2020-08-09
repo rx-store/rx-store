@@ -15,7 +15,7 @@ You create your store value, which is a plain old javascript object (containing 
 You get back a [&lt;Manager /&gt;](./manager) component, for providing the store and it's context, and you also get back the React context itself, for consuming from and emitting to the store directly from outside of Rx Store (such as in your components).
 
 ```tsx
-import { Provider } from "@rx-store/react-rx-store";
+import { Provider } from '@rx-store/react';
 
 const storeValue = { count$: new Subject() };
 const { Manager, context } = store(value, appRootEffect);

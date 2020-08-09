@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { interval, Observable, merge, Subject } from 'rxjs';
-import { store, useStore } from '@rx-store/react-rx-store';
+import { store, useStore } from '@rx-store/react';
 import { RootContextValue } from './types';
 import { Effect } from '@rx-store/core';
 import { rootContext } from './Manager';

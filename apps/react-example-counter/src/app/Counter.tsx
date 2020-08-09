@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSubscription, useStore } from '@rx-store/react-rx-store';
+import { useSubscription, useStore } from '@rx-store/react';
 import { rootContext } from './Manager';
 import { scanSum } from './store/operators/scan-sum';
 
