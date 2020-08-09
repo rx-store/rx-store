@@ -1,5 +1,5 @@
 import { scan, startWith } from 'rxjs/operators';
-import { RxStoreEffect } from '@rx-store/rx-store';
+import { Effect } from '@rx-store/rx-store';
 import { RootAppStore } from '../../types';
 
 /**
@@ -19,7 +19,7 @@ import { RootAppStore } from '../../types';
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: RxStoreEffect<RootAppStore> = ({sources, sinks}) => {
+export const appRootEffect: Effect<RootAppStore> = ({sources, sinks}) => {
   return sources.counterChange$()
     .pipe(
       scan((acc, val) => acc + val, 0),

@@ -9,7 +9,7 @@ import { debug } from 'debug';
 import { finalize, filter, tap } from 'rxjs/operators';
 import { Observable, of, concat } from 'rxjs';
 import {
-  RxStoreEffect,
+  Effect,
   createSinks,
   createSources,
   SpawnEffect,
@@ -61,7 +61,7 @@ const ids: Record<string, number> = {};
  */
 export const spawnRootEffect = <T extends {}>(
   storeValue: T,
-  rootEffectFn: RxStoreEffect<T>
+  rootEffectFn: Effect<T>
 ) => {
   /**
    * spawnEffect closes over the `storeValue`. It takes in a `debugKey`
@@ -124,7 +124,7 @@ export const spawnRootEffect = <T extends {}>(
  */
 export const store = <T extends {}>(
   value: T,
-  rootEffect?: RxStoreEffect<T>
+  rootEffect?: Effect<T>
 ): { Manager: React.ComponentType<{}>; context: Context<T> } => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
