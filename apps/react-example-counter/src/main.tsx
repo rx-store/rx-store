@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app/App';
 import { Manager } from './app/Manager';
-import { Visual } from './app/Visual';
+import { Visualizer } from '@rx-store/visualizer';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -10,7 +10,7 @@ ReactDOM.render(
     <Manager>
       <>
         <App />
-        <Visual />
+        <Visualizer />
       </>
     </Manager>
   </React.StrictMode>,

@@ -1,17 +1,29 @@
 import { RxStoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
-import { Observable, MonoTypeOperatorFunction, Subject, ReplaySubject } from 'rxjs';
+import {
+  Observable,
+  MonoTypeOperatorFunction,
+  Subject,
+  ReplaySubject,
+} from 'rxjs';
 
 declare global {
   interface Window {
     __rxStoreLinks: Subject<{
-      from: { type: 'subject'|'effect'; name: string };
-      to: { type: 'subject'|'effect'; name: string };
+      from: { type: 'subject' | 'effect'; name: string };
+      to: { type: 'subject' | 'effect'; name: string };
+    }>;
+    __rxStoreEffects: Subject<{
+      name: string;
+      event: 'spawn' | 'teardown';
+    }>;
+    __rxStoreSubjects: Subject<{
+      name: string;
     }>;
     __rxStoreValues: Subject<{
-      from: { type: 'subject'|'effect'; name: string };
-      to: { type: 'subject'|'effect'; name: string };
+      from: { type: 'subject' | 'effect'; name: string };
+      to: { type: 'subject' | 'effect'; name: string };
       value: any;
     }>;
   }
@@ -60,7 +72,7 @@ export const createSinks = <StoreValue extends {}>(
         window.__rxStoreLinks.next({
           to: { type: 'subject', name: subjectName },
           from: { type: 'effect', name: effectName },
-        })
+        });
         return (source: Observable<any>) => {
           return source.pipe(
             tap((value) => {
@@ -89,5 +101,8 @@ export function ensureDevtools() {
   }
   if (!window.__rxStoreEffects) {
     window.__rxStoreEffects = new ReplaySubject<any>();
+  }
+  if (!window.__rxStoreSubjects) {
+    window.__rxStoreSubjects = new ReplaySubject<any>();
   }
 }
