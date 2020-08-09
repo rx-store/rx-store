@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RootAppStore } from '../types';
-import { StoreService } from '../store/store.service';
+import { StoreManagerService } from '../store/store-manager.service';
 import { scanSum } from '../store/operators/scan-sum';
 
 @Component({
@@ -9,8 +9,8 @@ import { scanSum } from '../store/operators/scan-sum';
   styleUrls: ['./counter.component.scss']
 })
 export class CounterComponent {
-  localCount$ = this.store.store.counterChange$.pipe(scanSum());
-  constructor(public readonly store: StoreService) {
+  localCount$ = this.storeManager.store.counterChange$.pipe(scanSum());
+  constructor(public readonly storeManager: StoreManagerService) {
   }
 
 }
