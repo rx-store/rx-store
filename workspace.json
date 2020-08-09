@@ -486,6 +486,25 @@
             "exclude": ["**/node_modules/**", "!libs/visualizer/**/*"]
           }
         },
+        "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/visualizer",
+            "tsConfig": "libs/visualizer/tsconfig.lib.json",
+            "project": "libs/visualizer/package.json",
+            "entryFile": "libs/visualizer/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
