@@ -1,8 +1,8 @@
 import { Subject, Observable } from 'rxjs';
-import { RxStoreValue } from '@rx-store/rx-store';
+import { StoreValue } from '@rx-store/rx-store';
 
 /** Our context value, which contains subjects & observables */
-export interface RootAppStore extends RxStoreValue {
+export interface RootAppStore extends StoreValue {
   /**
    * These "subjects" are your app's "state"
    *

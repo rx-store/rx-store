@@ -1,4 +1,4 @@
-import { RxStoreValue } from '..';
+import { StoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
 import { Observable, MonoTypeOperatorFunction } from 'rxjs';
@@ -15,7 +15,7 @@ import { Observable, MonoTypeOperatorFunction } from 'rxjs';
  * The next method from the subject is then wrapped in an operator
  * such that it can be consumed by referencing it from a pipeline
  */
-export type Sinks<T extends RxStoreValue> = {
+export type Sinks<T extends StoreValue> = {
   [P in keyof T]?: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
 };
 

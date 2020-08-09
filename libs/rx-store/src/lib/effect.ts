@@ -1,14 +1,14 @@
 import { Observable, Subject } from 'rxjs';
 import { Sources } from './sources';
 import { Sinks } from './sinks';
-import { RxStoreValue } from '..';
+import { StoreValue } from '..';
 
 
-export type SpawnEffect<T extends RxStoreValue> = (effect: RxStoreEffect<T>, options?: {
+export type SpawnEffect<T extends StoreValue> = (effect: RxStoreEffect<T>, options?: {
   name: string,
 }) => Observable<any>;
 
-interface RxStoreEffectArg<T extends RxStoreValue> {
+interface RxStoreEffectArg<T extends StoreValue> {
   sources: Sources<T>;
   sinks: Sinks<T>;
   spawnEffect: SpawnEffect<T>;
@@ -20,6 +20,6 @@ interface RxStoreEffectArg<T extends RxStoreValue> {
  * a unit of work as an observable. The work does not actually run until that
  * observable is subscribed to, by the <Manager /> component.
  */
-export type RxStoreEffect<T extends RxStoreValue> = (
+export type RxStoreEffect<T extends StoreValue> = (
   obj: RxStoreEffectArg<T>
 ) => Observable<any>;
