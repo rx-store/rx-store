@@ -97,12 +97,12 @@ The packages are organized into `apps` folder, which are runnable, and `libs` fo
 
 ### Running the "Examples" in the "apps" folder
 
-Replace `rx-store-counter-example` with the name of the project in the `apps` folder you want to run.
+Replace `react-example-counter` with the name of the project in the `apps` folder you want to run.
 
 Develop:
 
 ```
-nx serve rx-store-counter-example
+nx serve react-example-counter
 ```
 
 When editing files in the core during development, the example you are running will re-compile. Nx builds a dependency graph, and runs webpack from the top level. If changes are made in a package that the example app depends on, or any package it in turn depends on, Nx will figure it out & re-build the affected packages.
@@ -110,7 +110,7 @@ When editing files in the core during development, the example you are running w
 Build:
 
 ```
-nx build --with-deps rx-store-counter-example
+nx build --with-deps react-example-counter
 ```
 
 By passing `--with-deps`, we are telling Nx to build a dependency graph & compile all of the package(s) the example project depends on, and all of the package(s) those in turn depend on.
