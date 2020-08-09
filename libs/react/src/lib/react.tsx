@@ -62,7 +62,7 @@ export const store = <T extends {}>(
       }
       const subscription = spawnRootEffect(value, rootEffect).subscribe();
       return () => subscription.unsubscribe();
-    }, [value]);
+    }, []);
 
     // Wraps the children in the context provider, supplying
     // the Rx store value.
