@@ -9,7 +9,12 @@ module.exports = {
   themeConfig: {
     navbar: {
       title: 'Rx Store',
-      links: [
+      items: [
+        {
+          type: 'docsVersionDropdown',
+          position: 'left',
+          nextVersionLabel: '1.0.0-next',
+        },
         {
           to: 'docs/introduction/getting-started',
           activeBasePath: 'docs',
@@ -72,8 +77,7 @@ module.exports = {
           homePageId: 'introduction/core-concepts',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/rx-store/rx-store/edit/master/website/',
+          editUrl: 'https://github.com/rx-store/rx-store/edit/master/website/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
