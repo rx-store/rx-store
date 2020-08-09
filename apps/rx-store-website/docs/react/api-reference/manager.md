@@ -25,7 +25,7 @@ None.
 ### Example 1 - A single Store
 
 ```jsx
-import { Provider } from '@rx-store/react-rx-store';
+import { Provider } from '@rx-store/react';
 const storeValue = { $foo: new Subject() };
 const { Manager, context } = store(storeValue);
 export const rootContext = context;

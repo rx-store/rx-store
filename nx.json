@@ -22,10 +22,10 @@
       "tags": [],
       "implicitDependencies": ["react-example-counter"]
     },
-    "rx-store": {
+    "core": {
       "tags": []
     },
-    "react-rx-store": {
+    "react": {
       "tags": []
     },
     "react-example-nested-stores": {

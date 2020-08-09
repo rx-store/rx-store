@@ -6,7 +6,7 @@ import { Visualizer } from '@rx-store/visualizer';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* Render the `react-rx-store` Provider with the context value & root effect */}
+    {/* Render the `react` Provider with the context value & root effect */}
     <Manager>
       <>
         <App />

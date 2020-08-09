@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'react-rx-store',
+  name: 'react',
   preset: '../../jest.config.js',
   transform: {
     '^.+\\.[tj]sx?$': [
@@ -8,5 +8,5 @@ module.exports = {
     ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../coverage/libs/react-rx-store',
+  coverageDirectory: '../../coverage/libs/react',
 };

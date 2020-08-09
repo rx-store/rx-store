@@ -6,6 +6,6 @@ import { Subject } from 'rxjs';
  * Each store contains a value object, where you define
  * various subjects [streams that act as event busses]
  */
-export interface RxStoreValue {
+export interface StoreValue {
   [k: string]: Subject<any>;
 }

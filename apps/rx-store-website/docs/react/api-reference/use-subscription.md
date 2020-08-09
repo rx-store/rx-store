@@ -9,7 +9,7 @@ Your component will re-render whenever each stream emits, errors, or completes.
 ## Example 1 - consume just the value(s)
 
 ```tsx
-import { useSubscription, useStore } from "@rx-store/react-rx-store";
+import { useSubscription, useStore } from '@rx-store/react';
 
 function Component() {
   const store = useStore(rootContext);
@@ -23,7 +23,7 @@ function Component() {
 ## Example 2 - consume "next", "error" and "complete"
 
 ```tsx
-import { useSubscription, useStore } from "@rx-store/react-rx-store";
+import { useSubscription, useStore } from '@rx-store/react';
 
 function Component() {
   const store = useStore(rootContext);
@@ -47,7 +47,7 @@ You can create an observable inline, on the fly, just remember to memoize it oth
 the `useSubscription()` hook will unsubscibe to the old observable & subscribe to the new observable that gets created on every render!
 
 ```tsx
-import { useRxStore, useSubscription } from "@rx-store/react-rx-store";
+import { useRxStore, useSubscription } from '@rx-store/react';
 
 function Component() {
   const store = useRootStore();

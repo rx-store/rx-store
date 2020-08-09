@@ -1,24 +1,15 @@
-import {
-  scan,
-  startWith,
-  mergeMap,
-  switchMap,
-  delay,
-  delayWhen,
-  withLatestFrom,
-  map,
-} from 'rxjs/operators';
-import { RxStoreEffect } from '@rx-store/rx-store';
+import { scan, startWith, mergeMap, delayWhen } from 'rxjs/operators';
+import { Effect } from '@rx-store/core';
 import { AppContextValue } from '../../app-context-value.interface';
 import { timer, merge, range, Observable } from 'rxjs';
 
-const animateNumbers: (count: number) => RxStoreEffect<AppContextValue> = (	
-  count	
-) => ({sources}): Observable<number> =>	
-  range(0, count).pipe(	
-    delayWhen((value) => timer(value * 1000)),	
-    // withLatestFrom(sources.time$()), // this is just here so you can see the "devtools" shows we used a source	
-    // map(([a]) => a)	
+const animateNumbers: (count: number) => Effect<AppContextValue> = (
+  count
+) => (): Observable<number> =>
+  range(0, count).pipe(
+    delayWhen((value) => timer(value * 1000))
+    // withLatestFrom(sources.time$()), // this is just here so you can see the "devtools" shows we used a source
+    // map(([a]) => a)
   );
 
 /**
@@ -30,7 +21,7 @@ const animateNumbers: (count: number) => RxStoreEffect<AppContextValue> = (
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const counter: RxStoreEffect<AppContextValue> = ({
+export const counter: Effect<AppContextValue> = ({
   sources,
   sinks,
   spawnEffect,
@@ -39,17 +30,15 @@ export const counter: RxStoreEffect<AppContextValue> = ({
     scan((acc, val) => acc + val, 0),
     startWith(0),
     mergeMap((count) =>
-      spawnEffect(animateNumbers(count), { name: 'count-up'})
+      spawnEffect(animateNumbers(count), { name: 'count-up' })
     ),
     sinks.count$()
   );
 
-export const time: RxStoreEffect<AppContextValue> = ({ sinks }) =>
+export const time: Effect<AppContextValue> = ({ sinks }) =>
   timer(0, 1000).pipe(sinks.time$());
 
-export const appRootEffect: RxStoreEffect<AppContextValue> = ({
-  spawnEffect,
-}) =>
+export const appRootEffect: Effect<AppContextValue> = ({ spawnEffect }) =>
   merge(
     spawnEffect(time, { name: 'time' }),
     spawnEffect(counter, { name: 'counter' })

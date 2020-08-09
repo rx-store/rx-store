@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { RxStoreValue } from '..';
+import { StoreValue } from '..';
 import { debug } from 'debug';
 
 /**
@@ -12,7 +12,7 @@ import { debug } from 'debug';
  * of the subject's "next" method, with closure state that
  * references the effect's debug key, used for devtools.
  */
-export type Sources<T extends RxStoreValue> = {
+export type Sources<T extends StoreValue> = {
   [P in keyof T]?: () => ReturnType<T[P]['asObservable']>;
 };
 

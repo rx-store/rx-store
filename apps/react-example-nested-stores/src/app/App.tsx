@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { interval, Observable, merge, Subject } from 'rxjs';
-import { store, useStore } from '@rx-store/react-rx-store';
+import { store, useStore } from '@rx-store/react';
 import { RootContextValue } from './types';
-import { RxStoreEffect } from '@rx-store/rx-store';
+import { Effect } from '@rx-store/core';
 import { rootContext } from './Manager';
 import { tap } from 'rxjs/operators';
 
@@ -10,9 +10,10 @@ export interface ChildContextValue extends RootContextValue {
   foo$: Subject<number>;
 }
 
-const createChildEffect: (i: number) => RxStoreEffect<ChildContextValue> = (
-  i
-) => ({ sources, sinks }) =>
+const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
+  sources,
+  sinks,
+}) =>
   merge(
     sources.count$().pipe(tap((count) => console.log({ c: count }))),
     sources
