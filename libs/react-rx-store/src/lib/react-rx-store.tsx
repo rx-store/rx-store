@@ -4,11 +4,10 @@ import React, {
   useState,
   useContext,
   Context,
-  useRef,
 } from 'react';
 import { debug } from 'debug';
-import { finalize, filter, tap } from 'rxjs/operators';
-import { Observable, of, concat, Subject, ReplaySubject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import {
   RxStoreEffect,
   createSinks,
@@ -27,34 +26,10 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
-declare global {
-  interface Window {
-    __rxStoreSubjects: Subject<{
-      name: string;
-    }>;
-    __rxStoreEffects: Subject<{
-      name: string;
-      event: 'spawn' | 'teardown';
-    }>;
-  }
-}
-
-// Creates an observable that will be subscribed to *before*
-// the underlying effect is subscribed to, will immediately
-// run a devtools hook & complete.
-// const before$ = (ref: { name: string }) =>
-//   of(null).pipe(
-//     tap(() => {
-
-//     }),
-//     filter(() => false)
-//   );
-
 // Creates an observable that will be subscribed to *after*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
 const after = (ref: { name: string }) => {
-  // TODO - add a devtools hook here
   debug(`rx-store:${ref.name}`)('teardown');
   // TODO this won't cleanup on unsubscribe!
   window.__rxStoreEffects.next({ ...ref, event: 'teardown' });
