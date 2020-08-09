@@ -1,63 +1,40 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useReducer,
-  useMemo,
-  useCallback,
-} from 'react';
-import WebCola from 'react-cola';
+import React, { useRef, useState, useEffect, useReducer, useMemo } from 'react';
 import { useStore, useSubscription } from '@rx-store/react-rx-store';
 import { rootContext } from './Manager';
 
-import { Canvas, useFrame, useThree, useResource } from 'react-three-fiber';
+import { Canvas, useFrame, useThree, ReactThreeFiber } from 'react-three-fiber';
 import * as THREE from 'three';
 import { MapControls } from 'drei';
-import { useSpring } from '@react-spring/core';
 import { animated } from '@react-spring/three';
 import { Layout } from 'webcola';
-import { tap, delay, map, filter, throttleTime } from 'rxjs/operators';
-import { Line3, Vector3 } from 'three';
+import { tap, map, filter, throttleTime } from 'rxjs/operators';
+import { Vector3 } from 'three';
 
-// Geometry
-function GroundPlane() {
-  return (
-    <mesh receiveShadow rotation={[5, 0, 0]} position={[0, 0, -15]}>
-      <planeBufferGeometry attach="geometry" args={[500, 500]} />
-      <meshStandardMaterial attach="material" color="gray" />
-    </mesh>
-  );
-}
-function BackDrop() {
-  return (
-    <mesh receiveShadow position={[0, -1, -5]}>
-      <planeBufferGeometry attach="geometry" args={[500, 500]} />
-      <meshStandardMaterial attach="material" color="white" />
-    </mesh>
-  );
-}
-
-function Effect(props, i) {
+function Effect(props) {
   return <BoxWithText text={props.name} {...props} boxColor="hotpink" />;
 }
 
-function Subject(props, i) {
+function Subject(props) {
   const store = useStore(rootContext);
 
   // subscribe to the rx store subject that this 3D object represents
-  const [next, error, complete] = useSubscription(store[props.name]);
+  const [next] = useSubscription(store[props.name]);
 
   return (
     <BoxWithText text={`${props.name}: ${next}`} {...props} boxColor="red" />
   );
 }
 
-function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
-  // This reference will give us direct access to the mesh
-  const boxMeshRef = useRef();
-
-  const { viewport } = useThree();
-
+interface BoxWithTextProps {
+  x: number;
+  y: number;
+  z: number;
+  width: number;
+  height: number;
+  text: string;
+  boxColor: ReactThreeFiber.Color;
+}
+function BoxWithText({ x, y, width, text, boxColor }: BoxWithTextProps) {
   const [font, setFont] = useState<any>();
   useEffect(() => {
     const loader = new THREE.FontLoader();
@@ -66,12 +43,12 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
     });
   }, []);
 
-  const textPos=  [x - width / 2, y, 2]
-  const boxPos = [x, y, 0]
+  const textPos: Vector3 = new Vector3(x - width / 2, y, 2);
+  const boxPos: Vector3 = new Vector3(x, y, 0);
   if (!font) return null;
   return (
     <group>
-      <animated.mesh position={textPos}>
+      <mesh position={textPos}>
         <textBufferGeometry
           attach="geometry"
           args={[
@@ -83,31 +60,18 @@ function BoxWithText({ x, y, z, width, height, text, boxColor }, i) {
             },
           ]}
         />
-        <animated.meshStandardMaterial attach="material" color="black" />
-      </animated.mesh>
-      <animated.mesh position={boxPos} ref={boxMeshRef}>
+        <meshStandardMaterial attach="material" color="black" />
+      </mesh>
+      <mesh position={boxPos}>
         <sphereBufferGeometry attach="geometry" args={[2]} />
         <meshStandardMaterial attach="material" color={boxColor} />
-      </animated.mesh>
+      </mesh>
     </group>
   );
 }
 
-function Line({ x0, y0, x1, y1, isActive }, i) {
-  const { viewport, size } = useThree();
-
-  const pos1 = [x1 - x0, y1 - y0, 0]
-
-  const points = useMemo(
-    () => [new THREE.Vector3(0, 0, 0), new THREE.Vector3(x1 - x0, y1 - y0, 0)],
-    [x0, x1, y0, y1]
-  );
-  const { color } = useSpring({
-    color: isActive ? 'red' : 'black',
-  });
-
-  const pos= [x0, y0, 0]
-  const onUpdate = useCallback((self) => self.setFromPoints(points), [points]);
+function Line({ x0, y0, x1, y1 }) {
+  const pos = [x0, y0, 0];
 
   const deltaX = x1 - x0;
   const deltaY = y1 - y0;
@@ -153,7 +117,7 @@ export const Visual = () => {
 
 export const New = () => {
   const store = useStore(rootContext);
-  const [_, forceRender] = useReducer((n) => n + 1, 0);
+  const [, forceRender] = useReducer((n) => n + 1, 0);
   const { size } = useThree();
 
   const nodes = useRef([]);
@@ -165,10 +129,6 @@ export const New = () => {
       .nodes(nodes.current)
       .links(links.current)
       .size([size.width, size.height])
-      // .flowLayout('y', 30)
-      // .symmetricDiffLinkLengths(5)
-      // .avoidOverlaps(true)
-      // .handleDisconnected(true)
       .on('end', forceRender);
   }, []);
 
@@ -193,12 +153,14 @@ export const New = () => {
 
           const source = findNode(event.from);
           const target = findNode(event.to);
-          const line = new Line3(
-            new Vector3(source.x, source.y, 0),
-            new Vector3(target.x, target.y, 0)
-          );
 
-          const bullet = { x: source.x, y: source.y, z: 0, target, timeout: 1000 };
+          const bullet = {
+            x: source.x,
+            y: source.y,
+            z: 0,
+            target,
+            timeout: 1000,
+          };
           bullets.current.push(bullet);
         }),
         throttleTime(100, undefined, { trailing: true }),
@@ -327,38 +289,42 @@ export const New = () => {
     layout.stop();
     layout.start(100);
   }, [layout]);
-  // console.log(JSON.stringify(layout.nodes(), null, 2), layout.nodes().length);
 
-  useFrame((_,timeDelta) => {
-    console.log(bullets.current.length,'bullets')
-    bullets.current.forEach(bullet => {
+  useFrame((_, timeDelta) => {
+    console.log(bullets.current.length, 'bullets');
+    bullets.current.forEach((bullet) => {
+      const from = new Vector3(bullet.x, bullet.y, 0);
+      const to = new Vector3(bullet.target.x, bullet.target.y, 0);
+      const delta = to.sub(from);
+      const dist = delta.length();
+      const dir = delta.normalize();
 
-      const from = new Vector3(bullet.x, bullet.y, 0)
-      const to = new Vector3(bullet.target.x, bullet.target.y, 0)
-      const delta = to.sub(from)
-      const dist = delta.length()
-      const dir = delta.normalize() 
-      
       // eslint-disable-next-line no-cond-assign
-      if((bullet.timeout -= timeDelta) < 0 || dist <= 10) {
-        bullets.current.splice(bullets.current.findIndex(b => b === bullet),1)
+      if ((bullet.timeout -= timeDelta) < 0 || dist <= 10) {
+        bullets.current.splice(
+          bullets.current.findIndex((b) => b === bullet),
+          1
+        );
       }
 
-      bullet.x += dir.x*timeDelta*30
-      bullet.y += dir.y*timeDelta*30
-      
- 
-      
-    })
-    forceRender()
+      bullet.x += dir.x * timeDelta * 30;
+      bullet.y += dir.y * timeDelta * 30;
+    });
+    forceRender();
   });
 
-  // return null;
   return (
     <>
-      {bullets.current.map((bullet,i) => {
+      {bullets.current.map((bullet, i) => {
         return (
-          <mesh position={[bullet.x-size.width/2, bullet.y-size.height/2, bullet.z]} key={i}>
+          <mesh
+            position={[
+              bullet.x - size.width / 2,
+              bullet.y - size.height / 2,
+              bullet.z,
+            ]}
+            key={i}
+          >
             <sphereBufferGeometry attach="geometry" />
             <meshStandardMaterial attach="material" />
           </mesh>
@@ -371,7 +337,7 @@ export const New = () => {
           x: obj.x - size.width / 2,
           y: obj.y - size.height / 2,
         }))
-        .map((props, i) =>
+        .map((props) =>
           props.subject ? (
             <Subject key={props.name} {...props} />
           ) : (
@@ -379,13 +345,6 @@ export const New = () => {
           )
         )}
       {layout.links().map(({ source, target }, i) => {
-        // const isActive =
-        //   Array.from(activeLinks).findIndex(
-        //     (obj) =>
-        //       obj.subjectName === target.name &&
-        //       obj.debugKey === source.name
-        //   ) !== -1;
-
         const { x, y } = source;
         const { x: x2, y: y2 } = target;
 
@@ -396,7 +355,6 @@ export const New = () => {
             y0={y - size.height / 2}
             x1={x2 - size.width / 2}
             y1={y2 - size.height / 2}
-            isActive={false}
           />
         );
       })}
