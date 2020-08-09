@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { StoreValue } from '@rx-store/core';
 
 /** Our context value, which contains subjects & observables */
-export interface RootAppStore extends StoreValue {
+export interface AppStoreValue extends StoreValue {
   /**
    * These "subjects" are your app's "state"
    *
