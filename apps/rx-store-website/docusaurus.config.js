@@ -11,6 +11,11 @@ module.exports = {
       title: 'Rx Store',
       items: [
         {
+          type: 'docsVersionDropdown',
+          position: 'left',
+          nextVersionLabel: '1.0.0-next',
+        },
+        {
           to: 'docs/introduction/getting-started',
           activeBasePath: 'docs',
           label: 'Getting Started',
