@@ -1,7 +1,4 @@
 import React, { useRef, useState, useEffect, useReducer, useMemo } from 'react';
-import { useStore, useSubscription } from '@rx-store/react-rx-store';
-// import { rootContext } from './Manager';
-
 import { Canvas, useFrame, useThree, ReactThreeFiber } from 'react-three-fiber';
 import * as THREE from 'three';
 import { MapControls } from 'drei';
