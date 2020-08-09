@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RootAppStore } from '../types';
+import { AppStoreValue } from '../types';
 import { StoreManagerService } from '../store/store-manager.service';
 import { scanSum } from '../store/operators/scan-sum';
 
