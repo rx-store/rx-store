@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.n = 1;
     this.store = createStoreValue();
+
     this.storeService.init(this.store, appRootEffect);
   }
 

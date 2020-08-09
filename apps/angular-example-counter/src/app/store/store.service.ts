@@ -1,19 +1,22 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Effect } from '@rx-store/core';
+import { Effect, spawnRootEffect } from '@rx-store/core';
+import { Observable, Subscription } from 'rxjs';
+import { RootAppStore } from '../types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService implements OnDestroy {
-  appEffect: any;
-
-  init(storeValue: any, storeEffect: Effect<any>): void {
-    this.appEffect = storeEffect(storeValue);
+  rootEffect: Observable<any>;
+  rootEffectSubscription: Subscription;
+  store: RootAppStore;
+  init(storeValue: RootAppStore, storeEffect: Effect<any>): void {
+    this.store = storeValue;
+    this.rootEffect = spawnRootEffect(storeValue, storeEffect);
+    this.rootEffectSubscription = this.rootEffect.subscribe();
   }
 
   ngOnDestroy(): void {
-    if (this.appEffect) {
-      this.appEffect();
-    }
+    this.rootEffectSubscription.unsubscribe();
   }
 }
