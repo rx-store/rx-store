@@ -6,13 +6,13 @@ title: "Installation"
 ## NPM
 
 ```
-npm i @rx-store/react-rx-store @rx-store/rx-store rxjs
+npm i @rx-store/react-rx-store @rx-store/core rxjs
 ```
 
 ## Yarn
 
 ```
-yarn add @rx-store/react-rx-store @rx-store/rx-store rxjs
+yarn add @rx-store/react-rx-store @rx-store/core rxjs
 ```
 
 The `RX Store` library will add ~4kb minified to your app

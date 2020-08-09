@@ -9,9 +9,9 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@rx-store/rx-store@^0.0.4":
+"@rx-store/core@^0.0.4":
   version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@rx-store/rx-store/-/rx-store-0.0.4.tgz#bec1bf89592742389fefd85a66dc84acbcf4eb9e"
+  resolved "https://registry.yarnpkg.com/@rx-store/core/-/rx-store-0.0.4.tgz#bec1bf89592742389fefd85a66dc84acbcf4eb9e"
   integrity sha512-vpO1w3ykHXVrydK6Res+wO+wB+4NqGv3hrCrdq/B8dFTd1kIgCfMnATPZbQtByj/W5nZcUSqNK9tJ3gr9zjVtg==
   dependencies:
     "@babel/runtime" "^7.10.2"

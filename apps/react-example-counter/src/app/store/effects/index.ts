@@ -1,5 +1,5 @@
 import { scan, startWith, switchMap } from 'rxjs/operators';
-import { Effect } from '@rx-store/rx-store';
+import { Effect } from '@rx-store/core';
 import { AppContextValue } from '../../app-context-value.interface';
 import { timer, merge } from 'rxjs';
 
@@ -20,18 +20,14 @@ export const counter: Effect<AppContextValue> = ({
   sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    switchMap(() =>
-      spawnEffect(() => timer(0, 1000), { name: 'timer'})
-    ),
+    switchMap(() => spawnEffect(() => timer(0, 1000), { name: 'timer' })),
     sinks.count$()
   );
 
 export const time: Effect<AppContextValue> = ({ sinks }) =>
   timer(0, 1000).pipe(sinks.time$());
 
-export const appRootEffect: Effect<AppContextValue> = ({
-  spawnEffect,
-}) =>
+export const appRootEffect: Effect<AppContextValue> = ({ spawnEffect }) =>
   merge(
     spawnEffect(time, { name: 'time' }),
     spawnEffect(counter, { name: 'counter' })

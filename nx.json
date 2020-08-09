@@ -14,7 +14,7 @@
     "nx.json": "*"
   },
   "tasksRunnerOptions": {
-    
+
   },
   "projects": {
     "react-example-counter": {
@@ -24,7 +24,7 @@
       "tags": [],
       "implicitDependencies": ["react-example-counter"]
     },
-    "rx-store": {
+    "core": {
       "tags": []
     },
     "react-rx-store": {

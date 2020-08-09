@@ -13,7 +13,7 @@ import {
   createSinks,
   createSources,
   SpawnEffect,
-} from '@rx-store/rx-store';
+} from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -155,10 +155,7 @@ export const store = <T extends {}>(
       if (!rootEffect) {
         return null;
       }
-      const subscription = spawnRootEffect(
-        value,
-        rootEffect
-      ).subscribe();
+      const subscription = spawnRootEffect(value, rootEffect).subscribe();
       return () => subscription.unsubscribe();
     }, [value]);
 

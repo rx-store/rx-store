@@ -1,5 +1,5 @@
 {
-  "name": "@rx-store/rx-store",
+  "name": "@rx-store/core",
   "version": "0.0.4",
   "license": "ISC",
   "peerDependencies": {

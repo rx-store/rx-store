@@ -1,5 +1,5 @@
 import { Subject, Observable } from 'rxjs';
-import { StoreValue } from '@rx-store/rx-store';
+import { StoreValue } from '@rx-store/core';
 
 /** Our context value, which contains subjects & observables */
 export interface RootAppStore extends StoreValue {
