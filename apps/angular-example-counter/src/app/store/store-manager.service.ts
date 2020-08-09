@@ -6,7 +6,7 @@ import { RootAppStore } from '../types';
 @Injectable({
   providedIn: 'root',
 })
-export class StoreService implements OnDestroy {
+export class StoreManagerService implements OnDestroy {
   rootEffect: Observable<any>;
   rootEffectSubscription: Subscription;
   store: RootAppStore;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RootAppStore } from './types';
-import { StoreService } from './store/store.service';
+import { StoreManagerService } from './store/store-manager.service';
 import { createStoreValue } from './store/value';
 import { appRootEffect } from './store/effects';
 
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   a = Array;
 
-  constructor(private storeService: StoreService) {}
+  constructor(private storeService: StoreManagerService) {}
 
   ngOnInit(): void {
     this.n = 1;

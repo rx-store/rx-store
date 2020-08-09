@@ -1,9 +1,9 @@
 <div class="App">
   <h1>Counter</h1>
 
-  <div>count: {{ store?.store.count$ | async }}</div>
+  <div>count: {{ storeManager?.store.count$ | async }}</div>
   <div>local: {{ localCount$ | async }}</div>
 
-  <button (click)="store.store.counterChange$.next(1)">add</button>
-  <button (click)="store.store.counterChange$.next(-1)">subtract</button>
+  <button (click)="storeManager.store.counterChange$.next(1)">add</button>
+  <button (click)="storeManager.store.counterChange$.next(-1)">subtract</button>
 </div>
