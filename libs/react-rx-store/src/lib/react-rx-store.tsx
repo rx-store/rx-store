@@ -233,19 +233,13 @@ export function useSubscription<T>(
   const [next, setNext] = useState<T | undefined>();
   const [error, setError] = useState<any>();
   const [complete, setComplete] = useState<boolean>(false);
-  const prev = useRef()
   useEffect(() => {
-    console.log('mount')
-    if(prev.current && prev.current!== source){
-      // debugger;
-    }
-    prev.current = source
     const subscription = source.subscribe(
       (value) => setNext(value),
       (error) => setError(error),
       () => setComplete(true)
     );
-    return () => console.log('unmount')||subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
 }
