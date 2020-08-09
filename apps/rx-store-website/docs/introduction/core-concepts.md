@@ -11,10 +11,9 @@ Unlike a state management library, `Rx Store` is a stream management library. It
 
 Let's walk through the `Rx Store` concepts using some examples:
 
-
 ### Store
 
-In `Rx Store` you can have one or many stores. Each store contains a `value` object, where you define various [streams](./rxjs-concepts.md):
+In `Rx Store` you can have one or many stores. Each store contains a `value` object, where you define various [subjects](./rxjs-concepts.md):
 
 ```
 {
@@ -26,7 +25,6 @@ In `Rx Store` you can have one or many stores. Each store contains a `value` obj
 }
 ```
 
-
 ### Manager
 
 Each store has a `Manager` component. The `Manager` component is responsible for providing the store's `value` object to its descendant components.
@@ -37,16 +35,18 @@ When the `Manager` component is mounted, it runs or *subscribe*s to the `effects
 
 ### Effects
 
-Effects produce side effects. These are functions called by `Rx Store` that subscribe to the stream(s) in the store. When your stream(s) emit, you can run some side effect like a http request, or emitting onto another stream.
+Effects are functions that return observables, which RxStore subscribes to. Effects react to events emitted by their `sources`, they can react by running any side effects, such as an http request. Effects can trigger events of their own by emitting on the `sinks`. To emit onto the `sinks`, just include the operator, such as `sinks.chatMessage$()` anywhere in your pipeline.
 
-Here is an example of an effect that subscribes to the `count$` stream, and emits the values onto the `countCopy$` subject with 1 second delay:
+Here is an example of an effect that echos the messages emitted on the `chatMessage$` source back onto the `chatMessage$` sink with 1 second delay:
 
 ```tsx
 export const effect = ({sources, sinks}) =>
-  sources.count$()
+  sources.chatMessage$()
     .pipe(
+      filter(message => message === 'ping')
+      mapTo('pong')
       delay(1000),
-      sinks.countCopy$()
+      sinks.chatMessage$()
     )
 ```
 
@@ -54,8 +54,7 @@ The store's subjects are accessed via sources and sinks, which are read only and
 
 ### Components
 
-In addition to subscribing to the stream(s) in your store as part of an effect, you can subscribe directly from your components. This allows you to re-render a component whenever a stream emits a value, or synchronize your component's state with your stream(s).
-
+You can subscribe directly from your components. This allows you to re-render a component whenever a subject emits a value, or synchronize your component's state with your subject(s).
 
 React Example:
 
@@ -69,7 +68,6 @@ function Component() {
   return (
     <>
       Latest viewer count: {next}
-      
       Stream had an error?: {error}
       Stream is ended?: {complete}
     </>
