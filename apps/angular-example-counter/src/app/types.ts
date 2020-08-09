@@ -1,4 +1,4 @@
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { StoreValue } from '@rx-store/core';
 
 /** Our context value, which contains subjects & observables */
