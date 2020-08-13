@@ -1,9 +1,10 @@
-import { Observable, Subject, concat, of } from 'rxjs';
+import { Observable, concat, of } from 'rxjs';
 import { Sources, createSources } from './sources';
 import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
 import { finalize, tap, filter } from 'rxjs/operators';
 import { debug } from 'debug';
+import { ensureDevtools } from './devtools';
 
 export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
@@ -21,11 +22,11 @@ interface EffectArgs<T extends StoreValue> {
 // Creates an observable that will be subscribed to *before*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const before$ = (ref: { debugKey: string }) =>
+const before$ = (ref: { name: string }) =>
   of(null).pipe(
     tap(() => {
       // TODO - add a devtools hook here
-      debug(`rx-store:${ref.debugKey}`)('spawn');
+      debug(`rx-store:${ref.name}`)('spawn');
     }),
     filter(() => false)
   );
@@ -33,8 +34,13 @@ const before$ = (ref: { debugKey: string }) =>
 // Creates an observable that will be subscribed to *after*
 // the underlying effect is subscribed to, will immediately
 // run a devtools hook & complete.
-const after = (ref: { debugKey: string }) => {
-  debug(`rx-store:${ref.debugKey}`)('teardown');
+const after = (ref: { name: string }) => {
+  debug(`rx-store:${ref.name}`)('teardown');
+  // TODO this won't cleanup on unsubscribe!
+  window.__rxStoreEffects.next({
+    ...ref,
+    event: 'teardown',
+  });
 };
 
 /**
@@ -67,7 +73,7 @@ export const spawnRootEffect = <T extends {}>(
   rootEffectFn: Effect<T>
 ) => {
   /**
-   * spawnEffect closes over the `storeValue`. It takes in a `debugKey`
+   * spawnEffect closes over the `storeValue`. It takes in a `name`
    * and an effectFn.
    *
    * It curries sources, sinks, and a spawnEffect specific to the effectFn
@@ -88,7 +94,7 @@ export const spawnRootEffect = <T extends {}>(
     const sources = createSources(name, storeValue);
     const sinks = createSinks(name, storeValue);
 
-    // Keeps the "context" intact, by appending to debugKey to create a path
+    // Keeps the "context" intact, by appending to name to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
       const curriedName = name + ':' + childName;
@@ -98,8 +104,22 @@ export const spawnRootEffect = <T extends {}>(
         ids[curriedName]++;
       }
       const id = ids[curriedName];
+      const curriedNameWithId = `${curriedName}${id === 1 ? '' : id}`;
+      ensureDevtools();
+
+      debug(`rx-store:${curriedNameWithId}`)('spawn');
+
+      window.__rxStoreEffects.next({
+        name: `${curriedNameWithId}`,
+        event: 'spawn',
+      });
+
+      window.__rxStoreLinks.next({
+        from: { type: 'effect', name },
+        to: { type: 'effect', name: `${curriedNameWithId}` },
+      });
       return spawnEffect(effect, {
-        name: `${curriedName}${id === 1 ? '' : id}`,
+        name: curriedNameWithId,
       });
     };
 
@@ -109,9 +129,10 @@ export const spawnRootEffect = <T extends {}>(
 
     // Sandwich the effect between before and after streams, allowing devools
     // hooks to run when the effect is subscribed & torn down.
-    const ref = { debugKey: name };
+    const ref = { name };
     return concat(before$(ref), effect$).pipe(finalize(() => after(ref)));
   };
-
+  ensureDevtools();
+  window.__rxStoreEffects.next({ name: `root`, event: 'spawn' });
   return spawnEffect(rootEffectFn, { name: 'root' });
 };

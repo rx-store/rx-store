@@ -6,7 +6,7 @@ import React, {
   Context,
 } from 'react';
 import { Observable } from 'rxjs';
-import { Effect, spawnRootEffect } from '@rx-store/core';
+import { Effect, spawnRootEffect, ensureDevtools } from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -33,6 +33,11 @@ export const store = <T extends {}>(
 ): { Manager: React.ComponentType<{}>; context: Context<T> } => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
+
+  ensureDevtools();
+  Object.keys(value).forEach((name) => {
+    window.__rxStoreSubjects.next({ name });
+  });
 
   /**
    * This Manager must be mounted at most once, wrap your children
