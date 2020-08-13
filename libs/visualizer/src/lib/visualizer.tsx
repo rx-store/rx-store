@@ -163,6 +163,7 @@ export const Layers = () => {
           };
 
           findNode(event.to).value = event.value;
+          findNode(event.from).value = event.value;
           forceRender();
 
           const bullet = {
