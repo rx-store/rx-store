@@ -191,8 +191,8 @@ export const Layers = () => {
         // throttleTime(100, undefined, { trailing: true }),
         tap(() => {
           // forceRender();
-          layout.stop();
-          layout.start(100);
+          // layout.stop();
+          // layout.start(1);
         })
       )
       .subscribe();
@@ -240,7 +240,7 @@ export const Layers = () => {
         tap(() => {
           // forceRender();
           layout.stop();
-          layout.start(100);
+          layout.start(1);
         })
       )
       .subscribe();
@@ -311,7 +311,7 @@ export const Layers = () => {
 
   useEffect(() => {
     layout.stop();
-    layout.start(100);
+    layout.start(1);
   }, [layout]);
 
   useFrame((_, timeDelta) => {
