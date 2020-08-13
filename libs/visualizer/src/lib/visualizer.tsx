@@ -5,7 +5,7 @@ import { MapControls } from 'drei';
 import { animated } from '@react-spring/three';
 import { Layout } from 'webcola';
 import { tap, map, filter, throttleTime } from 'rxjs/operators';
-import { Vector3 } from 'three';
+import { Vector3, Line3 } from 'three';
 
 function Effect(props) {
   return <BoxWithText text={props.name} {...props} boxColor="hotpink" />;
@@ -149,16 +149,24 @@ export const Layers = () => {
             }
           };
 
-          const source = findNode(event.from);
-          const target = findNode(event.to);
+          const findLink = () => {
+            const source = findNode(event.from);
+            const target = findNode(event.to);
+            const link = links.current.find(
+              (link) => link.source === source && link.target === target
+            );
+            return link;
+          };
 
           const bullet = {
-            x: source.x,
-            y: source.y,
-            z: 0,
-            target,
-            timeout: 1000,
+            x: findNode(event.from).x,
+            y: findNode(event.from).y,
+            z: 1,
+            link: findLink(),
+            at: 0,
           };
+          console.log(bullet);
+
           bullets.current.push(bullet);
         }),
         throttleTime(100, undefined, { trailing: true }),
@@ -237,7 +245,6 @@ export const Layers = () => {
         map(({ from, to }) => {
           console.log('links add', from, to);
 
-          // debugger;
           const findNode = ({ type, name }) => {
             switch (type) {
               case 'effect':
@@ -252,7 +259,6 @@ export const Layers = () => {
           };
 
           if (!findNode(from) || !findNode(to)) {
-            // debugger;
             console.warn(from, to);
             return null;
           }
@@ -286,22 +292,24 @@ export const Layers = () => {
   useFrame((_, timeDelta) => {
     console.log(bullets.current.length, 'bullets');
     bullets.current.forEach((bullet) => {
-      const from = new Vector3(bullet.x, bullet.y, 0);
-      const to = new Vector3(bullet.target.x, bullet.target.y, 0);
-      const delta = to.sub(from);
-      const dist = delta.length();
-      const dir = delta.normalize();
+      const line = new Line3(
+        new Vector3(bullet.link.source.x, bullet.link.source.y),
+        new Vector3(bullet.link.target.x, bullet.link.target.y)
+      );
 
-      // eslint-disable-next-line no-cond-assign
-      if ((bullet.timeout -= timeDelta) < 0 || dist <= 10) {
+      bullet.at += timeDelta * 2;
+      if (bullet.at >= 1) {
         bullets.current.splice(
           bullets.current.findIndex((b) => b === bullet),
           1
         );
       }
 
-      bullet.x += dir.x * timeDelta * 30;
-      bullet.y += dir.y * timeDelta * 30;
+      const at = new Vector3();
+      line.at(bullet.at, at);
+      bullet.x = at.x;
+      bullet.y = at.y;
+      console.log(bullet);
     });
     forceRender();
   });
