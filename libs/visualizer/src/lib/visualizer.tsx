@@ -97,7 +97,7 @@ function Line({ x0, y0, x1, y1 }) {
 
 export const Visualizer = () => {
   return (
-    <div style={{ border: '1px red solid', width: 1350, height: 500 }}>
+    <div style={{ border: '1px red solid', width: 1350, height: 1000 }}>
       <Canvas
         style={{ background: '#aaccee' }}
         camera={{ position: [0, 0, 10] }}
