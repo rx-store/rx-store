@@ -19,7 +19,11 @@ function Subject(props) {
 
   return (
     // <BoxWithText text={`${props.name}: ${next}`} {...props} boxColor="red" />
-    <BoxWithText text={`${props.name}: `} {...props} boxColor="red" />
+    <BoxWithText
+      text={`${props.name}: ${props.value}`}
+      {...props}
+      boxColor="red"
+    />
   );
 }
 
@@ -158,6 +162,9 @@ export const Layers = () => {
             return link;
           };
 
+          findNode(event.to).value = event.value;
+          forceRender();
+
           const bullet = {
             x: findNode(event.from).x,
             y: findNode(event.from).y,
@@ -165,11 +172,9 @@ export const Layers = () => {
             link: findLink(),
             at: 0,
           };
-          console.log(bullet);
-
           bullets.current.push(bullet);
         }),
-        throttleTime(100, undefined, { trailing: true }),
+        // throttleTime(100, undefined, { trailing: true }),
         tap(() => {
           // forceRender();
           layout.stop();
@@ -290,7 +295,6 @@ export const Layers = () => {
   }, [layout]);
 
   useFrame((_, timeDelta) => {
-    console.log(bullets.current.length, 'bullets');
     bullets.current.forEach((bullet) => {
       const line = new Line3(
         new Vector3(bullet.link.source.x, bullet.link.source.y),
@@ -309,7 +313,6 @@ export const Layers = () => {
       line.at(bullet.at, at);
       bullet.x = at.x;
       bullet.y = at.y;
-      console.log(bullet);
     });
     forceRender();
   });
