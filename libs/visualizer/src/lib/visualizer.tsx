@@ -166,12 +166,14 @@ export const Layers = () => {
             const source = findNode(event.from);
             const target = findNode(event.to);
             const link = links.current.find(
-              (link) => link.source === source && link.target === target
+              (link) =>
+                (link.source === source && link.target === target) ||
+                (link.target === source && link.source === target)
             );
             return link;
           };
 
-          if (!findNode(event.from) || !findNode(event.to)) {
+          if (!findNode(event.from) || !findNode(event.to) || !findLink()) {
             console.warn(event.from, event.to);
             return null;
           }

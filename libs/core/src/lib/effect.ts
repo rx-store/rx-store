@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Sources, createSources } from './sources';
 import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
-import { finalize } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
 import { StoreArg } from './store-arg';
 
@@ -10,6 +10,7 @@ export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
   options?: {
     name: string;
+    parentName?: string; // internal ONLY!
   }
 ) => Observable<any>;
 
@@ -65,7 +66,7 @@ export const spawnRootEffect = <T extends StoreValue>({
    * that devtools knows when each effect receives value(s), which subject(s) they came
    * from, and which subject(s) each effect sinks data back into.
    */
-  const spawnEffect: SpawnEffect<T> = (effect, { name }) => {
+  const spawnEffect: SpawnEffect<T> = (effect, { parentName, name }) => {
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(name, value, observer);
@@ -94,11 +95,12 @@ export const spawnRootEffect = <T extends StoreValue>({
 
         observer.next({
           type: 'link',
-          from: { type: 'effect', name },
-          to: { type: 'effect', name: `${curriedNameWithId}` },
+          to: { type: 'effect', name },
+          from: { type: 'effect', name: `${curriedNameWithId}` },
         });
       }
       return spawnEffect(effect, {
+        parentName: name,
         name: curriedNameWithId,
       });
     };
@@ -108,6 +110,17 @@ export const spawnRootEffect = <T extends StoreValue>({
     const effect$ = effect({ sources, sinks, spawnEffect: childSpawnEffect });
 
     return effect$.pipe(
+      tap((val) => {
+        debug(`rx-store:${parentName}:${name}`)(`inner effect: ${val}`);
+        if (observer) {
+          observer.next({
+            type: 'value',
+            to: { type: 'effect', name },
+            from: { type: 'effect', name: parentName },
+            value,
+          });
+        }
+      }),
       finalize(() => {
         debug(`rx-store:${name}`)('teardown');
         // TODO this won't cleanup on unsubscribe!
