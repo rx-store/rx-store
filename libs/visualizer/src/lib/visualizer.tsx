@@ -335,21 +335,18 @@ export const Layers = () => {
           </mesh>
         );
       })}
-      {layout
-        .nodes()
-        .map((obj) => ({
-          ...obj,
-          x: obj.x - size.width / 2,
-          y: obj.y - size.height / 2,
-        }))
-        .map((props) =>
-          props.subject ? (
-            <Subject key={props.name} {...props} />
-          ) : (
-            <Effect key={props.name} {...props} />
-          )
-        )}
-      {layout.links().map(({ source, target }, i) => {
+      {(layout.nodes().map((obj) => ({
+        ...obj,
+        x: obj.x - size.width / 2,
+        y: obj.y - size.height / 2,
+      })) as any[]).map((props) =>
+        props.subject ? (
+          <Subject key={props.name} {...props} />
+        ) : (
+          <Effect key={props.name} {...props} />
+        )
+      )}
+      {(layout.links() as any).map(({ source, target }, i) => {
         const { x, y } = source;
         const { x: x2, y: y2 } = target;
 

@@ -6,7 +6,12 @@ import React, {
   Context,
 } from 'react';
 import { Observable } from 'rxjs';
-import { Effect, spawnRootEffect, ensureDevtools } from '@rx-store/core';
+import {
+  Effect,
+  spawnRootEffect,
+  ensureDevtools,
+  StoreValue,
+} from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -18,6 +23,16 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
+interface StoreArg<T extends StoreValue> {
+  effect?: undefined | Effect<T>;
+  value: T;
+}
+
+interface StoreReturn<T> {
+  Manager: React.ComponentType<{}>;
+  context: Context<T>;
+}
+
 /**
  * Creates a store, with the provided value & optional effect.
  * Returns a Manager component, that when mounted will subscribe
@@ -27,10 +42,10 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
  * by the consuming code, for downstream components to import in
  * order for them to consume & publish to streams in the store value.
  */
-export const store = <T extends {}>(
-  value: T,
-  rootEffect?: Effect<T>
-): { Manager: React.ComponentType<{}>; context: Context<T> } => {
+export const store = <T extends StoreValue>({
+  value,
+  effect,
+}: StoreArg<T>): StoreReturn<T> => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
 
@@ -62,10 +77,10 @@ export const store = <T extends {}>(
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
-      if (!rootEffect) {
-        return null;
-      }
-      const subscription = spawnRootEffect(value, rootEffect).subscribe();
+      // if (!effect) {
+      //   return null;
+      // }
+      const subscription = spawnRootEffect(value, effect).subscribe();
       return () => subscription.unsubscribe();
     }, []);
 
