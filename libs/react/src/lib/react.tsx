@@ -6,12 +6,7 @@ import React, {
   Context,
 } from 'react';
 import { Observable } from 'rxjs';
-import {
-  Effect,
-  spawnRootEffect,
-  ensureDevtools,
-  StoreValue,
-} from '@rx-store/core';
+import { spawnRootEffect, StoreValue, StoreArg } from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -23,12 +18,7 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
   return value;
 };
 
-interface StoreArg<T extends StoreValue> {
-  effect?: undefined | Effect<T>;
-  value: T;
-}
-
-interface StoreReturn<T> {
+export interface StoreReturn<T> {
   Manager: React.ComponentType<{}>;
   context: Context<T>;
 }
@@ -45,14 +35,16 @@ interface StoreReturn<T> {
 export const store = <T extends StoreValue>({
   value,
   effect,
+  observer,
 }: StoreArg<T>): StoreReturn<T> => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
 
-  ensureDevtools();
-  Object.keys(value).forEach((name) => {
-    window.__rxStoreSubjects.next({ name });
-  });
+  if (observer) {
+    Object.keys(value).forEach((name) => {
+      observer.next({ type: 'subject', name });
+    });
+  }
 
   /**
    * This Manager must be mounted at most once, wrap your children
@@ -71,16 +63,23 @@ export const store = <T extends StoreValue>({
       if (mounted > 1) {
         throw new Error('The Manager component must only be mounted once!');
       }
-      return () => mounted--;
+      return () => {
+        mounted--;
+      };
     }, []);
 
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
+      // TODO - https://github.com/microsoft/TypeScript/issues/40034
       // if (!effect) {
       //   return null;
       // }
-      const subscription = spawnRootEffect(value, effect).subscribe();
+      const subscription = spawnRootEffect({
+        value,
+        effect,
+        observer,
+      }).subscribe();
       return () => subscription.unsubscribe();
     }, []);
 

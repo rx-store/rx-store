@@ -1,6 +1,6 @@
-import { Subject } from 'rxjs';
+import { Subject, Observer } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { StoreValue } from '..';
+import { StoreValue, StoreEvent } from '..';
 import { debug } from 'debug';
 
 /**
@@ -30,33 +30,38 @@ export type Sources<T extends StoreValue> = {
  * @returns An object matching the shape of the original storeValue, but with observables
  * instead of the subjects themselves.
  */
-export const createSources = <T extends {}>(
+export const createSources = <T extends StoreValue>(
   effectName: string,
-  value: T
+  value: T,
+  observer?: Observer<StoreEvent>
 ): Sources<T> => {
   return Object.keys(value).reduce(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
-        debug(`rx-store:${effectName}`)(`source ${subjectName}`)
-        window.__rxStoreLinks.next({
-          from: { type: 'subject', name: subjectName },
-          to: { type: 'effect', name: effectName },
-        })
-        return (value[subjectName] as Subject<any>)
-          .asObservable()
-          .pipe(
-            tap((value) =>{
-              debug(`rx-store:${effectName}`)(
-                `source ${subjectName} value: ${value}`
-              )
-              window.__rxStoreValues.next({
+        debug(`rx-store:${effectName}`)(`source ${subjectName}`);
+        if (observer) {
+          observer.next({
+            type: 'link',
+            from: { type: 'subject', name: subjectName },
+            to: { type: 'effect', name: effectName },
+          });
+        }
+        return (value[subjectName] as Subject<any>).asObservable().pipe(
+          tap((value) => {
+            debug(`rx-store:${effectName}`)(
+              `source ${subjectName} value: ${value}`
+            );
+            if (observer) {
+              observer.next({
+                type: 'value',
                 from: { type: 'subject', name: subjectName },
                 to: { type: 'effect', name: effectName },
                 value,
               });
-            })
-          );
+            }
+          })
+        );
       },
     }),
     {}

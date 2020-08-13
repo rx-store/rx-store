@@ -6,6 +6,8 @@ import { animated } from '@react-spring/three';
 import { Layout } from 'webcola';
 import { tap, map, filter, throttleTime } from 'rxjs/operators';
 import { Vector3, Line3 } from 'three';
+import { StoreArg, StoreValue, StoreEvent } from '@rx-store/core';
+import { Observer, Observable } from 'rxjs';
 
 function Effect(props) {
   return <BoxWithText text={props.name} {...props} boxColor="hotpink" />;
@@ -99,7 +101,11 @@ function Line({ x0, y0, x1, y1 }) {
   );
 }
 
-export const Visualizer = () => {
+export const Visualizer = <T extends StoreValue>({
+  observer,
+}: {
+  observer: StoreArg<T>['observer'];
+}) => {
   return (
     <div style={{ border: '1px red solid', width: 1350, height: 1000 }}>
       <Canvas
@@ -136,9 +142,12 @@ export const Layers = () => {
 
   const bullets = useRef([]);
   useEffect(() => {
-    if (!window.__rxStoreValues) return;
-    const subscription = window.__rxStoreValues
+    if (!window.__rxstore_devtools_observer) return;
+    const subscription = (window.__rxstore_devtools_observer as Observable<
+      StoreEvent
+    >)
       .pipe(
+        filter((event) => event.type === 'value'),
         tap((event) => {
           const findNode = ({ type, name }) => {
             switch (type) {
@@ -162,6 +171,10 @@ export const Layers = () => {
             return link;
           };
 
+          if (!findNode(event.from) || !findNode(event.to)) {
+            console.warn(event.from, event.to);
+            return null;
+          }
           findNode(event.to).value = event.value;
           findNode(event.from).value = event.value;
           forceRender();
@@ -184,12 +197,13 @@ export const Layers = () => {
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [window.__rxStoreValues]);
+  }, [layout]);
 
   useEffect(() => {
-    if (!window.__rxStoreEffects) return;
-    const subscription = window.__rxStoreEffects
+    if (!window.__rxstore_devtools_observer) return;
+    const subscription = window.__rxstore_devtools_observer
       .pipe(
+        filter((event) => event.type === 'effect'),
         tap(({ name, event }) => {
           if (event === 'spawn') {
             nodes.current.push({
@@ -231,23 +245,28 @@ export const Layers = () => {
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [window.__rxStoreEffects]);
+  }, [layout]);
 
   useEffect(() => {
-    window.__rxStoreSubjects.subscribe(({ name }) => {
-      nodes.current.push({
-        name,
-        width: 30,
-        height: 5,
-        subject: true,
+    console.log(window.__rxstore_devtools_observer, 'subscribe!');
+
+    (window.__rxstore_devtools_observer as Observable<StoreEvent>)
+      .pipe(filter((event) => event.type === 'subject'))
+      .subscribe(({ name }) => {
+        nodes.current.push({
+          name,
+          width: 30,
+          height: 5,
+          subject: true,
+        });
       });
-    });
-  }, [window.__rxStoreSubjects]);
+  }, []);
 
   useEffect(() => {
-    if (!window.__rxStoreLinks) return;
-    const subscription = window.__rxStoreLinks
+    if (!window.__rxstore_devtools_observer) return;
+    const subscription = window.__rxstore_devtools_observer
       .pipe(
+        filter((event) => event.type === 'link'),
         map(({ from, to }) => {
           console.log('links add', from, to);
 
@@ -288,7 +307,7 @@ export const Layers = () => {
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [window.__rxStoreLinks]);
+  }, [window.__rxstore_devtools_observer]);
 
   useEffect(() => {
     layout.stop();

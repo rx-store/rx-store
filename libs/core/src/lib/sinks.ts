@@ -1,13 +1,8 @@
 import { StoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
-import {
-  Observable,
-  MonoTypeOperatorFunction,
-  Subject,
-  ReplaySubject,
-} from 'rxjs';
-import { ensureDevtools } from './devtools';
+import { Observable, MonoTypeOperatorFunction, Observer } from 'rxjs';
+import { StoreEvent } from './store-arg';
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -39,29 +34,35 @@ export type Sinks<T extends StoreValue> = {
  * @returns An object matching the shape of the original storeValue, but with "next" methods
  * instead of the subjects themselves.
  */
-export const createSinks = <StoreValue extends {}>(
+export const createSinks = <T extends StoreValue>(
   effectName: string,
-  storeValue: StoreValue
-): Sinks<StoreValue> => {
-  ensureDevtools();
+  storeValue: T,
+  observer?: Observer<StoreEvent>
+): Sinks<T> => {
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
-        window.__rxStoreLinks.next({
-          to: { type: 'subject', name: subjectName },
-          from: { type: 'effect', name: effectName },
-        });
+        if (observer) {
+          observer.next({
+            type: 'link',
+            to: { type: 'subject', name: subjectName },
+            from: { type: 'effect', name: effectName },
+          });
+        }
         return (source: Observable<any>) => {
           return source.pipe(
             tap((value) => {
               debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
-              window.__rxStoreValues.next({
-                to: { type: 'subject', name: subjectName },
-                from: { type: 'effect', name: effectName },
-                value,
-              });
+              if (observer) {
+                observer.next({
+                  type: 'value',
+                  to: { type: 'subject', name: subjectName },
+                  from: { type: 'effect', name: effectName },
+                  value,
+                });
+              }
               storeValue[subjectName].next(value);
             })
           );
@@ -69,5 +70,5 @@ export const createSinks = <StoreValue extends {}>(
       },
     }),
     {}
-  ) as Sinks<StoreValue>;
+  ) as Sinks<T>;
 };
