@@ -2,6 +2,8 @@ import { useRef, useEffect } from 'react';
 import { tap, filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { StoreEvent } from '@rx-store/core';
+import { useFrame } from 'react-three-fiber';
+import { Line3, Vector3 } from 'three';
 
 export const useBullets = (
   storeObservable: Observable<StoreEvent>,
@@ -68,6 +70,29 @@ export const useBullets = (
       .subscribe();
     return () => subscription.unsubscribe();
   }, [forceRender, layout, storeObservable]);
+
+  useFrame((_, timeDelta) => {
+    bullets.current.forEach((bullet) => {
+      const line = new Line3(
+        new Vector3(bullet.link.source.x, bullet.link.source.y),
+        new Vector3(bullet.link.target.x, bullet.link.target.y)
+      );
+
+      bullet.at += timeDelta * 2;
+      if (bullet.at >= 1) {
+        bullets.current.splice(
+          bullets.current.findIndex((b) => b === bullet),
+          1
+        );
+      }
+
+      const at = new Vector3();
+      line.at(bullet.at, at);
+      bullet.x = at.x;
+      bullet.y = at.y;
+    });
+    forceRender();
+  });
 
   return { bullets };
 };

@@ -10,6 +10,7 @@ import { Effect } from '../components/effect';
 import { Link } from '../components/link';
 import { Subject } from '../components/subject';
 import { useBullets } from '../hooks/bullets';
+import { Bullet } from '../components/bullet';
 
 export const Visualizer = ({ onClick, storeObservable }) => {
   return (
@@ -166,46 +167,11 @@ export const Layers = ({ onClick, storeObservable }) => {
     layout.start(1);
   }, [layout]);
 
-  useFrame((_, timeDelta) => {
-    bullets.current.forEach((bullet) => {
-      const line = new Line3(
-        new Vector3(bullet.link.source.x, bullet.link.source.y),
-        new Vector3(bullet.link.target.x, bullet.link.target.y)
-      );
-
-      bullet.at += timeDelta * 2;
-      if (bullet.at >= 1) {
-        bullets.current.splice(
-          bullets.current.findIndex((b) => b === bullet),
-          1
-        );
-      }
-
-      const at = new Vector3();
-      line.at(bullet.at, at);
-      bullet.x = at.x;
-      bullet.y = at.y;
-    });
-    forceRender();
-  });
-
   return (
     <>
-      {bullets.current.map((bullet, i) => {
-        return (
-          <mesh
-            position={[
-              bullet.x - size.width / 2,
-              bullet.y - size.height / 2,
-              bullet.z,
-            ]}
-            key={i}
-          >
-            <sphereBufferGeometry attach="geometry" />
-            <meshStandardMaterial attach="material" />
-          </mesh>
-        );
-      })}
+      {bullets.current.map((bullet, i) => (
+        <Bullet bullet={bullet} key={i} />
+      ))}
       {(layout.nodes().map((obj) => ({
         ...obj,
         x: obj.x - size.width / 2,
