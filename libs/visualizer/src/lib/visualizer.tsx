@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useReducer, useMemo } from 'react';
-import { Canvas, useFrame, useThree } from 'react-three-fiber';
+import { Canvas, useThree } from 'react-three-fiber';
 import { MapControls } from 'drei';
 import { Layout } from 'webcola';
-import { tap, map, filter, throttleTime } from 'rxjs/operators';
-import { Vector3, Line3 } from 'three';
-import { StoreEvent } from '@rx-store/core';
+import { filter } from 'rxjs/operators';
+import { StoreEvent, StoreEventType, StoreEventSubject } from '@rx-store/core';
 import { Observable } from 'rxjs';
 import { Effect } from '../components/effect';
 import { Link } from '../components/link';
@@ -14,7 +13,15 @@ import { Bullet } from '../components/bullet';
 import { useEffects } from '../hooks/effects';
 import { useLinks } from '../hooks/links';
 
-export const Visualizer = ({ onClick, storeObservable }) => {
+export interface VisualizerProps {
+  onClick: (args: [string, string]) => {};
+  storeObservable: Observable<StoreEvent>;
+}
+
+export const Visualizer: React.FC<VisualizerProps> = ({
+  onClick,
+  storeObservable,
+}) => {
   return (
     <div style={{ border: '1px red solid', width: 1350, height: 1000 }}>
       <Canvas
@@ -32,11 +39,22 @@ export const Visualizer = ({ onClick, storeObservable }) => {
   );
 };
 
-export const Layers = ({ onClick, storeObservable }) => {
+export const Layers: React.FC<VisualizerProps> = ({
+  onClick,
+  storeObservable,
+}) => {
   const [, forceRender] = useReducer((n) => n + 1, 0);
   const { size } = useThree();
 
-  const nodes = useRef([]);
+  const nodes = useRef<
+    {
+      name: string;
+      width: number;
+      height: number;
+      subject?: true;
+      effect?: true;
+    }[]
+  >([]);
   const links = useRef([]);
 
   const layout = useMemo(() => {
@@ -59,8 +77,13 @@ export const Layers = ({ onClick, storeObservable }) => {
   useEffects(storeObservable, layout, forceRender, nodes, links);
 
   useEffect(() => {
-    (storeObservable as Observable<StoreEvent>)
-      .pipe(filter((event) => event.type === 'subject'))
+    storeObservable
+      .pipe(
+        filter(
+          (event): event is StoreEventSubject =>
+            event.type === StoreEventType.subject
+        )
+      )
       .subscribe(({ name }) => {
         nodes.current.push({
           name,
@@ -69,7 +92,7 @@ export const Layers = ({ onClick, storeObservable }) => {
           subject: true,
         });
       });
-  }, []);
+  }, [storeObservable]);
 
   useLinks(storeObservable, layout, forceRender, nodes, links);
 

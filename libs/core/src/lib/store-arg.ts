@@ -1,30 +1,37 @@
 import { StoreValue, Effect } from '..';
 import { Observer } from 'rxjs';
 
+export enum StoreEventType {
+  subject = 'subject',
+  effect = 'effect',
+  value = 'value',
+  link = 'link',
+}
+
 export interface StoreEventNode {
-  type: 'subject' | 'effect';
+  type: StoreEventType.subject | StoreEventType.effect;
   name: string;
 }
 
 export interface StoreEventLink {
-  type: 'link';
+  type: StoreEventType.link;
   from: StoreEventNode;
   to: StoreEventNode;
 }
 
 export interface StoreEventEffect {
-  type: 'effect';
+  type: StoreEventType.effect;
   name: string;
   event: 'spawn' | 'teardown';
 }
 
 export interface StoreEventSubject {
-  type: 'subject';
+  type: StoreEventType.subject;
   name: string;
 }
 
 export interface StoreEventValue {
-  type: 'value';
+  type: StoreEventType.value;
   from: StoreEventNode;
   to: StoreEventNode;
   value: unknown;
