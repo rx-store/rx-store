@@ -1,15 +1,13 @@
 import React, { useState, useMemo, useLayoutEffect, useRef } from 'react';
 import { Visualizer } from '@rx-store/visualizer';
 import { useSubscription } from '@rx-store/react';
-import styled from 'styled-components';
 import { filter, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { StoreEvent } from '@rx-store/core';
 
-/* eslint-disable-next-line */
-export interface DevtoolsProps {}
-
-const StyledDevtools = styled.div`
-  color: pink;
-`;
+export interface DevtoolsProps {
+  observable: Observable<StoreEvent>;
+}
 
 export const Devtools = (props: DevtoolsProps) => {
   const messagesEnd = useRef();
@@ -17,7 +15,7 @@ export const Devtools = (props: DevtoolsProps) => {
   const [text, setText] = useState();
   const obs = useMemo(
     () =>
-      window.__rxstore_devtools_observer.pipe(
+      props.observable.pipe(
         filter((event) => event.type === 'value'),
         filter(
           (event) =>
@@ -47,7 +45,7 @@ export const Devtools = (props: DevtoolsProps) => {
           setText('');
           setState(args);
         }}
-        storeObservable={window.__rxstore_devtools_observer}
+        storeObservable={props.observable}
       />
       <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'column' }}>
         <h1>{JSON.stringify(state)}</h1>

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app/App';
-import { Manager } from './app/Manager';
+import { Manager, devTools$ } from './app/Manager';
 import { Devtools } from '@rx-store/devtools';
 
 ReactDOM.render(
@@ -10,7 +10,7 @@ ReactDOM.render(
     <Manager>
       <>
         <App />
-        <Devtools />
+        <Devtools observable={devTools$} />
       </>
     </Manager>
   </React.StrictMode>,
