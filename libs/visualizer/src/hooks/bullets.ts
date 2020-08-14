@@ -49,7 +49,7 @@ export const useBullets = (
           }
           findNode(event.to).value = event.value;
           findNode(event.from).value = event.value;
-          forceRender();
+          // forceRender();
 
           const bullet = {
             x: findNode(event.from).x,
