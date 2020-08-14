@@ -19,7 +19,8 @@
     "paths": {
       "@rx-store/core": ["libs/core/src/index.ts"],
       "@rx-store/react": ["libs/react/src/index.ts"],
-      "@rx-store/visualizer": ["libs/visualizer/src/index.ts"]
+      "@rx-store/visualizer": ["libs/visualizer/src/index.ts"],
+      "@rx-store/devtools": ["libs/devtools/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

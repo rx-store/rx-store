@@ -1,16 +1,30 @@
-import React, { useRef, useState, useEffect, useReducer, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useReducer,
+  useMemo,
+  useCallback,
+} from 'react';
 import { Canvas, useFrame, useThree, ReactThreeFiber } from 'react-three-fiber';
 import * as THREE from 'three';
 import { MapControls } from 'drei';
-import { animated } from '@react-spring/three';
+import { animated, useSpring } from '@react-spring/three';
 import { Layout } from 'webcola';
 import { tap, map, filter, throttleTime } from 'rxjs/operators';
 import { Vector3, Line3 } from 'three';
 import { StoreArg, StoreValue, StoreEvent } from '@rx-store/core';
-import { Observer, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 function Effect(props) {
-  return <BoxWithText text={props.name} {...props} boxColor="hotpink" />;
+  return (
+    <BoxWithText
+      text={props.name}
+      {...props}
+      boxColor="hotpink"
+      onClick={() => props.onClick('effect', props.name)}
+    />
+  );
 }
 
 function Subject(props) {
@@ -25,6 +39,7 @@ function Subject(props) {
       text={`${props.name}: ${props.value}`}
       {...props}
       boxColor="red"
+      onClick={() => props.onClick('subject', props.name)}
     />
   );
 }
@@ -38,7 +53,14 @@ interface BoxWithTextProps {
   text: string;
   boxColor: ReactThreeFiber.Color;
 }
-function BoxWithText({ x, y, width, text, boxColor }: BoxWithTextProps) {
+function BoxWithText({
+  x,
+  y,
+  width,
+  text,
+  boxColor,
+  onClick,
+}: BoxWithTextProps) {
   const [font, setFont] = useState<any>();
   useEffect(() => {
     const loader = new THREE.FontLoader();
@@ -47,11 +69,29 @@ function BoxWithText({ x, y, width, text, boxColor }: BoxWithTextProps) {
     });
   }, []);
 
+  const [isHovered, setIsHovered] = useState(false);
+
+  const onHover = useCallback(
+    (e, value) => {
+      e.stopPropagation(); // stop it at the first intersection
+      setIsHovered(value);
+    },
+    [setIsHovered]
+  );
+
+  const { scale } = useSpring({
+    scale: isHovered ? [1.5, 1.5, 1.5] : [1, 1, 1],
+  });
+
   const textPos: Vector3 = new Vector3(x - width / 2, y, 2);
   const boxPos: Vector3 = new Vector3(x, y, 0);
   if (!font) return null;
   return (
-    <group>
+    <group
+      onClick={onClick}
+      onPointerOver={(e) => onHover(e, true)}
+      onPointerOut={(e) => onHover(e, false)}
+    >
       <mesh position={textPos}>
         <textBufferGeometry
           attach="geometry"
@@ -66,10 +106,10 @@ function BoxWithText({ x, y, width, text, boxColor }: BoxWithTextProps) {
         />
         <meshStandardMaterial attach="material" color="black" />
       </mesh>
-      <mesh position={boxPos}>
+      <animated.mesh position={boxPos} scale={scale}>
         <sphereBufferGeometry attach="geometry" args={[2]} />
         <meshStandardMaterial attach="material" color={boxColor} />
-      </mesh>
+      </animated.mesh>
     </group>
   );
 }
@@ -102,9 +142,8 @@ function Line({ x0, y0, x1, y1 }) {
 }
 
 export const Visualizer = <T extends StoreValue>({
-  observer,
-}: {
-  observer: StoreArg<T>['observer'];
+  onClick,
+  storeObservable,
 }) => {
   return (
     <div style={{ border: '1px red solid', width: 1350, height: 1000 }}>
@@ -114,7 +153,7 @@ export const Visualizer = <T extends StoreValue>({
       >
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <Layers />
+        <Layers onClick={onClick} storeObservable={storeObservable} />
         {/* <GroundPlane />
         <BackDrop /> */}
         <MapControls target={[0, 0, 0]} maxDistance={1000} minDistance={50} />
@@ -123,7 +162,7 @@ export const Visualizer = <T extends StoreValue>({
   );
 };
 
-export const Layers = () => {
+export const Layers = ({ onClick, storeObservable }) => {
   // const store = useStore(rootContext);
   const [, forceRender] = useReducer((n) => n + 1, 0);
   const { size } = useThree();
@@ -142,10 +181,8 @@ export const Layers = () => {
 
   const bullets = useRef([]);
   useEffect(() => {
-    if (!window.__rxstore_devtools_observer) return;
-    const subscription = (window.__rxstore_devtools_observer as Observable<
-      StoreEvent
-    >)
+    if (!storeObservable) return;
+    const subscription = (storeObservable as Observable<StoreEvent>)
       .pipe(
         filter((event) => event.type === 'value'),
         tap((event) => {
@@ -362,9 +399,9 @@ export const Layers = () => {
         y: obj.y - size.height / 2,
       })) as any[]).map((props) =>
         props.subject ? (
-          <Subject key={props.name} {...props} />
+          <Subject key={props.name} {...props} onClick={onClick} />
         ) : (
-          <Effect key={props.name} {...props} />
+          <Effect key={props.name} {...props} onClick={onClick} />
         )
       )}
       {(layout.links() as any).map(({ source, target }, i) => {

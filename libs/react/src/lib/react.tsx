@@ -12,7 +12,7 @@ import { spawnRootEffect, StoreValue, StoreArg } from '@rx-store/core';
  * A React hook that consumes from the passed Rx Store context,
  * asserts the store value is present, and returns it.
  */
-export const useStore = <T extends {}>(context: Context<T>): T => {
+export const useStore = <T extends StoreValue>(context: Context<T>): T => {
   const value = useContext(context);
   if (!value) throw new Error();
   return value;
@@ -36,6 +36,7 @@ export const store = <T extends StoreValue>({
   value,
   effect,
   observer,
+  onSelect,
 }: StoreArg<T>): StoreReturn<T> => {
   /** Each store gets a React context */
   const context = createContext<T>(value);

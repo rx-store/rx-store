@@ -1,6 +1,5 @@
 import { StoreValue, Effect } from '..';
 import { Observer } from 'rxjs';
-import { Context } from 'vm';
 
 export interface StoreEventNode {
   type: 'subject' | 'effect';
@@ -41,4 +40,5 @@ export interface StoreArg<T extends StoreValue> {
   effect?: undefined | Effect<T>;
   value: T;
   observer?: Observer<StoreEvent>;
+  onSelect?: (type: 'subject' | 'effect', name: string) => void;
 }
