@@ -13,7 +13,7 @@ const StyledDevtools = styled.div`
 
 export const Devtools = (props: DevtoolsProps) => {
   const messagesEnd = useRef();
-  const [state, setState] = useState();
+  const [state, setState] = useState(['effect', 'root']);
   const [text, setText] = useState();
   const obs = useMemo(
     () =>
