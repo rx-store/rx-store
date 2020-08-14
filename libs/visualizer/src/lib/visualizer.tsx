@@ -12,6 +12,7 @@ import { Subject } from '../components/subject';
 import { useBullets } from '../hooks/bullets';
 import { Bullet } from '../components/bullet';
 import { useEffects } from '../hooks/effects';
+import { useLinks } from '../hooks/links';
 
 export const Visualizer = ({ onClick, storeObservable }) => {
   return (
@@ -70,52 +71,7 @@ export const Layers = ({ onClick, storeObservable }) => {
       });
   }, []);
 
-  useEffect(() => {
-    if (!storeObservable) return;
-    const subscription = storeObservable
-      .pipe(
-        filter((event) => event.type === 'link'),
-        map(({ from, to }) => {
-          console.log('links add', from, to);
-
-          const findNode = ({ type, name }) => {
-            switch (type) {
-              case 'effect':
-                return nodes.current.find(
-                  (node) => node.effect && node.name === name
-                );
-              case 'subject':
-                return nodes.current.find(
-                  (node) => node.subject && node.name === name
-                );
-            }
-          };
-
-          if (!findNode(from) || !findNode(to)) {
-            console.warn(from, to);
-            return null;
-          }
-
-          return {
-            source: findNode(from),
-            target: findNode(to),
-          };
-        }),
-        filter((v) => !!v),
-        tap((link) => {
-          links.current.push(link);
-        }),
-        throttleTime(100, undefined, { trailing: true }),
-        tap(() => {
-          // forceRender()
-          console.log('run layout', links.current.length, nodes.current.length);
-          layout.stop();
-          layout.start();
-        })
-      )
-      .subscribe();
-    return () => subscription.unsubscribe();
-  }, [storeObservable]);
+  useLinks(storeObservable, layout, forceRender, nodes, links);
 
   useEffect(() => {
     layout.stop();
