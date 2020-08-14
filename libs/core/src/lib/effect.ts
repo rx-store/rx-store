@@ -117,7 +117,7 @@ export const spawnRootEffect = <T extends StoreValue>({
             type: 'value',
             to: { type: 'effect', name },
             from: { type: 'effect', name: parentName },
-            value,
+            value: val,
           });
         }
       }),
