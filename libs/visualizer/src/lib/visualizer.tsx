@@ -11,6 +11,7 @@ import { Link } from '../components/link';
 import { Subject } from '../components/subject';
 import { useBullets } from '../hooks/bullets';
 import { Bullet } from '../components/bullet';
+import { useEffects } from '../hooks/effects';
 
 export const Visualizer = ({ onClick, storeObservable }) => {
   return (
@@ -54,53 +55,7 @@ export const Layers = ({ onClick, storeObservable }) => {
     links
   );
 
-  useEffect(() => {
-    if (!storeObservable) return;
-    const subscription = storeObservable
-      .pipe(
-        filter((event) => event.type === 'effect'),
-        tap(({ name, event }) => {
-          if (event === 'spawn') {
-            nodes.current.push({
-              name,
-              width: 30,
-              height: 5,
-              effect: true,
-            });
-            console.log('effects add', name);
-          } else {
-            const index = nodes.current.findIndex((o) => name === o.name);
-            nodes.current.splice(index, 1);
-
-            Object.entries(links.current)
-              .reduce((acc, [i, link]) => {
-                if (
-                  (link.source.effect && link.source.name === name) ||
-                  (link.target.effect && link.target.name === name)
-                ) {
-                  return [...acc, i];
-                }
-                return acc;
-              }, [])
-              .reverse()
-              .forEach((i) => {
-                console.log(i);
-
-                links.current.splice(i, 1);
-              });
-            console.log('effects delete', name);
-          }
-        }),
-        throttleTime(100, undefined, { trailing: true }),
-        tap(() => {
-          // forceRender();
-          layout.stop();
-          layout.start(1);
-        })
-      )
-      .subscribe();
-    return () => subscription.unsubscribe();
-  }, [layout]);
+  useEffects(storeObservable, layout, forceRender, nodes, links);
 
   useEffect(() => {
     (storeObservable as Observable<StoreEvent>)
