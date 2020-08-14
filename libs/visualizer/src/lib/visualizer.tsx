@@ -1,150 +1,16 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useReducer,
-  useMemo,
-  useCallback,
-} from 'react';
-import { Canvas, useFrame, useThree, ReactThreeFiber } from 'react-three-fiber';
-import * as THREE from 'three';
+import React, { useRef, useEffect, useReducer, useMemo } from 'react';
+import { Canvas, useFrame, useThree } from 'react-three-fiber';
 import { MapControls } from 'drei';
-import { animated, useSpring } from '@react-spring/three';
 import { Layout } from 'webcola';
 import { tap, map, filter, throttleTime } from 'rxjs/operators';
 import { Vector3, Line3 } from 'three';
-import { StoreArg, StoreValue, StoreEvent } from '@rx-store/core';
+import { StoreValue, StoreEvent } from '@rx-store/core';
 import { Observable } from 'rxjs';
+import { Effect } from '../components/effect';
+import { Link } from '../components/link';
+import { Subject } from '../components/subject';
 
-function Effect(props) {
-  return (
-    <BoxWithText
-      text={props.name}
-      {...props}
-      boxColor="hotpink"
-      onClick={() => props.onClick('effect', props.name)}
-    />
-  );
-}
-
-function Subject(props) {
-  // const store = useStore(rootContext);
-
-  // subscribe to the rx store subject that this 3D object represents
-  // const [next] = useSubscription(store[props.name]);
-
-  return (
-    // <BoxWithText text={`${props.name}: ${next}`} {...props} boxColor="red" />
-    <BoxWithText
-      text={`${props.name}: ${props.value}`}
-      {...props}
-      boxColor="red"
-      onClick={() => props.onClick('subject', props.name)}
-    />
-  );
-}
-
-interface BoxWithTextProps {
-  x: number;
-  y: number;
-  z: number;
-  width: number;
-  height: number;
-  text: string;
-  boxColor: ReactThreeFiber.Color;
-}
-function BoxWithText({
-  x,
-  y,
-  width,
-  text,
-  boxColor,
-  onClick,
-}: BoxWithTextProps) {
-  const [font, setFont] = useState<any>();
-  useEffect(() => {
-    const loader = new THREE.FontLoader();
-    loader.load('/assets/helvetiker_regular.typeface.json', function (_font) {
-      setFont(_font);
-    });
-  }, []);
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  const onHover = useCallback(
-    (e, value) => {
-      e.stopPropagation(); // stop it at the first intersection
-      setIsHovered(value);
-    },
-    [setIsHovered]
-  );
-
-  const { scale } = useSpring({
-    scale: isHovered ? [1.5, 1.5, 1.5] : [1, 1, 1],
-  });
-
-  const textPos: Vector3 = new Vector3(x - width / 2, y, 2);
-  const boxPos: Vector3 = new Vector3(x, y, 0);
-  if (!font) return null;
-  return (
-    <group
-      onClick={onClick}
-      onPointerOver={(e) => onHover(e, true)}
-      onPointerOut={(e) => onHover(e, false)}
-    >
-      <mesh position={textPos}>
-        <textBufferGeometry
-          attach="geometry"
-          args={[
-            text,
-            {
-              font: font,
-              size: 2,
-              height: 0.01,
-            },
-          ]}
-        />
-        <meshStandardMaterial attach="material" color="black" />
-      </mesh>
-      <animated.mesh position={boxPos} scale={scale}>
-        <sphereBufferGeometry attach="geometry" args={[2]} />
-        <meshStandardMaterial attach="material" color={boxColor} />
-      </animated.mesh>
-    </group>
-  );
-}
-
-function Line({ x0, y0, x1, y1 }) {
-  const pos = [x0, y0, 0];
-
-  const deltaX = x1 - x0;
-  const deltaY = y1 - y0;
-  const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-  const normX = deltaX / dist;
-  const normY = deltaY / dist;
-
-  return (
-    <animated.mesh position={pos}>
-      {/* <bufferGeometry attach="geometry" onUpdate={onUpdate} /> */}
-      {/* <animated.standardMaterial attach="material" color={color} /> */}
-      <arrowHelper
-        args={[
-          new THREE.Vector3(normX, normY, 0),
-          undefined,
-          dist - 5,
-          'black',
-          2,
-          2,
-        ]}
-      />
-    </animated.mesh>
-  );
-}
-
-export const Visualizer = <T extends StoreValue>({
-  onClick,
-  storeObservable,
-}) => {
+export const Visualizer = ({ onClick, storeObservable }) => {
   return (
     <div style={{ border: '1px red solid', width: 1350, height: 1000 }}>
       <Canvas
@@ -182,7 +48,7 @@ export const Layers = ({ onClick, storeObservable }) => {
   const bullets = useRef([]);
   useEffect(() => {
     if (!storeObservable) return;
-    const subscription = (storeObservable as Observable<StoreEvent>)
+    const subscription = storeObservable
       .pipe(
         filter((event) => event.type === 'value'),
         tap((event) => {
@@ -239,8 +105,8 @@ export const Layers = ({ onClick, storeObservable }) => {
   }, [layout]);
 
   useEffect(() => {
-    if (!window.__rxstore_devtools_observer) return;
-    const subscription = window.__rxstore_devtools_observer
+    if (!storeObservable) return;
+    const subscription = storeObservable
       .pipe(
         filter((event) => event.type === 'effect'),
         tap(({ name, event }) => {
@@ -287,9 +153,7 @@ export const Layers = ({ onClick, storeObservable }) => {
   }, [layout]);
 
   useEffect(() => {
-    console.log(window.__rxstore_devtools_observer, 'subscribe!');
-
-    (window.__rxstore_devtools_observer as Observable<StoreEvent>)
+    (storeObservable as Observable<StoreEvent>)
       .pipe(filter((event) => event.type === 'subject'))
       .subscribe(({ name }) => {
         nodes.current.push({
@@ -302,8 +166,8 @@ export const Layers = ({ onClick, storeObservable }) => {
   }, []);
 
   useEffect(() => {
-    if (!window.__rxstore_devtools_observer) return;
-    const subscription = window.__rxstore_devtools_observer
+    if (!storeObservable) return;
+    const subscription = storeObservable
       .pipe(
         filter((event) => event.type === 'link'),
         map(({ from, to }) => {
@@ -346,7 +210,7 @@ export const Layers = ({ onClick, storeObservable }) => {
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [window.__rxstore_devtools_observer]);
+  }, [storeObservable]);
 
   useEffect(() => {
     layout.stop();
@@ -409,7 +273,7 @@ export const Layers = ({ onClick, storeObservable }) => {
         const { x: x2, y: y2 } = target;
 
         return (
-          <Line
+          <Link
             key={i}
             x0={x - size.width / 2}
             y0={y - size.height / 2}
