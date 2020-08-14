@@ -4,11 +4,12 @@ import { MapControls } from 'drei';
 import { Layout } from 'webcola';
 import { tap, map, filter, throttleTime } from 'rxjs/operators';
 import { Vector3, Line3 } from 'three';
-import { StoreValue, StoreEvent } from '@rx-store/core';
+import { StoreEvent } from '@rx-store/core';
 import { Observable } from 'rxjs';
 import { Effect } from '../components/effect';
 import { Link } from '../components/link';
 import { Subject } from '../components/subject';
+import { useBullets } from '../hooks/bullets';
 
 export const Visualizer = ({ onClick, storeObservable }) => {
   return (
@@ -29,7 +30,6 @@ export const Visualizer = ({ onClick, storeObservable }) => {
 };
 
 export const Layers = ({ onClick, storeObservable }) => {
-  // const store = useStore(rootContext);
   const [, forceRender] = useReducer((n) => n + 1, 0);
   const { size } = useThree();
 
@@ -45,64 +45,13 @@ export const Layers = ({ onClick, storeObservable }) => {
       .on('end', forceRender);
   }, []);
 
-  const bullets = useRef([]);
-  useEffect(() => {
-    if (!storeObservable) return;
-    const subscription = storeObservable
-      .pipe(
-        filter((event) => event.type === 'value'),
-        tap((event) => {
-          const findNode = ({ type, name }) => {
-            switch (type) {
-              case 'effect':
-                return nodes.current.find(
-                  (node) => node.effect && node.name === name
-                );
-              case 'subject':
-                return nodes.current.find(
-                  (node) => node.subject && node.name === name
-                );
-            }
-          };
-
-          const findLink = () => {
-            const source = findNode(event.from);
-            const target = findNode(event.to);
-            const link = links.current.find(
-              (link) =>
-                (link.source === source && link.target === target) ||
-                (link.target === source && link.source === target)
-            );
-            return link;
-          };
-
-          if (!findNode(event.from) || !findNode(event.to) || !findLink()) {
-            console.warn(event.from, event.to);
-            return null;
-          }
-          findNode(event.to).value = event.value;
-          findNode(event.from).value = event.value;
-          forceRender();
-
-          const bullet = {
-            x: findNode(event.from).x,
-            y: findNode(event.from).y,
-            z: 1,
-            link: findLink(),
-            at: 0,
-          };
-          bullets.current.push(bullet);
-        }),
-        // throttleTime(100, undefined, { trailing: true }),
-        tap(() => {
-          // forceRender();
-          // layout.stop();
-          // layout.start(1);
-        })
-      )
-      .subscribe();
-    return () => subscription.unsubscribe();
-  }, [layout]);
+  const { bullets } = useBullets(
+    storeObservable,
+    layout,
+    forceRender,
+    nodes,
+    links
+  );
 
   useEffect(() => {
     if (!storeObservable) return;
