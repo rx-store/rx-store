@@ -1,4 +1,4 @@
-import { scan, startWith, switchMap } from 'rxjs/operators';
+import { scan, startWith } from 'rxjs/operators';
 import { Effect } from '@rx-store/core';
 import { AppContextValue } from '../../app-context-value.interface';
 import { timer, merge } from 'rxjs';
