@@ -16,7 +16,7 @@ module.exports = {
           nextVersionLabel: '1.0.0-next',
         },
         {
-          to: 'docs/introduction/getting-started',
+          to: 'docs/',
           activeBasePath: 'docs',
           label: 'Getting Started',
           position: 'left',
