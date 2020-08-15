@@ -11,5 +11,4 @@ export interface AppContextValue extends StoreValue {
    */
   counterChange$: Subject<number>;
   count$: BehaviorSubject<number>;
-  time$: BehaviorSubject<number>;
 }
