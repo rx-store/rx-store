@@ -8,7 +8,6 @@ export const createStoreValue = () => {
   const storeValue: AppContextValue = {
     counterChange$,
     count$: new BehaviorSubject(0),
-    time$: new BehaviorSubject<number>(0),
   };
 
   return storeValue;
