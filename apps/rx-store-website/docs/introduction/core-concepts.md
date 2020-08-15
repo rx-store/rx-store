@@ -75,4 +75,4 @@ function Component() {
 }
 ```
 
-Read more about the [useSubscription hook](../api-reference/use-subscription) in the API reference.
+Read more about the [useSubscription hook](./react/api-reference/use-subscription.md) in the API reference.

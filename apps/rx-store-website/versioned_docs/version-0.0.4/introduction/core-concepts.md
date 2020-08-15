@@ -11,7 +11,6 @@ Unlike a state management library, `Rx Store` is a stream management library. It
 
 Let's walk through the `Rx Store` concepts using some examples:
 
-
 ### Store
 
 In `Rx Store` you can have one or many stores. Each store contains a `value` object, where you define various [streams](./rxjs-concepts.md):
@@ -25,7 +24,6 @@ In `Rx Store` you can have one or many stores. Each store contains a `value` obj
   viewerCount$: new Subject(),
 }
 ```
-
 
 ### Manager
 
@@ -43,11 +41,9 @@ Here is an example of an effect that subscribes to the `count$` stream, and emit
 
 ```tsx
 export const effect = (store) => {
-  const subscription = store.count$
-    .pipe(delay(1000))
-    .subscribe((count) => {
-      store.countCopy$.next(count);
-    });
+  const subscription = store.count$.pipe(delay(1000)).subscribe((count) => {
+    store.countCopy$.next(count);
+  });
   return () => subscription.unsubscribe();
 };
 ```
@@ -55,7 +51,6 @@ export const effect = (store) => {
 ### Components
 
 In addition to subscribing to the stream(s) in your store as part of an effect, you can subscribe directly from your components. This allows you to re-render a component whenever a stream emits a value, or synchronize your component's state with your stream(s).
-
 
 React Example:
 
@@ -69,7 +64,6 @@ function Component() {
   return (
     <>
       Latest viewer count: {next}
-      
       Stream had an error?: {error}
       Stream is ended?: {complete}
     </>
@@ -77,4 +71,4 @@ function Component() {
 }
 ```
 
-Read more about the [useSubscription hook](../api-reference/use-subscription) in the API reference.
+Read more about the [useSubscription hook](./react/api-reference/use-subscription.md) in the API reference.
