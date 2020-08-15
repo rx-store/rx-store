@@ -12,15 +12,10 @@ import { timer, merge } from 'rxjs';
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const counter: Effect<AppContextValue> = ({
-  sources,
-  sinks,
-  spawnEffect,
-}) =>
+export const counter: Effect<AppContextValue> = ({ sources, sinks }) =>
   sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
-    switchMap(() => spawnEffect(() => timer(0, 1000), { name: 'timer' })),
     sinks.count$()
   );
 
