@@ -14,8 +14,8 @@ asserts the store value is present, and returns it.
 ## Example
 
 ```jsx
-import { rootContext } from "./index";
-import { useSubscription, useStore } from "@rx-store/react-rx-store";
+import { rootContext } from './index';
+import { useSubscription, useStore } from '@rx-store/react';
 
 function Component() {
   const store = useStore(rootContext);

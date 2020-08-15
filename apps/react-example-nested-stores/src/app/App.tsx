@@ -1,38 +1,41 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { interval, Observable } from "rxjs";
-import { store, useStore } from "@rx-store/react-rx-store";
-import { RootContextValue } from "./types";
-import { RxStoreEffect } from "@rx-store/rx-store";
-import {rootContext} from "./Manager";
-
+import React, { useState, useEffect, useMemo } from 'react';
+import { interval, Observable, merge, Subject } from 'rxjs';
+import { store, useStore } from '@rx-store/react';
+import { RootContextValue } from './types';
+import { Effect } from '@rx-store/core';
+import { rootContext } from './Manager';
+import { tap } from 'rxjs/operators';
 
 export interface ChildContextValue extends RootContextValue {
-  foo$: Observable<number>;
+  foo$: Subject<number>;
 }
 
-const createChildEffect: (i: number) => RxStoreEffect<ChildContextValue> = (
-  i
-) => (value) => {
-  value.count$.subscribe((count) => console.log({ c: count }));
-  const subscription = value.foo$.subscribe((value) =>
-    console.log(`hello from ${i} with value of ${value}`)
+const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
+  sources,
+  sinks,
+}) =>
+  merge(
+    sources.count$().pipe(tap((count) => console.log({ c: count }))),
+    sources
+      .foo$()
+      .pipe(
+        tap((value) => console.log(`hello from ${i} with value of ${value}`))
+      )
   );
-  return () => subscription.unsubscribe();
-};
 
 const createChildValue: (
   parentStore: RootContextValue,
   i: number
 ) => ChildContextValue = (parentStore, i) => ({
   ...parentStore,
-  foo$: interval(1000 * (i + 1)),
+  foo$: new Subject(),
 });
 
 const Child: React.FC<{ i: number }> = ({ i }) => {
   // debugging logs
   useEffect(() => {
-    console.log("child mount", i);
-    return () => console.log("child unmount", i);
+    console.log('child mount', i);
+    return () => console.log('child unmount', i);
   }, [i]);
 
   // use the root store

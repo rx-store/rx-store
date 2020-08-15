@@ -1,8 +1,11 @@
 {
-  "name": "@rx-store/rx-store",
+  "name": "@rx-store/core",
   "version": "0.0.4",
   "license": "ISC",
   "peerDependencies": {
     "rxjs": "^6.5.5"
+  },
+  "dependencies": {
+    "debug": "^4.1.1"
   }
 }

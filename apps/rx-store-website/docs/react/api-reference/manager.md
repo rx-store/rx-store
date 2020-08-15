@@ -25,7 +25,7 @@ None.
 ### Example 1 - A single Store
 
 ```jsx
-import { Provider } from "@rx-store/react-rx-store";
+import { Provider } from '@rx-store/react';
 const storeValue = { $foo: new Subject() };
 const { Manager, context } = store(storeValue);
 export const rootContext = context;
@@ -38,15 +38,17 @@ export const rootContext = context;
 ### Example 2 - Dynamic / Multiple Child Stores
 
 ```jsx
-const childEffect = (i) => (value) => {
-  const subscription = value.child$.subscribe((value) =>
-    console.log(`child ${i} received child value ${value}`)
-  );
-  const subscription = value.parent$.subscribe((value) =>
-    console.log(`child ${i} received parent value ${value}`)
-  );
-  return () => subscription.unsubscribe();
-};
+const childEffect = (i) => ({sources, sinks}) =>
+  merge(
+    sources.child$().pipe(
+      tap(value) =>
+        console.log(`child ${i} received child value ${value}`)
+    ),
+    sources.parent$().pipe(
+      tap(value) =>
+        console.log(`child ${i} received parent value ${value}`)
+    )
+  )
 
 const childValue = (parentStore, i) => ({
   parent$: parentStore.count$,

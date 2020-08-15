@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RootAppStore } from './types';
-import { StoreService } from './store/store.service';
+import { AppStoreValue } from './types';
+import { StoreManagerService } from './store/store-manager.service';
 import { createStoreValue } from './store/value';
 import { appRootEffect } from './store/effects';
 
@@ -11,16 +11,17 @@ import { appRootEffect } from './store/effects';
 })
 export class AppComponent implements OnInit {
   title = 'Angular RxStore example counter';
-  store: RootAppStore;
+  store: AppStoreValue;
   n: number;
 
   a = Array;
 
-  constructor(private storeService: StoreService) {}
+  constructor(private storeService: StoreManagerService) {}
 
   ngOnInit(): void {
     this.n = 1;
     this.store = createStoreValue();
+
     this.storeService.init(this.store, appRootEffect);
   }
 

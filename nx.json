@@ -20,14 +20,12 @@
     },
     "react-example-counter-e2e": {
       "tags": [],
-      "implicitDependencies": [
-        "react-example-counter"
-      ]
+      "implicitDependencies": ["react-example-counter"]
     },
-    "rx-store": {
+    "core": {
       "tags": []
     },
-    "react-rx-store": {
+    "react": {
       "tags": []
     },
     "react-example-nested-stores": {
@@ -35,18 +33,14 @@
     },
     "react-example-nested-stores-e2e": {
       "tags": [],
-      "implicitDependencies": [
-        "react-example-nested-stores"
-      ]
+      "implicitDependencies": ["react-example-nested-stores"]
     },
     "angular-example-counter": {
       "tags": []
     },
     "angular-example-counter-e2e": {
       "tags": [],
-      "implicitDependencies": [
-        "angular-example-counter"
-      ]
+      "implicitDependencies": ["angular-example-counter"]
     },
     "rx-store-website": {
       "tags": []

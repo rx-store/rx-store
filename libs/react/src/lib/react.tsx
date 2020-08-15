@@ -4,9 +4,9 @@ import React, {
   useState,
   useContext,
   Context,
-} from "react";
-import { Observable } from "rxjs";
-import { RxStoreEffect } from "@rx-store/rx-store";
+} from 'react';
+import { Observable } from 'rxjs';
+import { Effect, spawnRootEffect } from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -29,7 +29,7 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
  */
 export const store = <T extends {}>(
   value: T,
-  rootEffect?: RxStoreEffect<T>
+  rootEffect?: Effect<T>
 ): { Manager: React.ComponentType<{}>; context: Context<T> } => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
@@ -49,7 +49,7 @@ export const store = <T extends {}>(
     useEffect(() => {
       mounted++;
       if (mounted > 1) {
-        throw new Error("The Manager component must only be mounted once!");
+        throw new Error('The Manager component must only be mounted once!');
       }
       return () => mounted--;
     }, []);
@@ -58,17 +58,11 @@ export const store = <T extends {}>(
     // also does some runtime validation checks
     useEffect(() => {
       if (!rootEffect) {
-        if (typeof rootEffect !== "function") {
-          throw new Error("rootEffect, if supplied, must be a function");
-        }
-        rootEffect = () => () => null;
+        return null;
       }
-      const cleanupFn = rootEffect(value);
-      if (typeof cleanupFn !== "function") {
-        throw new Error("rootEffect must return a cleanup function");
-      }
-      return cleanupFn;
-    }, [value]);
+      const subscription = spawnRootEffect(value, rootEffect).subscribe();
+      return () => subscription.unsubscribe();
+    }, []);
 
     // Wraps the children in the context provider, supplying
     // the Rx store value.
@@ -113,7 +107,7 @@ export function useSubscription<T>(
       (error) => setError(error),
       () => setComplete(true)
     );
-    return subscription.unsubscribe;
+    return () => subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
 }
