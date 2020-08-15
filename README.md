@@ -1,6 +1,6 @@
 # RX Store
 
-Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/docs/
+Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/
 
 # Motivation
 
@@ -65,7 +65,7 @@ With `Rx Store`, we do not have 1 top level state object that is always changing
 
 Check out the full [example counter app](https://github.com/rx-store/rx-store/tree/master/apps/react-example-counter
 
-Head on over to the website to [Get Started](https://rx-store.github.io/rx-store/docs/)!
+Head on over to the website to [Get Started](https://rx-store.github.io/rx-store/)!
 
 ## Development
 
