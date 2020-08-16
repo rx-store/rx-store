@@ -76,11 +76,11 @@ const store = useStore(context);
 
 ## Display count
 
-We can display the current count by accessing the subject, converting it to an observable and subscribing to it with the `useSubscription()` hook provided by `Rx Store`:
+We can display the current count by accessing the subject, and subscribing to it with the `useSubscription()` hook provided by `Rx Store`:
 
 ```tsx
 const store = useStore(context);
-const [next] = useSubscription(store.count$.asObservable());
+const [next] = useSubscription(store.count$);
 return <div>count: {next}</div>;
 ```
 
@@ -118,7 +118,7 @@ const { Manager, context } = store(storeValue, effect);
 
 function App() {
   const store = useStore(context);
-  const [next] = useSubscription(store.count$.asObservable());
+  const [next] = useSubscription(store.count$);
 
   return (
     <div className="App">
