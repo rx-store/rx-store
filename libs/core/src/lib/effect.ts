@@ -7,7 +7,7 @@ import { debug } from 'debug';
 
 export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
-  options?: {
+  options: {
     name: string;
   }
 ) => Observable<any>;
