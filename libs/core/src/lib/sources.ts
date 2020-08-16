@@ -13,7 +13,7 @@ import { debug } from 'debug';
  * references the effect's debug key, used for devtools.
  */
 export type Sources<T extends StoreValue> = {
-  [P in keyof T]?: () => ReturnType<T[P]['asObservable']>;
+  [P in keyof T]: () => ReturnType<T[P]['asObservable']>;
 };
 
 /**
@@ -30,7 +30,7 @@ export type Sources<T extends StoreValue> = {
  * @returns An object matching the shape of the original storeValue, but with observables
  * instead of the subjects themselves.
  */
-export const createSources = <T extends {}>(
+export const createSources = <T extends StoreValue>(
   effectName: string,
   value: T
 ): Sources<T> => {
@@ -38,8 +38,8 @@ export const createSources = <T extends {}>(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
-        debug(`rx-store:${effectName}`)(`source ${subjectName}`)
-        return (value[subjectName] as Subject<any>)
+        debug(`rx-store:${effectName}`)(`source ${subjectName}`);
+        return (value[subjectName] as Subject<unknown>)
           .asObservable()
           .pipe(
             tap((value) =>

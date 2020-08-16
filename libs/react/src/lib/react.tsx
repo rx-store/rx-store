@@ -51,17 +51,21 @@ export const store = <T extends {}>(
       if (mounted > 1) {
         throw new Error('The Manager component must only be mounted once!');
       }
-      return () => mounted--;
+      return () => {
+        mounted--;
+      };
     }, []);
 
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
       if (!rootEffect) {
-        return null;
+        return;
       }
       const subscription = spawnRootEffect(value, rootEffect).subscribe();
-      return () => subscription.unsubscribe();
+      return () => {
+        subscription.unsubscribe();
+      };
     }, []);
 
     // Wraps the children in the context provider, supplying
@@ -114,7 +118,7 @@ export function useSubscription<T>(
 
 export function withSubscription<T>(
   WrappedComponent: React.ComponentType<{
-    next: T;
+    next?: T;
     error: any;
     complete: boolean;
   }>,
