@@ -7,12 +7,12 @@ import { appRootEffect } from './store/effects';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   title = 'Angular RxStore example counter';
-  store: AppStoreValue;
-  n: number;
+  store!: AppStoreValue;
+  n!: number;
 
   a = Array;
 
@@ -32,5 +32,4 @@ export class AppComponent implements OnInit {
   removeCounter(): void {
     this.n--;
   }
-
 }
