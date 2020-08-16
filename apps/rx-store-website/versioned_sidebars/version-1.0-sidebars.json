@@ -1,0 +1,114 @@
+{
+  "version-1.0/someSidebar": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Introduction",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.0/introduction/getting-started"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/introduction/rxjs-concepts"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/introduction/installation"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Core Concepts",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.0/basics/subjects"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/basics/observables"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/basics/effects"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "React",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.0/react/react-installation"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/react/react"
+        },
+        {
+          "collapsed": true,
+          "type": "category",
+          "label": "API Reference",
+          "items": [
+            {
+              "type": "doc",
+              "id": "version-1.0/react/api-reference/store"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/react/api-reference/manager"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/react/api-reference/use-store"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/react/api-reference/use-subscription"
+            },
+            {
+              "type": "doc",
+              "id": "version-1.0/react/api-reference/with-subscription"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Angular",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.0/angular/angular"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Other",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-1.0/faq"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/principles"
+        },
+        {
+          "type": "doc",
+          "id": "version-1.0/motivation"
+        }
+      ]
+    }
+  ]
+}
