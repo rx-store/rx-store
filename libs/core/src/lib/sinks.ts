@@ -16,7 +16,7 @@ import { Observable, MonoTypeOperatorFunction } from 'rxjs';
  * such that it can be consumed by referencing it from a pipeline
  */
 export type Sinks<T extends StoreValue> = {
-  [P in keyof T]?: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
+  [P in keyof T]: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
 };
 
 /**
@@ -33,16 +33,16 @@ export type Sinks<T extends StoreValue> = {
  * @returns An object matching the shape of the original storeValue, but with "next" methods
  * instead of the subjects themselves.
  */
-export const createSinks = <StoreValue extends {}>(
+export const createSinks = <T extends StoreValue>(
   effectName: string,
-  storeValue: StoreValue
-): Sinks<StoreValue> => {
+  storeValue: T
+): Sinks<T> => {
   return Object.keys(storeValue).reduce(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
-        return (source: Observable<any>) => {
+        return (source: Observable<unknown>) => {
           return source.pipe(
             tap((value) => {
               debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
@@ -53,5 +53,5 @@ export const createSinks = <StoreValue extends {}>(
       },
     }),
     {}
-  ) as Sinks<StoreValue>;
+  ) as Sinks<T>;
 };
