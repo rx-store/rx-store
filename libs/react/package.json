@@ -1,6 +1,6 @@
 {
   "name": "@rx-store/react",
-  "version": "1.0.0-rc4",
+  "version": "1.0.0",
   "license": "ISC",
   "dependencies": {
     "debug": "^4.1.1"
@@ -8,6 +8,6 @@
   "peerDependencies": {
     "rxjs": "^6.5.5",
     "react": "^16.13.1",
-    "@rx-store/core": "1.0.0-rc4"
+    "@rx-store/core": "1.0.0"
   }
 }
