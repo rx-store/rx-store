@@ -1,6 +1,6 @@
 {
   "name": "@rx-store/core",
-  "version": "0.0.4",
+  "version": "1.0.0-rc1",
   "license": "ISC",
   "peerDependencies": {
     "rxjs": "^6.5.5"
