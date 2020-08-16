@@ -7,9 +7,9 @@ import { AppStoreValue } from '../types';
   providedIn: 'root',
 })
 export class StoreManagerService implements OnDestroy {
-  rootEffect: Observable<any>;
-  rootEffectSubscription: Subscription;
-  store: AppStoreValue;
+  rootEffect!: Observable<any>;
+  rootEffectSubscription!: Subscription;
+  store!: AppStoreValue;
   init(storeValue: AppStoreValue, storeEffect: Effect<any>): void {
     this.store = storeValue;
     this.rootEffect = spawnRootEffect(storeValue, storeEffect);

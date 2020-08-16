@@ -13,7 +13,6 @@ module.exports = {
         {
           type: 'docsVersionDropdown',
           position: 'left',
-          nextVersionLabel: '1.0.0-next',
         },
         {
           to: 'docs/',
