@@ -1,6 +1,6 @@
 ---
 id: counter
-title: Counter App Tutorial
+title: Counter App
 ---
 
 ## Create a React app
