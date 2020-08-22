@@ -2,7 +2,7 @@ module.exports = {
   core: [
     {
       type: 'category',
-      label: 'Introduction',
+      label: 'Overview',
       collapsed: false,
       items: [
         'core/introduction/motivation',
@@ -15,11 +15,28 @@ module.exports = {
       collapsed: false,
       type: 'category',
       label: 'Basic Concepts',
-      items: ['core/basics/effects'],
+      items: [
+        'core/basic-concepts/store-value',
+        'core/basic-concepts/effects',
+        'core/basic-concepts/manager',
+        'core/basic-concepts/components',
+      ],
     },
-    'core/introduction/rxjs-concepts',
-    'core/basics/subjects',
-    'core/basics/observables',
+    {
+      collapsed: false,
+      type: 'category',
+      label: 'Guides',
+      items: [
+        'core/guides/nesting-effects',
+        'core/guides/state-vs-events',
+        'core/guides/manipulate-time',
+        'core/guides/recursive-effects',
+        'core/guides/combining-in-effects',
+        'core/guides/network-requests',
+        'core/guides/trigger-subjects',
+        'core/guides/control-when-effects-run',
+      ],
+    },
   ],
   react: {
     ['Getting Started']: ['react/react-installation', 'react/react'],

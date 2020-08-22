@@ -3,13 +3,56 @@ id: effects
 title: Effects
 ---
 
-`Rx Store` effects are functions that return observables. Rx Store [subscribes](https://rxjs-dev.firebaseapp.com/guide/subscription) to these for you.
+Effects are functions that encapsulate a unit of logic as an [observable](https://rxjs.dev/guide/observable). Just like functions represent a unit of computation in a regular program, and a component is the smallest "atom" in a UI library, effects are the main unit of computation of Rx Store. Effects can:
 
----
+- React to your application's events
+- Run asynchronous logic
+- Trigger side effects (such as an http request)
+- Spawn other effects
+- Emit new event(s) in your application
 
-Each store has only one root effect, you may nest effects with Rx operators, building a tree of effects your data flows through, triggering side effects as the data flows!
+## Basic Example
 
-Effects will normally produce side effects, or handle some cross cutting concern. Effects are long lived, until your store is torn down & disposed of. You can use filtering operators in RxJS such as `skipWhile()`, `takeUntil()` to use other streams in the store to control & limit when & how your effect does work.
+Here is an example of an effect that emits a "pong" `chatMessage` in response to a "ping" `chatMessage`, after a one second delay:
+
+```tsx
+export const effect = ({sources, sinks}) =>
+  sources.chatMessage$()
+    .pipe(
+      filter(message => message === 'ping')
+      mapTo('pong')
+      delay(1000),
+      sinks.chatMessage$()
+    )
+```
+
+## Lifecycle
+
+Effects are just functions which return observables. Rx Store [subscribes](https://rxjs-dev.firebaseapp.com/guide/subscription) to your effects in the [store's manager.](./manager.md) The logic in your observable will not run until the [manager](./manager.md) subscribes, just like a function does not do any work until called, and a component does nothing until rendered in a UI library.
+
+Effects are long lived, until your store is torn down & disposed of. You can use filtering operators in RxJS such as `skipWhile()`, `takeUntil()` to use other streams in the store to control & limit when & how your effect does work.
+
+## Sources &amp; Sinks
+
+The subjects in your [store value](#store-value) are accessed via _sources_ and _sinks_, which:
+
+- Are read &amp; write only interfaces for reacting to and publishing events
+- Are unique for each effect, allowing Rx Store to track your data flow
+- Makes the data flow uni-directional and explicit
+
+## Nesting Effects
+
+Each store has only one root effect, you may nest effects with Rx operators, building a tree of effects your data flows through, triggering side effects as the data flows! For example, one common pattern is to have the root effect
+
+You can use the `spawnEffect` function within an effect to create new effects. Combine this with any of the [RxJS operators](https://rxjs.dev/guide/operators) like `merge`:
+
+```ts
+export const appRootEffect = ({ spawnEffect }) =>
+  merge(
+    spawnEffect(time, { name: 'time' }),
+    spawnEffect(counter, { name: 'counter' })
+  );
+```
 
 ## Processing a stream of changes, and creating a stream of state
 
@@ -59,18 +102,6 @@ export const effect = ({ sources }) =>
     tap((clickEvent) => {
       console.log({ clickEvent });
     })
-  );
-```
-
-## Nesting multiple effects
-
-If you want multiple effects & subscriptions, it is up to you to nest them using RxJs operators. Rx Store just expects to have one root subscription, and it does not care about values emitted on this subscription. Each effect is passed a `spawnEffect` function which allows `Rx Store` to track the parent child relationship between effects, essentially keeping an internal "stack trace" of effects.
-
-```tsx
-export const appRootEffect = ({ spawnEffect }) =>
-  merge(
-    spawnEffect(time, { name: 'time' }),
-    spawnEffect(counter, { name: 'counter' })
   );
 ```
 
