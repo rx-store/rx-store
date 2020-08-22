@@ -4,12 +4,9 @@ module.exports = {
       'introduction/getting-started',
       'introduction/rxjs-concepts',
       'introduction/installation',
-    ],
-    ['Core Concepts']: [
-      'basics/subjects',
-      'basics/observables',
       'basics/effects',
     ],
+    ['RxJS Concepts']: ['basics/subjects', 'basics/observables'],
     React: [
       'react/react-installation',
       { Guides: ['react/guides/counter'] },
