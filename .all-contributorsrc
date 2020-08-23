@@ -1,6 +1,6 @@
 {
   "projectName": "rx-store",
-  "projectOwner": "Josh Ribakoff",
+  "projectOwner": "rx-store",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -27,7 +27,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "kylecannon",
+      "name": "Kyle Cannon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/867978?v=4",
+      "profile": "https://github.com/kylecannon",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
