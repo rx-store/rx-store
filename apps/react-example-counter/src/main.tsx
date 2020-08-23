@@ -10,7 +10,7 @@ ReactDOM.render(
     <Manager>
       <>
         <App />
-        <Devtools observable={devTools$} />
+        <Devtools panelProps={{ observable: devTools$ }} />
       </>
     </Manager>
   </React.StrictMode>,
