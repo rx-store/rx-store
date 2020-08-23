@@ -142,14 +142,14 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=kosich" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/joshribakoff"><img src="https://avatars0.githubusercontent.com/u/4021306?v=4" width="100px;" alt=""/><br /><sub><b>Josh Ribakoff</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/kylecannon"><img src="https://avatars2.githubusercontent.com/u/867978?v=4" width="100px;" alt=""/><br /><sub><b>Kyle Cannon</b></sub></a><br /><a href="#infra-kylecannon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-    <td align="center"><a href="https://github.com/gennadypolakov"><img src="https://avatars3.githubusercontent.com/u/67854099?v=4" width="100px;" alt=""/><br /><sub><b>gennadypolakov</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=gennadypolakov" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=kosich" title="Documentation">📖</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Akosich" title="Reviewed Pull Requests">👀</a> <a href="#mentoring-kosich" title="Mentoring">🧑‍🏫</a></td>
+    <td align="center"><a href="https://github.com/joshribakoff"><img src="https://avatars0.githubusercontent.com/u/4021306?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Josh Ribakoff</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Code">💻</a> <a href="#maintenance-joshribakoff" title="Maintenance">🚧</a> <a href="#platform-joshribakoff" title="Packaging/porting to new platform">📦</a> <a href="#projectManagement-joshribakoff" title="Project Management">📆</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Ajoshribakoff" title="Reviewed Pull Requests">👀</a> <a href="#ideas-joshribakoff" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/kylecannon"><img src="https://avatars2.githubusercontent.com/u/867978?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kyle Cannon</b></sub></a><br /><a href="#infra-kylecannon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-kylecannon" title="Maintenance">🚧</a> <a href="#platform-kylecannon" title="Packaging/porting to new platform">📦</a> <a href="#projectManagement-kylecannon" title="Project Management">📆</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Akylecannon" title="Reviewed Pull Requests">👀</a> <a href="#ideas-kylecannon" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/gennadypolakov"><img src="https://avatars3.githubusercontent.com/u/67854099?v=4?s=100" width="100px;" alt=""/><br /><sub><b>gennadypolakov</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=gennadypolakov" title="Code">💻</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
