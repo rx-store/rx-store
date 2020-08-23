@@ -111,7 +111,7 @@ function Home() {
                     <p>
                       Due to Rx Store's unique architecture, the entire store is
                       introspectable. This affordance allows for features such
-                      as the interactive 3D data flow visualization.
+                      as the interactive 3D data flow visualization and
                       <a href="https://github.com/rx-store/rx-store/pull/48">
                         other powerful features that are in the works
                       </a>
