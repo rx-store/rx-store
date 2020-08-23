@@ -1,10 +1,17 @@
 {
+  "projectName": "rx-store",
+  "projectOwner": "Josh Ribakoff",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": false,
-  "contributors": [
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [],
+  "contributorsPerLine": 7,
+   "contributors": [
     {
       "login": "kosich",
       "name": "Kostia P",
@@ -15,10 +22,4 @@
       ]
     }
   ],
-  "contributorsPerLine": 7,
-  "projectName": "rx-store",
-  "projectOwner": "rx-store",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "skipCi": true
 }
