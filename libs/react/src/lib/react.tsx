@@ -116,6 +116,9 @@ export const store: StoreFn = <T extends StoreValue>(
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
+      if (!effect) {
+        return;
+      }
       const subscription = spawnRootEffect({
         value,
         effect,
