@@ -29,3 +29,6 @@ jobs:
       - name: Build affected projects
         shell: bash
         run: node_modules/.bin/nx affected:build --parallel --base=origin/master
+      - name: Test affected projects
+        shell: bash
+        run: node_modules/.bin/nx affected:test --parallel --base=origin/master
