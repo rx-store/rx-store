@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { Sources, createSources } from './sources';
 import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
 import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
-import { StoreArg, StoreEventType } from './store-arg';
+import { StoreEventType, StoreEvent } from './store-arg';
 
 export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
@@ -30,6 +30,12 @@ export type Effect<T extends StoreValue> = (
   effectArgs: EffectArgs<T>
 ) => Observable<any>;
 
+export interface RootEffectArgs<T extends StoreValue> {
+  value: T;
+  effect: Effect<T>;
+  observer?: Observer<StoreEvent>;
+}
+
 const ids: Record<string, number> = {};
 
 /**
@@ -49,7 +55,7 @@ export const spawnRootEffect = <T extends StoreValue>({
   value,
   effect,
   observer,
-}: StoreArg<T>) => {
+}: RootEffectArgs<T>) => {
   /**
    * spawnEffect closes over the `storeValue`. It takes in a `name`
    * and an effectFn.

@@ -5,12 +5,13 @@ import React, {
   useContext,
   Context,
 } from 'react';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import {
   spawnRootEffect,
   StoreValue,
-  StoreArg,
   StoreEventType,
+  StoreEvent,
+  Effect,
 } from '@rx-store/core';
 
 /**
@@ -28,6 +29,23 @@ export interface StoreReturn<T> {
   context: Context<T>;
 }
 
+export interface StoreFn {
+  <T extends StoreValue>(arg: StoreArg<T>): StoreReturn<T>;
+
+  /** @deprecated - created 1.0.0 release a bit prematurely, decided this should take a single object instead of positional args  */
+  <T extends StoreValue>(
+    value: StoreArg<T>['value'],
+    effect: StoreArg<T>['effect']
+  ): StoreReturn<T>;
+}
+
+export interface StoreArg<T extends StoreValue> {
+  effect?: undefined | Effect<T>;
+  value: T;
+  observer?: Observer<StoreEvent>;
+  onSelect?: (type: 'subject' | 'effect', name: string) => void;
+}
+
 /**
  * Creates a store, with the provided value & optional effect.
  * Returns a Manager component, that when mounted will subscribe
@@ -37,17 +55,39 @@ export interface StoreReturn<T> {
  * by the consuming code, for downstream components to import in
  * order for them to consume & publish to streams in the store value.
  */
-export const store = <T extends StoreValue>({
-  value,
-  effect,
-  observer,
-}: StoreArg<T>): StoreReturn<T> => {
+export const store: StoreFn = <T extends StoreValue>(
+  storeArgOrValue: StoreArg<T> | T,
+  deprecatedEffect?: StoreArg<T>['effect']
+) => {
+  let value: T;
+  let effect: StoreArg<T>['effect'] | undefined;
+  let observer: StoreArg<T>['observer'] | undefined;
+  if (
+    storeArgOrValue &&
+    Object.values(storeArgOrValue).every(
+      (value: unknown) =>
+        // this is only here to supporte deprecated functionality
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        typeof value === 'object' && value['next'] !== undefined
+    )
+  ) {
+    value = storeArgOrValue as T;
+    effect = deprecatedEffect;
+  } else {
+    value = storeArgOrValue.value as T;
+    effect = storeArgOrValue.effect as StoreArg<T>['effect'] | undefined;
+    observer = storeArgOrValue.observer;
+  }
+
   /** Each store gets a React context */
   const context = createContext<T>(value);
 
   if (observer) {
     Object.keys(value).forEach((name) => {
-      observer.next({ type: StoreEventType.subject, name });
+      if (observer) {
+        observer.next({ type: StoreEventType.subject, name });
+      }
     });
   }
 

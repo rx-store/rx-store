@@ -42,10 +42,3 @@ export type StoreEvent =
   | StoreEventEffect
   | StoreEventSubject
   | StoreEventValue;
-
-export interface StoreArg<T extends StoreValue> {
-  effect?: undefined | Effect<T>;
-  value: T;
-  observer?: Observer<StoreEvent>;
-  onSelect?: (type: 'subject' | 'effect', name: string) => void;
-}
