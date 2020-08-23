@@ -38,17 +38,32 @@ module.exports = {
       ],
     },
   ],
-  react: {
-    ['Getting Started']: ['react/react-installation', 'react/react'],
-    Tutorials: ['react/guides/counter'],
-    'API Reference': [
-      'react/api-reference/store',
-      'react/api-reference/manager',
-      'react/api-reference/use-store',
-      'react/api-reference/use-subscription',
-      'react/api-reference/with-subscription',
-    ],
-  },
+  react: [
+    {
+      type: 'category',
+      label: 'Getting Started',
+      collapsed: false,
+      items: ['react/react-installation', 'react/react'],
+    },
+    {
+      type: 'category',
+      label: 'Tutorials',
+      collapsed: false,
+      items: ['react/guides/counter'],
+    },
+    {
+      type: 'category',
+      label: 'API Reference',
+      collapsed: false,
+      items: [
+        'react/api-reference/store',
+        'react/api-reference/manager',
+        'react/api-reference/use-store',
+        'react/api-reference/use-subscription',
+        'react/api-reference/with-subscription',
+      ],
+    },
+  ],
   angular: {
     Angular: ['angular/angular'],
   },
