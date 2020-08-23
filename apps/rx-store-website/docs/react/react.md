@@ -20,7 +20,7 @@ Creating a child store essentially seals off the entire sub-tree mounted within 
 
 Communication upward works much like a callback prop in React. You must explicitly pass subject(s) and observable(s) down from parent store(s) to child store(s), if you want to allow the child store to communicate up to, or consume streams provided by the parent store(s), respectfully.
 
-We recommend starting out with one root store, and nesting stores only tactfully after considering the tradeoffs, so as to avoid the pitfalls of unintenionally building a "spider web" of streams with uneccessary complexity. [Read more about nesting stores, to "seal off" a sub-tree](../react/api-reference/manager#example-2---dynamic--multiple-child-stores).
+We recommend starting out with one root store, and nesting stores only tactfully after considering the tradeoffs, so as to avoid the pitfalls of unintentionally building a "spider web" of streams with unnecessary complexity. [Read more about nesting stores, to "seal off" a sub-tree](../react/api-reference/manager#example-2---dynamic--multiple-child-stores).
 
 ## &lt;Manager /&gt; Component
 
