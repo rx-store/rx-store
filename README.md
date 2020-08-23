@@ -1,6 +1,9 @@
 # RX Store
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/
@@ -121,11 +124,13 @@ By passing `--with-deps`, we are telling Nx to build a dependency graph & compil
 ### Developing on the Website / Docs
 
 Develop:
+
 ```
 nx run rx-store-website:docusaurus
 ```
 
 Build:
+
 ```
 nx build rx-store-website:docusaurus
 ```
@@ -137,8 +142,15 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<!-- markdownlint-restore -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=kosich" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

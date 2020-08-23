@@ -10,5 +10,16 @@
   "commit": true,
   "commitConvention": "none",
   "contributors": [],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+   "contributors": [
+    {
+      "login": "kosich",
+      "name": "Kostia P",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3994718?v=4",
+      "profile": "https://github.com/kosich",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
 }
