@@ -9,9 +9,7 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "none",
-  "contributors": [],
-  "contributorsPerLine": 7,
-   "contributors": [
+  "contributors": [
     {
       "login": "kosich",
       "name": "Kostia P",
@@ -20,6 +18,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "joshribakoff",
+      "name": "Josh Ribakoff",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4021306?v=4",
+      "profile": "https://github.com/joshribakoff",
+      "contributions": [
+        "code"
+      ]
     }
   ],
+  "contributorsPerLine": 7
 }
