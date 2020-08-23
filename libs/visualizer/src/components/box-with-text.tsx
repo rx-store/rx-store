@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ReactThreeFiber } from 'react-three-fiber';
 import * as THREE from 'three';
 import { animated, useSpring } from '@react-spring/three';
-import { Vector3 } from 'three';
+import { Vector3, Font } from 'three';
 
 export interface BoxWithTextProps {
   x: number;
@@ -23,7 +23,7 @@ export function BoxWithText({
   boxColor,
   onClick,
 }: BoxWithTextProps) {
-  const [font, setFont] = useState<string>();
+  const [font, setFont] = useState<Font>();
   useEffect(() => {
     const loader = new THREE.FontLoader();
     loader.load('/assets/helvetiker_regular.typeface.json', function (_font) {
