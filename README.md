@@ -1,7 +1,7 @@
 # RX Store
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/
@@ -142,12 +142,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/Josh Ribakoff/rx-store/commits?author=kosich" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/joshribakoff"><img src="https://avatars0.githubusercontent.com/u/4021306?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Josh Ribakoff</b></sub></a><br /><a href="https://github.com/Josh Ribakoff/rx-store/commits?author=joshribakoff" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=kosich" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/joshribakoff"><img src="https://avatars0.githubusercontent.com/u/4021306?v=4" width="100px;" alt=""/><br /><sub><b>Josh Ribakoff</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kylecannon"><img src="https://avatars2.githubusercontent.com/u/867978?v=4" width="100px;" alt=""/><br /><sub><b>Kyle Cannon</b></sub></a><br /><a href="#infra-kylecannon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-restore -->
+<!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
