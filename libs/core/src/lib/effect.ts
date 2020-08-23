@@ -10,8 +10,12 @@ export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
   options: {
     name: string;
-    parentName?: string; // internal ONLY!
   }
+) => Observable<any>;
+
+export type SpawnEffectInternal<T extends StoreValue> = (
+  effect: Effect<T>,
+  stack: string[]
 ) => Observable<any>;
 
 interface EffectArgs<T extends StoreValue> {
@@ -72,7 +76,8 @@ export const spawnRootEffect = <T extends StoreValue>({
    * that devtools knows when each effect receives value(s), which subject(s) they came
    * from, and which subject(s) each effect sinks data back into.
    */
-  const spawnEffect: SpawnEffect<T> = (effect, { parentName, name }) => {
+  const spawnEffect: SpawnEffectInternal<T> = (effect, stack) => {
+    const name = stack[stack.length - 1];
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(name, value, observer);
@@ -81,7 +86,7 @@ export const spawnRootEffect = <T extends StoreValue>({
     // Keeps the "context" intact, by appending to name to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
-      const curriedName = name + ':' + childName;
+      const curriedName = `${stack.join(':')}:${childName}`;
       if (undefined === ids[curriedName]) {
         ids[curriedName] = 1;
       } else {
@@ -105,10 +110,7 @@ export const spawnRootEffect = <T extends StoreValue>({
           from: { type: StoreEventType.effect, name: `${curriedNameWithId}` },
         });
       }
-      return spawnEffect(effect, {
-        parentName: name,
-        name: curriedNameWithId,
-      });
+      return spawnEffect(effect, [...stack, curriedNameWithId]);
     };
 
     // Run the effect function passing in the curried sources, sinks, and
@@ -117,12 +119,12 @@ export const spawnRootEffect = <T extends StoreValue>({
 
     return effect$.pipe(
       tap((val) => {
-        debug(`rx-store:${parentName}:${name}`)(`inner effect: ${val}`);
+        debug(`rx-store:${stack.join(':')}`)(`inner effect: ${val}`);
         if (observer) {
           observer.next({
             type: StoreEventType.value,
             to: { type: StoreEventType.effect, name },
-            from: { type: StoreEventType.effect, name: parentName || '' },
+            from: { type: StoreEventType.effect, name: stack.join(':') || '' },
             value: val,
           });
         }
@@ -151,5 +153,5 @@ export const spawnRootEffect = <T extends StoreValue>({
   if (!effect) {
     return Observable.create();
   }
-  return spawnEffect(effect, { name: 'root' });
+  return spawnEffect(effect, ['root']);
 };
