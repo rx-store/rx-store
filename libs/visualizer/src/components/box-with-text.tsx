@@ -23,7 +23,7 @@ export function BoxWithText({
   boxColor,
   onClick,
 }: BoxWithTextProps) {
-  const [font, setFont] = useState<any>();
+  const [font, setFont] = useState<string>();
   useEffect(() => {
     const loader = new THREE.FontLoader();
     loader.load('/assets/helvetiker_regular.typeface.json', function (_font) {

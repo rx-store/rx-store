@@ -1,41 +1,29 @@
-import React, {
-  useState,
-  useMemo,
-  useLayoutEffect,
-  useRef,
-  useEffect,
-} from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Visualizer } from '@rx-store/visualizer';
 import { useSubscription } from '@rx-store/react';
-import {
-  filter,
-  tap,
-  throttleTime,
-  bufferTime,
-  bufferWhen,
-} from 'rxjs/operators';
+import { filter, tap, bufferWhen } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-import { StoreEvent } from '@rx-store/core';
+import { StoreEvent, StoreEventType } from '@rx-store/core';
 
 export interface DevtoolsProps {
   observable: Observable<StoreEvent>;
 }
 
 export const Devtools = (props: DevtoolsProps) => {
-  const messagesEnd = useRef();
-  const [state, setState] = useState(['effect', 'root']);
-  const [text, setText] = useState();
+  const messagesEnd = useRef<HTMLDivElement | null>(null);
+  const [state, setState] = useState<[string, string]>(['effect', 'root']);
+  const [text, setText] = useState<string>('');
 
   const frame$ = useRef(new Subject());
 
   const obs = useMemo(
     () =>
       props.observable.pipe(
-        filter((event) => event.type === 'value'),
+        filter((event) => event.type === StoreEventType.value),
         filter(
-          (event) =>
-            (event.to.type === state[0] && event.to.name == state[1]) ||
-            (event.from.type === state[0] && event.from.name == state[1])
+          (event: any) =>
+            (event.to.type === state[0] && event.to.name === state[1]) ||
+            (event.from.type === state[0] && event.from.name === state[1])
         ),
         bufferWhen(() => frame$.current),
         tap((events) => {
@@ -43,14 +31,14 @@ export const Devtools = (props: DevtoolsProps) => {
             (event) =>
               '\n' + `${event.from.type}: ${event.from.name} ${event.value}`
           );
-          setText((text) => text + eventsText);
+          setText((text: string) => text + eventsText);
         })
       ),
     [props.observable, state]
   );
 
   useEffect(() => {
-    const stop = false;
+    let stop = false;
     const tick = () => {
       window.requestAnimationFrame(() => {
         frame$.current.next(true);
@@ -66,6 +54,7 @@ export const Devtools = (props: DevtoolsProps) => {
   }, []);
 
   useEffect(() => {
+    if (!messagesEnd || !messagesEnd.current) return;
     messagesEnd.current.scrollIntoView();
   }, [text]);
 
@@ -73,9 +62,9 @@ export const Devtools = (props: DevtoolsProps) => {
   return (
     <div style={{ display: 'flex', height: 1000 }}>
       <Visualizer
-        onClick={(...args) => {
+        onClick={(type: string, value: string) => {
           setText('');
-          setState(args);
+          setState([type, value]);
         }}
         storeObservable={props.observable}
       />

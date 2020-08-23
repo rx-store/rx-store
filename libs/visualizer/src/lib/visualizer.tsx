@@ -14,7 +14,7 @@ import { useEffects } from '../hooks/effects';
 import { useLinks } from '../hooks/links';
 
 export interface VisualizerProps {
-  onClick: (args: [string, string]) => {};
+  onClick: (type: StoreEventType, value: string) => void;
   storeObservable: Observable<StoreEvent>;
 }
 

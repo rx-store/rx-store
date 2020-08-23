@@ -517,6 +517,25 @@
       "projectType": "library",
       "schematics": {},
       "architect": {
+         "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/devtools",
+            "tsConfig": "libs/devtools/tsconfig.lib.json",
+            "project": "libs/devtools/package.json",
+            "entryFile": "libs/devtools/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
         "lint": {
           "builder": "@nrwl/linter:lint",
           "options": {

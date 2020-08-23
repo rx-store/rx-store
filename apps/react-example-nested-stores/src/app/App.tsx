@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { interval, Observable, merge, Subject } from 'rxjs';
+import { merge, Subject } from 'rxjs';
 import { store, useStore } from '@rx-store/react';
 import { RootContextValue } from './types';
 import { Effect } from '@rx-store/core';
@@ -12,7 +12,6 @@ export interface ChildContextValue extends RootContextValue {
 
 const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
   sources,
-  sinks,
 }) =>
   merge(
     sources.count$().pipe(tap((count) => console.log({ c: count }))),
@@ -26,7 +25,7 @@ const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
 const createChildValue: (
   parentStore: RootContextValue,
   i: number
-) => ChildContextValue = (parentStore, i) => ({
+) => ChildContextValue = (parentStore) => ({
   ...parentStore,
   foo$: new Subject(),
 });
@@ -39,15 +38,15 @@ const Child: React.FC<{ i: number }> = ({ i }) => {
   }, [i]);
 
   // use the root store
-  const rootStore = useStore(rootContext);
+  const rootStore = useStore<RootContextValue>(rootContext);
 
   // create a child store
   const { Manager } = useMemo(
     () =>
-      store<ChildContextValue>(
-        createChildValue(rootStore, i),
-        createChildEffect(i)
-      ),
+      store<ChildContextValue>({
+        value: createChildValue(rootStore, i),
+        effect: createChildEffect(i),
+      }),
     [i, rootStore]
   );
 
