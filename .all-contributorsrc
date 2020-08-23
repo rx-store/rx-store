@@ -36,6 +36,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "gennadypolakov",
+      "name": "gennadypolakov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/67854099?v=4",
+      "profile": "https://github.com/gennadypolakov",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
