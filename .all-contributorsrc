@@ -42,7 +42,12 @@
       "avatar_url": "https://avatars2.githubusercontent.com/u/867978?v=4",
       "profile": "https://github.com/kylecannon",
       "contributions": [
-        "infra"
+        "infra",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "review",
+        "ideas"
       ]
     },
     {
