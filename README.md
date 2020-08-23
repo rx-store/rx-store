@@ -1,71 +1,16 @@
 # RX Store
 
-Reactive store for frontend UI libraries, like React, using Rxjs. https://rx-store.github.io/rx-store/
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-# Motivation
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 
-Existing "reactive" stores exist, built with RxJS, but all were all inherently built with "state" instead of "streams", or uses a single global event emitter with a single root state that changes on every update, like ngRx store or redux-observable.
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-In larger redux apps, even with memoization, running every mapStateToProps on every action can be expensive. It is especially problematic if you have lots of things happening over time. For these use cases, it is better to deal with "streams" instead of with "state".
+![Build status](https://github.com/rx-store/rx-store/workflows/build/badge.svg)
 
-# Principles
+Rx Store is a reactive state management solution for frontend component libraries such as React & Angular, allowing you to build your application's logic using RxJs.
 
-- Only render/deliver updates for what changed, nothing more.
-- Only deals with events, not state.
-- Work with the RxJS API directly, this is not a "wrapper" on top of Rxjs.
-- Derive state "up" instead of "down" (read on).
-
-## Deriving state "up"
-
-In a traditional Redux app, you may be used to paring down the state using selectors, or deriving state "down".
-
-When thinking & working reactively, first think about the stream you want, and work backwards from that. The result is you write code that builds the state "up".
-
-Example:
-
-```tsx
-const allClick$ = merge(myClick$, yourClick$);
-```
-
-In this example we're working backwards, we wanted a stream of all the clicks, so we defined it. Then we assigned the result of merging two other streams. This merge operator builds "up" two smaller streams into one larger combined stream.
-
-Compare this to Redux change detection:
-
-```tsx
-const mapStateToProps = (state) => ({
-  user: state.user,
-  page: state.page,
-});
-```
-
-With Redux, you start out with the top level state, and pared it "down" to the subset of state you wanted. This works fine until you have a larger app where running all `mapStateToProps` on every state change in the entire app becomes unwieldy. It is also prone to unwanted renders, imagine the `page` state looks like this:
-
-```
-{
-    name: 'Test',
-    url: '/test',
-}
-```
-
-Now imagine someone comes along & adds the current time to this object, in a manner where it updates every 100ms (10x a second):
-
-```
-{
-    name: 'Test',
-    url: '/test',
-    time: 1592539673319
-}
-```
-
-With the naive `mapStateToProps` function above, your component would re-render with a new `page` object 10x a second, even if all the component actually renders is the page's `name`. In other words, Redux gives you every change by default, for you to pare down & memoize (otherwise your components may wastefully render). In Rx Store your components make specific granular subscriptions, the only way to get every change would be to manually `merge()` together everything in your app & subscribe to it.
-
-With `Rx Store`, we do not have 1 top level state object that is always changing, which we have to pare down & memoize. Instead, we have many low level things updating independently, that we can subscribe to selectively, and we can combine these data sources, and have fine grained control of how those updates are pushed to our UI components over time.
-
-## React Example app
-
-Check out the full [example counter app](https://github.com/rx-store/rx-store/tree/master/apps/react-example-counter
-
-Head on over to the website to [Get Started](https://rx-store.github.io/rx-store/)!
+[Read the documentation to learn more about rx store and get started!](https://rx-store.github.io/rx-store/)
 
 ## Development
 
@@ -118,11 +63,36 @@ By passing `--with-deps`, we are telling Nx to build a dependency graph & compil
 ### Developing on the Website / Docs
 
 Develop:
+
 ```
 nx run rx-store-website:docusaurus
 ```
 
 Build:
+
 ```
 nx build rx-store-website:docusaurus
 ```
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/kosich"><img src="https://avatars3.githubusercontent.com/u/3994718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kostia P</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=kosich" title="Documentation">📖</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Akosich" title="Reviewed Pull Requests">👀</a> <a href="#mentoring-kosich" title="Mentoring">🧑‍🏫</a></td>
+    <td align="center"><a href="https://github.com/joshribakoff"><img src="https://avatars0.githubusercontent.com/u/4021306?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Josh Ribakoff</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Code">💻</a> <a href="#maintenance-joshribakoff" title="Maintenance">🚧</a> <a href="#platform-joshribakoff" title="Packaging/porting to new platform">📦</a> <a href="#projectManagement-joshribakoff" title="Project Management">📆</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Ajoshribakoff" title="Reviewed Pull Requests">👀</a> <a href="#ideas-joshribakoff" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/rx-store/rx-store/commits?author=joshribakoff" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/kylecannon"><img src="https://avatars2.githubusercontent.com/u/867978?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kyle Cannon</b></sub></a><br /><a href="#infra-kylecannon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-kylecannon" title="Maintenance">🚧</a> <a href="#platform-kylecannon" title="Packaging/porting to new platform">📦</a> <a href="#projectManagement-kylecannon" title="Project Management">📆</a> <a href="https://github.com/rx-store/rx-store/pulls?q=is%3Apr+reviewed-by%3Akylecannon" title="Reviewed Pull Requests">👀</a> <a href="#ideas-kylecannon" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/gennadypolakov"><img src="https://avatars3.githubusercontent.com/u/67854099?v=4?s=100" width="100px;" alt=""/><br /><sub><b>gennadypolakov</b></sub></a><br /><a href="https://github.com/rx-store/rx-store/commits?author=gennadypolakov" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

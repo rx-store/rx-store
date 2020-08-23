@@ -1,0 +1,65 @@
+{
+  "projectName": "rx-store",
+  "projectOwner": "rx-store",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "kosich",
+      "name": "Kostia P",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3994718?v=4",
+      "profile": "https://github.com/kosich",
+      "contributions": [
+        "doc",
+        "review",
+        "mentoring"
+      ]
+    },
+    {
+      "login": "joshribakoff",
+      "name": "Josh Ribakoff",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4021306?v=4",
+      "profile": "https://github.com/joshribakoff",
+      "contributions": [
+        "code",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "review",
+        "ideas",
+        "doc"
+      ]
+    },
+    {
+      "login": "kylecannon",
+      "name": "Kyle Cannon",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/867978?v=4",
+      "profile": "https://github.com/kylecannon",
+      "contributions": [
+        "infra",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "review",
+        "ideas"
+      ]
+    },
+    {
+      "login": "gennadypolakov",
+      "name": "gennadypolakov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/67854099?v=4",
+      "profile": "https://github.com/gennadypolakov",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true
+}
