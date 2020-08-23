@@ -78,6 +78,7 @@ export const spawnRootEffect = <T extends StoreValue>({
    */
   const spawnEffect: SpawnEffectInternal<T> = (effect, stack) => {
     const name = stack[stack.length - 1];
+    const parentName: string | undefined = stack[stack.length - 2];
     // Curries the sources and sinks with the debug key, to track this
     // effects "inputs" and "outputs" in the devtools.
     const sources = createSources(name, value, observer);
@@ -86,16 +87,15 @@ export const spawnRootEffect = <T extends StoreValue>({
     // Keeps the "context" intact, by appending to name to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
     const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
-      const curriedName = `${stack.join(':')}:${childName}`;
-      if (undefined === ids[curriedName]) {
-        ids[curriedName] = 1;
+      if (undefined === ids[childName]) {
+        ids[childName] = 1;
       } else {
-        ids[curriedName]++;
+        ids[childName]++;
       }
-      const id = ids[curriedName];
-      const curriedNameWithId = `${curriedName}${id === 1 ? '' : id}`;
+      const id = ids[childName];
+      const curriedNameWithId = `${childName}${id === 1 ? '' : id}`;
 
-      debug(`rx-store:${curriedNameWithId}`)('spawn');
+      debug(`rx-store:${curriedNameWithId}`)('spawn from', parentName);
 
       if (observer) {
         observer.next({
@@ -110,6 +110,7 @@ export const spawnRootEffect = <T extends StoreValue>({
           from: { type: StoreEventType.effect, name: `${curriedNameWithId}` },
         });
       }
+
       return spawnEffect(effect, [...stack, curriedNameWithId]);
     };
 
@@ -124,7 +125,7 @@ export const spawnRootEffect = <T extends StoreValue>({
           observer.next({
             type: StoreEventType.value,
             to: { type: StoreEventType.effect, name },
-            from: { type: StoreEventType.effect, name: stack.join(':') || '' },
+            from: { type: StoreEventType.effect, name: parentName || '' },
             value: val,
           });
         }
