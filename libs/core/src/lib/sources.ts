@@ -2,6 +2,7 @@ import { Subject, Observer } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { StoreValue, StoreEvent } from '..';
 import { debug } from 'debug';
+import { StoreEventType } from './store-arg';
 
 /**
  * Sources are a read-only interface from the subjects
@@ -13,7 +14,7 @@ import { debug } from 'debug';
  * references the effect's debug key, used for devtools.
  */
 export type Sources<T extends StoreValue> = {
-  [P in keyof T]?: () => ReturnType<T[P]['asObservable']>;
+  [P in keyof T]: () => ReturnType<T[P]['asObservable']>;
 };
 
 /**
@@ -42,9 +43,9 @@ export const createSources = <T extends StoreValue>(
         debug(`rx-store:${effectName}`)(`source ${subjectName}`);
         if (observer) {
           observer.next({
-            type: 'link',
-            from: { type: 'subject', name: subjectName },
-            to: { type: 'effect', name: effectName },
+            type: StoreEventType.link,
+            from: { type: StoreEventType.subject, name: subjectName },
+            to: { type: StoreEventType.effect, name: effectName },
           });
         }
         return (value[subjectName] as Subject<any>).asObservable().pipe(
@@ -54,9 +55,9 @@ export const createSources = <T extends StoreValue>(
             );
             if (observer) {
               observer.next({
-                type: 'value',
-                from: { type: 'subject', name: subjectName },
-                to: { type: 'effect', name: effectName },
+                type: StoreEventType.value,
+                from: { type: StoreEventType.subject, name: subjectName },
+                to: { type: StoreEventType.effect, name: effectName },
                 value,
               });
             }

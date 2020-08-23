@@ -5,7 +5,7 @@ import { Manager } from './app/Manager';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* Render the `react` Provider with the context value & root effect */}
+    {/* Render the `rx store` Provider with the context value & root effect */}
     <Manager>
       <App />
     </Manager>

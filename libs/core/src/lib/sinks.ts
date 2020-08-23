@@ -2,7 +2,7 @@ import { StoreValue } from '..';
 import { debug } from 'debug';
 import { tap } from 'rxjs/operators';
 import { Observable, MonoTypeOperatorFunction, Observer } from 'rxjs';
-import { StoreEvent } from './store-arg';
+import { StoreEvent, StoreEventType } from './store-arg';
 
 /**
  * Sinks are a write-only interface into the subjects
@@ -17,7 +17,7 @@ import { StoreEvent } from './store-arg';
  * such that it can be consumed by referencing it from a pipeline
  */
 export type Sinks<T extends StoreValue> = {
-  [P in keyof T]?: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
+  [P in keyof T]: () => MonoTypeOperatorFunction<Parameters<T[P]['next']>[0]>;
 };
 
 /**
@@ -46,20 +46,20 @@ export const createSinks = <T extends StoreValue>(
         debug(`rx-store:${effectName}`)(`sink ${subjectName}`);
         if (observer) {
           observer.next({
-            type: 'link',
-            to: { type: 'subject', name: subjectName },
-            from: { type: 'effect', name: effectName },
+            type: StoreEventType.link,
+            to: { type: StoreEventType.subject, name: subjectName },
+            from: { type: StoreEventType.effect, name: effectName },
           });
         }
-        return (source: Observable<any>) => {
+        return (source: Observable<unknown>) => {
           return source.pipe(
             tap((value) => {
               debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
               if (observer) {
                 observer.next({
-                  type: 'value',
-                  to: { type: 'subject', name: subjectName },
-                  from: { type: 'effect', name: effectName },
+                  type: StoreEventType.value,
+                  to: { type: StoreEventType.subject, name: subjectName },
+                  from: { type: StoreEventType.effect, name: effectName },
                   value,
                 });
               }

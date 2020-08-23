@@ -6,7 +6,12 @@ import React, {
   Context,
 } from 'react';
 import { Observable } from 'rxjs';
-import { spawnRootEffect, StoreValue, StoreArg } from '@rx-store/core';
+import {
+  spawnRootEffect,
+  StoreValue,
+  StoreArg,
+  StoreEventType,
+} from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -36,14 +41,13 @@ export const store = <T extends StoreValue>({
   value,
   effect,
   observer,
-  onSelect,
 }: StoreArg<T>): StoreReturn<T> => {
   /** Each store gets a React context */
   const context = createContext<T>(value);
 
   if (observer) {
     Object.keys(value).forEach((name) => {
-      observer.next({ type: 'subject', name });
+      observer.next({ type: StoreEventType.subject, name });
     });
   }
 
@@ -72,10 +76,6 @@ export const store = <T extends StoreValue>({
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
-      // TODO - https://github.com/microsoft/TypeScript/issues/40034
-      // if (!effect) {
-      //   return null;
-      // }
       const subscription = spawnRootEffect({
         value,
         effect,
@@ -134,7 +134,7 @@ export function useSubscription<T>(
 
 export function withSubscription<T>(
   WrappedComponent: React.ComponentType<{
-    next: T;
+    next?: T;
     error: any;
     complete: boolean;
   }>,

@@ -11,19 +11,24 @@ module.exports = {
       title: 'Rx Store',
       items: [
         {
-          type: 'docsVersionDropdown',
+          to: 'docs/core/introduction/getting-started',
+          activeBasePath: 'docs/core',
+          label: 'Core',
           position: 'left',
-          nextVersionLabel: '1.0.0-next',
         },
         {
-          to: 'docs/introduction/getting-started',
-          activeBasePath: 'docs',
-          label: 'Getting Started',
+          to: 'docs/react/react',
+          activeBasePath: 'docs/react',
+          label: 'React',
+          position: 'left',
+        },
+        {
+          to: 'docs/angular/angular',
+          label: 'Angular',
           position: 'left',
         },
         {
           to: 'docs/faq/',
-          activeBasePath: 'docs',
           label: 'FAQ',
           position: 'left',
         },
@@ -42,7 +47,7 @@ module.exports = {
           items: [
             {
               label: 'Getting Started',
-              to: 'docs/',
+              to: 'docs/core/introduction/getting-started',
             },
             {
               label: 'FAQ',
@@ -74,10 +79,11 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'introduction/core-concepts',
+          // homePageId: 'introduction/getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/rx-store/rx-store/edit/master/website/',
+          editUrl:
+            'https://github.com/rx-store/rx-store/tree/master/apps/rx-store-website',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
