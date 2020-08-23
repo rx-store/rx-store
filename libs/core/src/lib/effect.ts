@@ -4,7 +4,7 @@ import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
 import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
-import { StoreArg } from './store-arg';
+import { StoreArg, StoreEventType } from './store-arg';
 
 export type SpawnEffect<T extends StoreValue> = (
   effect: Effect<T>,
@@ -88,15 +88,15 @@ export const spawnRootEffect = <T extends StoreValue>({
 
       if (observer) {
         observer.next({
-          type: 'effect',
+          type: StoreEventType.effect,
           name: `${curriedNameWithId}`,
           event: 'spawn',
         });
 
         observer.next({
-          type: 'link',
-          to: { type: 'effect', name },
-          from: { type: 'effect', name: `${curriedNameWithId}` },
+          type: StoreEventType.link,
+          to: { type: StoreEventType.effect, name },
+          from: { type: StoreEventType.effect, name: `${curriedNameWithId}` },
         });
       }
       return spawnEffect(effect, {
@@ -114,9 +114,9 @@ export const spawnRootEffect = <T extends StoreValue>({
         debug(`rx-store:${parentName}:${name}`)(`inner effect: ${val}`);
         if (observer) {
           observer.next({
-            type: 'value',
-            to: { type: 'effect', name },
-            from: { type: 'effect', name: parentName },
+            type: StoreEventType.value,
+            to: { type: StoreEventType.effect, name },
+            from: { type: StoreEventType.effect, name: parentName || '' },
             value: val,
           });
         }
@@ -126,7 +126,7 @@ export const spawnRootEffect = <T extends StoreValue>({
         // TODO this won't cleanup on unsubscribe!
         if (observer) {
           observer.next({
-            type: 'effect',
+            type: StoreEventType.effect,
             event: 'teardown',
             name,
           });
@@ -136,7 +136,14 @@ export const spawnRootEffect = <T extends StoreValue>({
   };
   debug(`rx-store:root`)('spawn');
   if (observer) {
-    observer.next({ type: 'effect', name: `root`, event: 'spawn' });
+    observer.next({
+      type: StoreEventType.effect,
+      name: `root`,
+      event: 'spawn',
+    });
+  }
+  if (!effect) {
+    return Observable.create();
   }
   return spawnEffect(effect, { name: 'root' });
 };
