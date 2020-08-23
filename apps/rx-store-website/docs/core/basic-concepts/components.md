@@ -1,4 +1,7 @@
-## Components
+---
+id: components
+title: Components
+---
 
 You can subscribe to the subjects in your [store value](#store-value) directly from your components. This allows you to render your component(s) in reaction to a subject emitting a value, synchronizing your component's state with your subject(s).
 

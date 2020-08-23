@@ -17,7 +17,7 @@ module.exports = {
       label: 'Basic Concepts',
       items: [
         'core/basic-concepts/store-value',
-        'core/basic-concepts/effects',
+        'core/basic-concepts/root-effect',
         'core/basic-concepts/manager',
         'core/basic-concepts/components',
       ],
