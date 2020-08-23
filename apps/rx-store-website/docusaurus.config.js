@@ -47,7 +47,7 @@ module.exports = {
           items: [
             {
               label: 'Getting Started',
-              to: 'docs/',
+              to: 'docs/core/introduction/getting-started',
             },
             {
               label: 'FAQ',
