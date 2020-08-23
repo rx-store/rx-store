@@ -16,7 +16,9 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/3994718?v=4",
       "profile": "https://github.com/kosich",
       "contributions": [
-        "doc"
+        "doc",
+        "review",
+        "mentoring"
       ]
     },
     {
@@ -25,7 +27,13 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/4021306?v=4",
       "profile": "https://github.com/joshribakoff",
       "contributions": [
-        "code"
+        "code",
+        "maintenance",
+        "platform",
+        "projectManagement",
+        "review",
+        "ideas"
+        "doc"
       ]
     },
     {
