@@ -5,8 +5,8 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "nx build",
-    "build:libs": "nx run-many --target build --projects=core,react",
+    "build": "nx build --with-deps",
+    "build:libs": "nx run-many --target build --projects=core,react,visualizer,devtools --with-deps",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
@@ -27,7 +27,6 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "10.0.7",
     "@angular/common": "10.0.7",

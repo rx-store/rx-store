@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxWithText } from './box-with-text';
 
-export function Subject(props) {
+export function Subject(props: any) {
   return (
     <BoxWithText
       text={`${props.name}: ${props.value}`}

@@ -12,6 +12,7 @@ export interface BoxWithTextProps {
   height: number;
   text: string;
   boxColor: ReactThreeFiber.Color;
+  onClick?: () => void;
 }
 
 export function BoxWithText({
@@ -67,6 +68,7 @@ export function BoxWithText({
         />
         <meshStandardMaterial attach="material" color="black" />
       </mesh>
+      {/* @ts-ignore - react three spring typings issue? */}
       <animated.mesh position={boxPos} scale={scale}>
         <sphereBufferGeometry attach="geometry" args={[2]} />
         <meshStandardMaterial attach="material" color={boxColor} />

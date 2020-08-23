@@ -117,7 +117,7 @@ export const Layers: React.FC<VisualizerProps> = ({
           <Effect key={props.name} {...props} onClick={onClick} />
         )
       )}
-      {(layout.links() as any).map(({ source, target }, i) => {
+      {(layout.links() as any).map(({ source, target }: any, i: number) => {
         const { x, y } = source;
         const { x: x2, y: y2 } = target;
 

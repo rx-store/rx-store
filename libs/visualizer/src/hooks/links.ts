@@ -15,18 +15,18 @@ export const useLinks = (
     const subscription = storeObservable
       .pipe(
         filter((event) => event.type === 'link'),
-        map(({ from, to }) => {
+        map(({ from, to }: any) => {
           console.log('links add', from, to);
 
-          const findNode = ({ type, name }) => {
+          const findNode = ({ type, name }: any) => {
             switch (type) {
               case 'effect':
                 return nodes.current.find(
-                  (node) => node.effect && node.name === name
+                  (node: any) => node.effect && node.name === name
                 );
               case 'subject':
                 return nodes.current.find(
-                  (node) => node.subject && node.name === name
+                  (node: any) => node.subject && node.name === name
                 );
             }
           };
@@ -55,5 +55,5 @@ export const useLinks = (
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [storeObservable]);
+  }, [layout, links, nodes, storeObservable]);
 };

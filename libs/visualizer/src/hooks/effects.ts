@@ -15,7 +15,7 @@ export const useEffects = (
     const subscription = storeObservable
       .pipe(
         filter((event) => event.type === 'effect'),
-        tap(({ name, event }) => {
+        tap(({ name, event }: any) => {
           if (event === 'spawn') {
             nodes.current.push({
               name,
@@ -25,11 +25,11 @@ export const useEffects = (
             });
             console.log('effects add', name);
           } else {
-            const index = nodes.current.findIndex((o) => name === o.name);
+            const index = nodes.current.findIndex((o: any) => name === o.name);
             nodes.current.splice(index, 1);
 
             Object.entries(links.current)
-              .reduce((acc, [i, link]) => {
+              .reduce((acc: any, [i, link]: any) => {
                 if (
                   (link.source.effect && link.source.name === name) ||
                   (link.target.effect && link.target.name === name)
@@ -39,9 +39,7 @@ export const useEffects = (
                 return acc;
               }, [])
               .reverse()
-              .forEach((i) => {
-                console.log(i);
-
+              .forEach((i: number) => {
                 links.current.splice(i, 1);
               });
             console.log('effects delete', name);
@@ -56,5 +54,5 @@ export const useEffects = (
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [layout]);
+  }, [layout, links, nodes, storeObservable]);
 };

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { tap, filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { StoreEvent } from '@rx-store/core';
+import { StoreEvent, StoreEventType, StoreEventValue } from '@rx-store/core';
 import { useFrame } from 'react-three-fiber';
 import { Line3, Vector3 } from 'three';
 
@@ -12,22 +12,25 @@ export const useBullets = (
   nodes: any,
   links: any
 ) => {
-  const bullets = useRef([]);
+  const bullets = useRef<any[]>([]);
   useEffect(() => {
     if (!storeObservable) return;
     const subscription = storeObservable
       .pipe(
-        filter((event) => event.type === 'value'),
+        filter(
+          (event): event is StoreEventValue =>
+            event.type === StoreEventType.value
+        ),
         tap((event) => {
-          const findNode = ({ type, name }) => {
+          const findNode = ({ type, name }: any) => {
             switch (type) {
               case 'effect':
                 return nodes.current.find(
-                  (node) => node.effect && node.name === name
+                  (node: any) => node.effect && node.name === name
                 );
               case 'subject':
                 return nodes.current.find(
-                  (node) => node.subject && node.name === name
+                  (node: any) => node.subject && node.name === name
                 );
             }
           };
@@ -36,7 +39,7 @@ export const useBullets = (
             const source = findNode(event.from);
             const target = findNode(event.to);
             const link = links.current.find(
-              (link) =>
+              (link: any) =>
                 (link.source === source && link.target === target) ||
                 (link.target === source && link.source === target)
             );
@@ -69,7 +72,7 @@ export const useBullets = (
       )
       .subscribe();
     return () => subscription.unsubscribe();
-  }, [forceRender, layout, storeObservable]);
+  }, [forceRender, layout, links, nodes, storeObservable]);
 
   useFrame((_, timeDelta) => {
     bullets.current.forEach((bullet) => {
