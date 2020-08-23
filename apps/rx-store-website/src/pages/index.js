@@ -106,26 +106,15 @@ function Home() {
                   <div className={clsx('col col--6', styles.feature)}>
                     <h3>Devtools Sneak Peak</h3>
                     <p>
-                      Rx Store is able to know, prior to subscribing, which
-                      effects consume from which subjects, which subjects each
-                      effect can emit onto, and anytime an effect spawns an
-                      inner effect, anytime that errors or completes, and it
-                      knows when an effect receives a value from whence subject
-                      it came as well as the value, and it knows exactly when
-                      effects emit and onto which subjects.
+                      Rx Store is able to track the data flow in your store.
                     </p>
                     <p>
-                      This is all made possible via curried sources, sinks, and
-                      spawnEffect, and a recursive tree like structuring of
-                      effects allowing Rx Store to keep track of a "stack trace"
-                    </p>
-                    <p>
-                      Each instance of the effect is tracked, and as the data
-                      flows in & out we are able to track it. Consumers can wrap
-                      inner observables eg. with switchMap() using the
-                      spwanEffect() helper, and Rx Store will be able to track
-                      where an effect was spawned from all the way up to the
-                      root, like a stack trace, example:
+                      Due to Rx Store's unique architecture, the entire store is
+                      introspectable. This affordance allows for features such
+                      as the interactive 3D data flow visualization.
+                      <a href="https://github.com/rx-store/rx-store/pull/48">
+                        other powerful features that are in the works
+                      </a>
                     </p>
                   </div>
                   <div className={clsx('col col--6', styles.feature)}>
@@ -137,14 +126,7 @@ function Home() {
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
                     ></iframe>
-                    Due to Rx Store's unique architecture, the entire store is
-                    introspectable. This affordance allows for hot new features
-                    such as the interactive 3D data flow visualization. It can
-                    be used to filter, throttle, and coalesce logs, as well as
-                    &nbsp;
-                    <a href="https://github.com/rx-store/rx-store/pull/48">
-                      other powerful features that are in the works
-                    </a>
+                    Here is a sneak peak of the new devtools (beta)
                   </div>
                 </div>
               </div>
