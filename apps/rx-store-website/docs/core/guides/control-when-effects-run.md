@@ -3,7 +3,7 @@ id: control-when-effects-run
 title: Control when effects run
 ---
 
-Effects are just functions which return observables. Rx Store [subscribes](https://rxjs-dev.firebaseapp.com/guide/subscription) to your effects in the [store's manager.](./manager.md) The logic in your observable will not run until the [manager](./manager.md) subscribes, just like a function does not do any work until called, and a component does nothing until rendered in a UI library.
+Effects are just functions which return observables. Rx Store [subscribes](https://rxjs-dev.firebaseapp.com/guide/subscription) to your effects in the [store's manager.](../basic-concepts/manager.md) The logic in your observable will not run until the [manager](../basic-concepts/manager.md) subscribes, just like a function does not do any work until called, and a component does nothing until rendered in a UI library.
 
 Effects are long lived, until your store is torn down & disposed of. You can use filtering operators in RxJS such as `skipWhile()`, `takeUntil()` to use other streams in the store to control & limit when & how your effect does work.
 

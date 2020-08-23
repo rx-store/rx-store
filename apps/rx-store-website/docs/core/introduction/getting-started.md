@@ -3,7 +3,7 @@ id: getting-started
 title: Getting Started
 ---
 
-Rx Store is a reactive state management solution for frontend component libraries such as [React](../react/installation.md) &amp; [Angular](../angular/angular.md), allowing you to build your application's logic using [RxJs](https://rxjs.dev/). If you are not yet familiar with RxJs, [the Fireship Youtube video](https://www.youtube.com/watch?v=ewcoEYS85Co) is a great introduction!
+Rx Store is a reactive state management solution for frontend component libraries such as [React](../../react/installation.md) &amp; [Angular](../../angular/angular.md), allowing you to build your application's logic using [RxJs](https://rxjs.dev/). If you are not yet familiar with RxJs, [the Fireship Youtube video](https://www.youtube.com/watch?v=ewcoEYS85Co) is a great introduction!
 
 ---
 

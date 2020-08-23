@@ -14,7 +14,7 @@ yarn add @rx-store/react @rx-store/core rxjs
 
 ## Store Value (subjects)
 
-The store value is where we'll store our sources of truth. We'll use two [subjects](../../basics/subjects.md), one called `counterChange$` which will be a stream that emits the user's intent to increment or decrement the counter by emitting a `1` or a `-1` value, and one subject called `count$` where we will emit the latest value of the counter each time it is calculated. We'll declare the typings here, but if you're not using typescript you can skip this step.
+The store value is where we'll store our sources of truth. We'll use two [subjects](https://rxjs-dev.firebaseapp.com/guide/subject), one called `counterChange$` which will be a stream that emits the user's intent to increment or decrement the counter by emitting a `1` or a `-1` value, and one subject called `count$` where we will emit the latest value of the counter each time it is calculated. We'll declare the typings here, but if you're not using typescript you can skip this step.
 
 ```tsx
 interface AppStoreValue extends StoreValue {
@@ -44,7 +44,7 @@ const effect: Effect<AppStoreValue> = ({ sources, sinks }) =>
   );
 ```
 
-[Read more about effects in Rx Store](../../basics/effects.md).
+[Read more about effects in Rx Store](../../core/basic-concepts/root-effect).
 
 ## Create Store
 
