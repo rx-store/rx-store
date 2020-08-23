@@ -11,18 +11,24 @@ module.exports = {
       title: 'Rx Store',
       items: [
         {
-          type: 'docsVersionDropdown',
+          to: 'docs/core/introduction/getting-started',
+          activeBasePath: 'docs/core',
+          label: 'Core',
           position: 'left',
         },
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Getting Started',
+          to: 'docs/react/react',
+          activeBasePath: 'docs/react',
+          label: 'React',
+          position: 'left',
+        },
+        {
+          to: 'docs/angular/angular',
+          label: 'Angular',
           position: 'left',
         },
         {
           to: 'docs/faq/',
-          activeBasePath: 'docs',
           label: 'FAQ',
           position: 'left',
         },
@@ -41,7 +47,7 @@ module.exports = {
           items: [
             {
               label: 'Getting Started',
-              to: 'docs/',
+              to: 'docs/core/introduction/getting-started',
             },
             {
               label: 'FAQ',
@@ -73,7 +79,7 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'introduction/getting-started',
+          // homePageId: 'introduction/getting-started',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
