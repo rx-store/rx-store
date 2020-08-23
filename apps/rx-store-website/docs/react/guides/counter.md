@@ -51,7 +51,7 @@ const effect: Effect<AppStoreValue> = ({ sources, sinks }) =>
 We'll simply pass in the `storeValue` (subjects) and the `effect` to the `store()` method:
 
 ```tsx
-const { Manager, context } = store(storeValue, effect);
+const { Manager, context } = store({ value: storeValue, effect });
 ```
 
 ## Wrap App in the &lt;Manager&gt;
@@ -114,7 +114,7 @@ const effect: Effect<AppStoreValue> = ({ sources, sinks }) =>
     sinks.count$()
   );
 
-const { Manager, context } = store(storeValue, effect);
+const { Manager, context } = store({ value: storeValue, effect });
 
 function App() {
   const store = useStore(context);

@@ -8,8 +8,8 @@ title: Usage with React
 ```tsx
 import { store } from '@rx-store/react';
 
-const storeValue = {};
-const { Manager, context } = store(storeValue);
+const value = {};
+const { Manager, context } = store({ value });
 ```
 
 You may have one, or multiple stores. You can nest stores. Child stores can share references to parent store's streams, [as shown in the Manager docs](../react/api-reference/manager#example-2---dynamic--multiple-child-stores).
@@ -24,7 +24,7 @@ We recommend starting out with one root store, and nesting stores only tactfully
 
 ## &lt;Manager /&gt; Component
 
-You create a store using the `store()` factory function, passing in the store value, which is plain javascript object containing RxJs Subjects. The `store()` factory also accepts an optional [root effect](../core/basic-concepts/root-effect) as the second argument.
+You create a store using the `store()` factory function, passing in an object with the store value at the `value` property, which is plain javascript object containing RxJs Subjects. The `store()` factory also accepts an optional [root effect](../core/basic-concepts/root-effect) by passing an `effect` property in the object.
 
 You get back a `Manager` component, and a React context. Wrap your app at the top level, or wrap the part of your app where you want the store to run & be available. If the `Manager` unmounts, the store's effect's will all be unsubscribed (torn down). To start out, it's recommended to use the `Manager` as shown here, at the top level of your app and re-export the context:
 

@@ -18,6 +18,6 @@ You get back a [&lt;Manager /&gt;](./manager.md) component, for providing the st
 import { Provider } from '@rx-store/react';
 
 const storeValue = { count$: new Subject() };
-const { Manager, context } = store(value, appRootEffect);
+const { Manager, context } = store({ value, effect: appRootEffect });
 export const rootContext = context;
 ```
