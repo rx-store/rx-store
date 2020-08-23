@@ -10,7 +10,7 @@
 
 Rx Store is a reactive state management solution for frontend component libraries such as React & Angular, allowing you to build your application's logic using RxJs.
 
-. https://rx-store.github.io/rx-store/
+[Read the documentation to learn more about rx store and get started!](https://rx-store.github.io/rx-store/)
 
 ## Development
 
