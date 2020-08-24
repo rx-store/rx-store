@@ -41,6 +41,11 @@ export interface RootEffectArgs<T extends StoreValue> {
 }
 
 const ids: Record<string, number> = {};
+export const resetIds = () => {
+  Object.keys(ids).forEach((key) => {
+    delete ids[key];
+  });
+};
 
 /**
  * The spawnRootEffect runs the root effect which means the effectFn is called
