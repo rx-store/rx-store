@@ -104,16 +104,16 @@ function Home() {
               <div className="container">
                 <div className="row" style={{ justifyContent: 'center' }}>
                   <div className={clsx('col col--6', styles.feature)}>
-                    <h3>Devtools Sneak Peak</h3>
+                    <h3>Devtools</h3>
                     <p>
                       Rx Store is able to track the data flow in your store.
                     </p>
                     <p>
                       Due to Rx Store's unique architecture, the entire store is
                       introspectable. This affordance allows for features such
-                      as the interactive 3D data flow visualization and
-                      <a href="https://github.com/rx-store/rx-store/pull/48">
-                        other powerful features that are in the works
+                      as the interactive 3D data flow visualization.{' '}
+                      <a href="/docs/devtools">
+                        Read about Devtools for Rx Store
                       </a>
                     </p>
                   </div>
@@ -126,7 +126,6 @@ function Home() {
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
                     ></iframe>
-                    Here is a sneak peak of the new devtools (beta)
                   </div>
                 </div>
               </div>
