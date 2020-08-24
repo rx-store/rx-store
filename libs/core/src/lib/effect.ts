@@ -151,8 +151,5 @@ export const spawnRootEffect = <T extends StoreValue>({
       event: 'spawn',
     });
   }
-  if (!effect) {
-    return Observable.create();
-  }
   return spawnEffect(effect, ['root']);
 };
