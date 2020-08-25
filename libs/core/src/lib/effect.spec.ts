@@ -1,31 +1,6 @@
-import { of, ReplaySubject, timer, Observable } from 'rxjs';
-import { spawnRootEffect } from './effect';
-import { Effect, RootEffectArgs, resetIds } from '..';
-import { TestScheduler } from 'rxjs/testing';
-import { StoreValue } from './store-value';
-import { StoreEvent } from './store-arg';
-import { toArray, take, takeUntil } from 'rxjs/operators';
-
-interface CallbackArgs {
-  expectObservable: typeof TestScheduler.prototype.expectObservable;
-  storeEvent$: Observable<StoreEvent>;
-  effect$: Observable<unknown>;
-}
-
-const setup = <T extends StoreValue>(
-  args: RootEffectArgs<T>,
-  cb: (args: CallbackArgs) => void
-) => {
-  resetIds();
-  const storeEvent$ = new ReplaySubject<StoreEvent>();
-  const testScheduler = new TestScheduler((actual, expected) => {
-    expect(actual).toEqual(expected);
-  });
-  const effect$ = spawnRootEffect<T>({ ...args, observer: storeEvent$ });
-  testScheduler.run(({ expectObservable }) => {
-    cb({ expectObservable, storeEvent$, effect$ });
-  });
-};
+import { of, timer } from 'rxjs';
+import { Effect } from './effect';
+import { setup } from './test-helper';
 
 it('spawns and tears down an empty effect', () => {
   const effect: Effect<{}> = () => of();
