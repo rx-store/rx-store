@@ -6,11 +6,14 @@
     "debug": "^4.1.1"
   },
   "peerDependencies": {
-    "rxjs": "^6.5.5",
+    "@rx-store/core": "1.0.0",
     "react": "^16.13.1",
-    "@rx-store/core": "1.0.0"
+    "rxjs": "^6.5.5"
   },
   "scripts": {
     "test": "../../node_modules/.bin/jest"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4"
   }
 }
