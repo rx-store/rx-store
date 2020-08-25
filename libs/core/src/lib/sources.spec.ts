@@ -10,8 +10,6 @@ it('sources data from subject', () => {
   setup(
     { value, effect },
     ({ expectObservable, effect$, hot, storeEvent$ }) => {
-      // hack to emit mocked values onto the subject in the store value
-      // TODO - i don't understand why changing to "cold" breaks test?
       hot('a').subscribe(value.count$);
 
       expectObservable(effect$).toBe('a');
