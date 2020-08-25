@@ -5,15 +5,15 @@ import { RootEffectArgs, resetIds } from '..';
 import { TestScheduler } from 'rxjs/testing';
 import { StoreValue } from './store-value';
 import { StoreEvent } from './store-arg';
+import { RunHelpers } from 'rxjs/internal/testing/TestScheduler';
 
-interface CallbackArgs {
-  expectObservable: typeof TestScheduler.prototype.expectObservable;
+interface CallbackArgs extends RunHelpers {
   storeEvent$: Observable<StoreEvent>;
   effect$: Observable<unknown>;
 }
 
 export const setup = <T extends StoreValue>(
-  args: RootEffectArgs<T>,
+  setupArgs: RootEffectArgs<T>,
   cb: (args: CallbackArgs) => void
 ) => {
   resetIds();
@@ -21,8 +21,8 @@ export const setup = <T extends StoreValue>(
   const testScheduler = new TestScheduler((actual, expected) => {
     expect(actual).toEqual(expected);
   });
-  const effect$ = spawnRootEffect<T>({ ...args, observer: storeEvent$ });
-  testScheduler.run(({ expectObservable }) => {
-    cb({ expectObservable, storeEvent$, effect$ });
+  const effect$ = spawnRootEffect<T>({ ...setupArgs, observer: storeEvent$ });
+  testScheduler.run((runHelpers) => {
+    cb({ ...runHelpers, storeEvent$, effect$ });
   });
 };
