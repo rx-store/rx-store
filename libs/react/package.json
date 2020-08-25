@@ -13,7 +13,5 @@
   "scripts": {
     "test": "../../node_modules/.bin/jest"
   },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.4"
-  }
+  "devDependencies": {}
 }
