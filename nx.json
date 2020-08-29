@@ -44,6 +44,12 @@
     },
     "rx-store-website": {
       "tags": []
+    },
+    "visualizer": {
+      "tags": []
+    },
+    "devtools": {
+      "tags": []
     }
   }
 }

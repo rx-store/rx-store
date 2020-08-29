@@ -1,7 +1,8 @@
-import { Subject } from 'rxjs';
+import { Subject, Observer } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { StoreValue } from '..';
+import { StoreValue, StoreEvent } from '..';
 import { debug } from 'debug';
+import { StoreEventType } from './store-arg';
 
 /**
  * Sources are a read-only interface from the subjects
@@ -32,22 +33,36 @@ export type Sources<T extends StoreValue> = {
  */
 export const createSources = <T extends StoreValue>(
   effectName: string,
-  value: T
+  value: T,
+  observer?: Observer<StoreEvent>
 ): Sources<T> => {
   return Object.keys(value).reduce(
     (acc, subjectName) => ({
       ...acc,
       [subjectName]: () => {
         debug(`rx-store:${effectName}`)(`source ${subjectName}`);
-        return (value[subjectName] as Subject<unknown>)
-          .asObservable()
-          .pipe(
-            tap((value) =>
-              debug(`rx-store:${effectName}`)(
-                `source ${subjectName} value: ${value}`
-              )
-            )
-          );
+        if (observer) {
+          observer.next({
+            type: StoreEventType.link,
+            from: { type: StoreEventType.subject, name: subjectName },
+            to: { type: StoreEventType.effect, name: effectName },
+          });
+        }
+        return (value[subjectName] as Subject<any>).asObservable().pipe(
+          tap((value) => {
+            debug(`rx-store:${effectName}`)(
+              `source ${subjectName} value: ${value}`
+            );
+            if (observer) {
+              observer.next({
+                type: StoreEventType.value,
+                from: { type: StoreEventType.subject, name: subjectName },
+                to: { type: StoreEventType.effect, name: effectName },
+                value,
+              });
+            }
+          })
+        );
       },
     }),
     {}

@@ -1,9 +1,8 @@
-import Counter from "./Counter";
-import React, { useState } from "react";
+import Counter from './Counter';
+import React, { useState } from 'react';
 
 const App: React.FC<{}> = () => {
-  const [n, setN] = useState(1);
-
+  const [n, setN] = useState<number>(1);
   return (
     <>
       {new Array(n).fill(null).map((_, i) => (

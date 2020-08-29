@@ -28,9 +28,14 @@ module.exports = {
           position: 'left',
         },
         {
+          to: 'docs/devtools',
+          label: 'Devtools',
+          position: 'left',
+        },
+        {
           to: 'docs/faq/',
           label: 'FAQ',
-          position: 'left',
+          position: 'right',
         },
         {
           href: 'https://github.com/rx-store/rx-store',

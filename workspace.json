@@ -464,6 +464,98 @@
           }
         }
       }
+    },
+    "visualizer": {
+      "root": "libs/visualizer",
+      "sourceRoot": "libs/visualizer/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "libs/visualizer/tsconfig.lib.json",
+              "libs/visualizer/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/visualizer/**/*"]
+          }
+        },
+        "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/visualizer",
+            "tsConfig": "libs/visualizer/tsconfig.lib.json",
+            "project": "libs/visualizer/package.json",
+            "entryFile": "libs/visualizer/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/visualizer/jest.config.js",
+            "tsConfig": "libs/visualizer/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "devtools": {
+      "root": "libs/devtools",
+      "sourceRoot": "libs/devtools/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+         "build": {
+          "builder": "@nrwl/web:package",
+          "options": {
+            "outputPath": "dist/libs/devtools",
+            "tsConfig": "libs/devtools/tsconfig.lib.json",
+            "project": "libs/devtools/package.json",
+            "entryFile": "libs/devtools/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "styled-components"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "libs/devtools/tsconfig.lib.json",
+              "libs/devtools/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/devtools/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/devtools/jest.config.js",
+            "tsConfig": "libs/devtools/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

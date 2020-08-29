@@ -11,6 +11,7 @@ function Counter() {
   const localCount$ = useMemo(() => store.counterChange$.pipe(scanSum()), [
     store.counterChange$,
   ]);
+
   const [localCount] = useSubscription(localCount$);
 
   return (

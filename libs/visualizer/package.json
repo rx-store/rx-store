@@ -1,0 +1,13 @@
+{
+  "name": "@rx-store/visualizer",
+  "version": "0.0.0",
+  "license": "ISC",
+  "main": "index.js",
+  "dependencies": {
+    "@react-spring/three": "^9.0.0-rc.3",
+    "drei": "^0.0.72",
+    "react-three-fiber": "^4.2.20",
+    "three": "^0.119.1",
+    "webcola": "^3.4.0"
+  }
+}

@@ -10,9 +10,9 @@ export class StoreManagerService implements OnDestroy {
   rootEffect!: Observable<any>;
   rootEffectSubscription!: Subscription;
   store!: AppStoreValue;
-  init(storeValue: AppStoreValue, storeEffect: Effect<any>): void {
-    this.store = storeValue;
-    this.rootEffect = spawnRootEffect(storeValue, storeEffect);
+  init(value: AppStoreValue, effect: Effect<any>): void {
+    this.store = value;
+    this.rootEffect = spawnRootEffect({ value, effect });
     this.rootEffectSubscription = this.rootEffect.subscribe();
   }
 

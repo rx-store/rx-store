@@ -5,18 +5,46 @@ import React, {
   useContext,
   Context,
 } from 'react';
-import { Observable } from 'rxjs';
-import { Effect, spawnRootEffect } from '@rx-store/core';
+import { Observable, Observer } from 'rxjs';
+import {
+  spawnRootEffect,
+  StoreValue,
+  StoreEventType,
+  StoreEvent,
+  Effect,
+} from '@rx-store/core';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
  * asserts the store value is present, and returns it.
  */
-export const useStore = <T extends {}>(context: Context<T>): T => {
+export const useStore = <T extends StoreValue>(context: Context<T>): T => {
   const value = useContext(context);
   if (!value) throw new Error();
   return value;
 };
+
+export interface StoreReturn<T> {
+  Manager: React.ComponentType<{}>;
+  context: Context<T>;
+}
+
+export interface StoreFn {
+  <T extends StoreValue>(arg: StoreArg<T>): StoreReturn<T>;
+
+  /** @deprecated - created 1.0.0 release a bit prematurely, decided this should take a single object instead of positional args  */
+  <T extends StoreValue>(
+    value: StoreArg<T>['value'],
+    effect: StoreArg<T>['effect']
+  ): StoreReturn<T>;
+}
+
+export interface StoreArg<T extends StoreValue> {
+  effect?: undefined | Effect<T>;
+  value: T;
+  observer?: Observer<StoreEvent>;
+  onSelect?: (type: 'subject' | 'effect', name: string) => void;
+}
 
 /**
  * Creates a store, with the provided value & optional effect.
@@ -27,12 +55,41 @@ export const useStore = <T extends {}>(context: Context<T>): T => {
  * by the consuming code, for downstream components to import in
  * order for them to consume & publish to streams in the store value.
  */
-export const store = <T extends {}>(
-  value: T,
-  rootEffect?: Effect<T>
-): { Manager: React.ComponentType<{}>; context: Context<T> } => {
+export const store: StoreFn = <T extends StoreValue>(
+  storeArgOrValue: StoreArg<T> | T,
+  deprecatedEffect?: StoreArg<T>['effect']
+) => {
+  let value: T;
+  let effect: StoreArg<T>['effect'] | undefined;
+  let observer: StoreArg<T>['observer'] | undefined;
+  if (
+    storeArgOrValue &&
+    Object.values(storeArgOrValue).every(
+      (value: unknown) =>
+        // this is only here to supporte deprecated functionality
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        typeof value === 'object' && value['next'] !== undefined
+    )
+  ) {
+    value = storeArgOrValue as T;
+    effect = deprecatedEffect;
+  } else {
+    value = storeArgOrValue.value as T;
+    effect = storeArgOrValue.effect as StoreArg<T>['effect'] | undefined;
+    observer = storeArgOrValue.observer;
+  }
+
   /** Each store gets a React context */
   const context = createContext<T>(value);
+
+  if (observer) {
+    Object.keys(value).forEach((name) => {
+      if (observer) {
+        observer.next({ type: StoreEventType.subject, name });
+      }
+    });
+  }
 
   /**
    * This Manager must be mounted at most once, wrap your children
@@ -59,13 +116,15 @@ export const store = <T extends {}>(
     // handle subscribing / unsubscribing to the store's effect, if any
     // also does some runtime validation checks
     useEffect(() => {
-      if (!rootEffect) {
+      if (!effect) {
         return;
       }
-      const subscription = spawnRootEffect(value, rootEffect).subscribe();
-      return () => {
-        subscription.unsubscribe();
-      };
+      const subscription = spawnRootEffect({
+        value,
+        effect,
+        observer,
+      }).subscribe();
+      return () => subscription.unsubscribe();
     }, []);
 
     // Wraps the children in the context provider, supplying
