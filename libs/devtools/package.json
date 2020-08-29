@@ -1,12 +1,12 @@
 {
   "name": "@rx-store/devtools",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "ISC",
   "peerDependencies": {
     "rxjs": "^6.5.5",
     "react": "^16.13.1",
-    "@rx-store/core": "1.0.0",
-    "@rx-store/visualizer": "1.0.0",
-    "@rx-store/react": "1.0.0"
+    "@rx-store/core": "1.1.0",
+    "@rx-store/visualizer": "1.1.0",
+    "@rx-store/react": "1.1.0"
   }
 }

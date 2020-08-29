@@ -1,6 +1,6 @@
 {
   "name": "@rx-store/visualizer",
-  "version": "0.0.0",
+  "version": "1.1.0",
   "license": "ISC",
   "main": "index.js",
   "dependencies": {
@@ -9,5 +9,8 @@
     "react-three-fiber": "^4.2.20",
     "three": "^0.119.1",
     "webcola": "^3.4.0"
+  },
+  "peerDependencies": {
+    "@rx-store/core": "1.1.0"
   }
 }
