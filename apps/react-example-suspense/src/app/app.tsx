@@ -1,26 +1,31 @@
-import React from 'react-experimental';
+import React, { Suspense } from 'react-experimental';
 import { useStore, useSubscription } from '@rx-store/react';
-import { rootContext } from '../main';
-import { Suspense } from 'react';
+import { rootContext, ResultImage } from '../main';
 
 export const App = () => {
   const store = useStore(rootContext);
-  const [next] = useSubscription(store.count$);
+  const [searchInput] = useSubscription(store.searchInput$);
+  const [resultImage] = useSubscription(store.resultImage$);
   return (
-    <Suspense fallback={<>suspended. wait.</>}>
-      <Child next={next} />
-    </Suspense>
+    <>
+      <input
+        type="text"
+        value={searchInput || ''}
+        onChange={(event) => {
+          store.searchInput$.next(event.target.value);
+        }}
+      />
+      <br />
+      <Suspense fallback={<>suspended. wait.</>}>
+        <Result resultImage={resultImage} />
+      </Suspense>
+    </>
   );
 };
 
-const Child = ({ next }: { next: any }) => {
-  console.log('child render');
-  if (next % 2 === 0) {
-    throw new Promise(() => {
-      // suspend, no need to resolve it will just wait until useSubscription updates!
-    });
-  }
-  return <>{next}</>;
+const Result = ({ resultImage }: { resultImage?: ResultImage }) => {
+  if (!resultImage) throw new Promise(() => {});
+  return resultImage ? <img src={resultImage.url} alt="" /> : null;
 };
 
 export default App;

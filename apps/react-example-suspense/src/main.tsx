@@ -1,30 +1,67 @@
+import { Devtools } from '@rx-store/devtools';
 import React from 'react-experimental';
 import ReactDOM from 'react-dom-experimental';
-import { StoreValue, Effect } from '@rx-store/core';
+import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
 import { store } from '@rx-store/react';
-import { BehaviorSubject, Subject, interval } from 'rxjs';
+import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
 import App from './app/app';
-import { Suspense } from 'react';
-import { scan } from 'rxjs/operators';
+import { switchMap, debounceTime } from 'rxjs/operators';
+
+import { GiphyFetch } from '@giphy/js-fetch-api';
+
+export const devTools$ = new ReplaySubject<StoreEvent>(5000);
+
+// use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
+const gf = new GiphyFetch('');
+
+const fetchGif = async (searchInput: string) => {
+  const result = await gf.search(searchInput, { limit: 1 });
+  const images = result.data.map((data) =>
+    Object.entries(data.images).find(([key]) => key === 'preview_gif')
+  );
+  if (images.length === 0) {
+    return undefined;
+  } else {
+    if (images[0]?.length) return images[0][1];
+    return undefined;
+  }
+};
+
+export interface ResultImage {
+  url: string;
+}
 
 interface AppStoreValue extends StoreValue {
-  count$: Subject<number>;
+  searchInput$: Subject<string>;
+  resultImage$: Subject<undefined | ResultImage>;
 }
 
 const storeValue: AppStoreValue = {
-  count$: new BehaviorSubject(0),
+  searchInput$: new BehaviorSubject(''),
+  resultImage$: new BehaviorSubject<undefined | ResultImage>(undefined),
 };
 
 const effect: Effect<AppStoreValue> = ({ sources, sinks }) =>
-  interval(1000).pipe(sinks.count$());
+  sources.searchInput$().pipe(
+    debounceTime(1200),
+    switchMap((searchInput) => {
+      return fetchGif(searchInput);
+    }),
+    sinks.resultImage$()
+  );
 
-const { Manager, context } = store({ value: storeValue, effect });
+const { Manager, context } = store({
+  value: storeValue,
+  effect,
+  observer: devTools$,
+});
 export const rootContext = context;
 
 ReactDOM.unstable_createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Manager>
       <App />
+      <Devtools observable={devTools$} />
     </Manager>
   </React.StrictMode>
 );
