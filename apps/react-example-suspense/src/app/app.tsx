@@ -24,7 +24,10 @@ export const App = () => {
 };
 
 const Result = ({ resultImage }: { resultImage?: ResultImage }) => {
-  if (!resultImage) throw new Promise(() => {});
+  if (!resultImage)
+    throw new Promise(() => {
+      //
+    });
   return resultImage ? <img src={resultImage.url} alt="" /> : null;
 };
 
