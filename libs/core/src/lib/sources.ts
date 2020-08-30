@@ -51,7 +51,8 @@ export const createSources = <T extends StoreValue>(
         return (value[subjectName] as Subject<any>).asObservable().pipe(
           tap((value) => {
             debug(`rx-store:${effectName}`)(
-              `source ${subjectName} value: ${value}`
+              `source ${subjectName} value:`,
+              value
             );
             if (observer) {
               observer.next({
