@@ -38,6 +38,8 @@
     "@angular/router": "10.0.7",
     "@docusaurus/core": "^2.0.0-alpha.50",
     "@docusaurus/preset-classic": "^2.0.0-alpha.50",
+    "@giphy/js-fetch-api": "^1.6.2",
+    "@giphy/react-components": "^1.7.1-alpha.0",
     "@react-spring/three": "^9.0.0-rc.3",
     "classnames": "^2.2.6",
     "document-register-element": "1.13.1",
