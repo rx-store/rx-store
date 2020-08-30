@@ -44,6 +44,8 @@
     "drei": "^0.0.72",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-dom-experimental": "npm:react-dom@experimental",
+    "react-experimental": "npm:react@experimental",
     "react-is": "16.13.1",
     "react-three-fiber": "^4.2.20",
     "rxjs": "6.5.5",
