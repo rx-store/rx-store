@@ -8,12 +8,11 @@ import App from './app/app';
 import { switchMap, debounceTime, delay } from 'rxjs/operators';
 
 import { GiphyFetch } from '@giphy/js-fetch-api';
-import { spawn } from 'child_process';
 
 export const devTools$ = new ReplaySubject<StoreEvent>(5000);
 
 // use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
-const gf = new GiphyFetch('jG6h0H0niK2DNA3L03wkB5YrLEcPFzyY');
+const gf = new GiphyFetch('');
 
 const fetchGif = async (searchInput: string) => {
   const result = await gf.search(searchInput, { limit: 1 });
