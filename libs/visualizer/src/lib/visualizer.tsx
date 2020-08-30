@@ -85,6 +85,7 @@ export const Layers: React.FC<VisualizerProps> = ({
         )
       )
       .subscribe(({ name }) => {
+        console.log('subjects add ', name);
         nodes.current.push({
           name,
           width: 30,
