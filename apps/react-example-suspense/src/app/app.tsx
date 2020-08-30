@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react-experimental';
+import React, { Suspense } from 'react';
 import { useStore, useSubscription } from '@rx-store/react';
 import { rootContext, ResultImage } from '../main';
 

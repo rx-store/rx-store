@@ -1,6 +1,6 @@
 import { Devtools } from '@rx-store/devtools';
-import React from 'react-experimental';
-import ReactDOM from 'react-dom-experimental';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
 import { store } from '@rx-store/react';
 import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
@@ -57,11 +57,25 @@ const { Manager, context } = store({
 });
 export const rootContext = context;
 
-ReactDOM.unstable_createRoot(document.getElementById('root')).render(
+ReactDOM.render(
   <React.StrictMode>
     <Manager>
       <App />
-      <Devtools observable={devTools$} />
     </Manager>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+// ReactDOM.unstable_createRoot(document.getElementById('root')).render(
+//   <React.StrictMode>
+//     <Manager>
+//       <App />
+//     </Manager>
+//   </React.StrictMode>
+// );
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Devtools observable={devTools$} />
+  </React.StrictMode>,
+  document.getElementById('devtools')
 );
