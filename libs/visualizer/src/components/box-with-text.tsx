@@ -3,6 +3,7 @@ import { ReactThreeFiber } from 'react-three-fiber';
 import * as THREE from 'three';
 import { animated, useSpring } from '@react-spring/three';
 import { Vector3, Font } from 'three';
+import { VisualizerProps } from '../lib/visualizer';
 
 export interface BoxWithTextProps {
   x: number;
@@ -13,6 +14,8 @@ export interface BoxWithTextProps {
   text: string;
   boxColor: ReactThreeFiber.Color;
   onClick?: () => void;
+  theme: VisualizerProps['theme'];
+  colorNamespaces: VisualizerProps['colorNamespaces'];
 }
 
 export function BoxWithText({
@@ -22,6 +25,7 @@ export function BoxWithText({
   text,
   boxColor,
   onClick,
+  theme,
 }: BoxWithTextProps) {
   const [font, setFont] = useState<Font>();
   useEffect(() => {
