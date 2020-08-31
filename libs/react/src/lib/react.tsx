@@ -5,7 +5,7 @@ import React, {
   useContext,
   Context,
 } from 'react';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, BehaviorSubject } from 'rxjs';
 import {
   spawnRootEffect,
   StoreValue,
@@ -13,6 +13,7 @@ import {
   StoreEvent,
   Effect,
 } from '@rx-store/core';
+import { map, take } from 'rxjs/operators';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -173,6 +174,35 @@ export function useSubscription<T>(
     return () => subscription.unsubscribe();
   }, [source]);
   return [next, error, complete];
+}
+
+/**
+ * Given a behavior subject, and an optional project function
+ * checks if the state defined by the projection fn exists
+ * and suspends if not, by throwing a promise that resolves
+ * only once it does exist.
+ *
+ * It returns the resource.
+ *
+ * This is meant to take a stream that emits a hash table
+ * accumulating resources, eg. {1: {user: 'bob'}, 2: {user: 'sally'}}
+ * and a projection function, eg hash => hash[1]
+ *
+ * If the resource in the hash table exists, it will be returned,
+ * if not, the component will suspend.
+ *
+ * WARNING: Do not use this with mutable data, if the value at any
+ * key is replaced you will get tearing in your app when the value is
+ * sampled at different points in time by React.
+ */
+export function useResource<T, R>(
+  subject: BehaviorSubject<T>,
+  projectFn: (value: T) => R
+) {
+  if (!projectFn(subject.getValue())) {
+    throw subject.pipe(map(projectFn), take(1)).toPromise();
+  }
+  return projectFn(subject.getValue());
 }
 
 export function withSubscription<T>(
