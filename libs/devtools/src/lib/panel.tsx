@@ -33,7 +33,12 @@ export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
           tap((events) => {
             const eventsText = events.map(
               (event) =>
-                '\n' + `${event.from.type}: ${event.from.name} ${event.value}`
+                '\n' +
+                `${event.from.type}: ${event.from.name} value: ${JSON.stringify(
+                  event.value,
+                  null,
+                  2
+                )}`
             );
             setText((text: string) => text + eventsText);
           })
@@ -125,7 +130,14 @@ export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
           }}
           storeObservable={props.observable}
         />
-        <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'column' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexBasis: 0,
+            flexGrow: 1,
+            flexDirection: 'column',
+          }}
+        >
           <h1>{JSON.stringify(state)}</h1>
           <pre style={{ overflow: 'auto' }}>
             {text}{' '}

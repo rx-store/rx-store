@@ -23,7 +23,13 @@ export const Visualizer: React.FC<VisualizerProps> = ({
   storeObservable,
 }) => {
   return (
-    <div style={{ border: '1px red solid', width: '100%', height: '100%' }}>
+    <div
+      style={{
+        height: '100%',
+        flexBasis: 0,
+        flexGrow: 1,
+      }}
+    >
       <Canvas
         style={{ background: '#aaccee' }}
         camera={{ position: [0, 0, 10] }}
