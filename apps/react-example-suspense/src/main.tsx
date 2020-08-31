@@ -12,7 +12,7 @@ import { GiphyFetch } from '@giphy/js-fetch-api';
 export const devTools$ = new ReplaySubject<StoreEvent>(5000);
 
 // use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
-const gf = new GiphyFetch('');
+const gf = new GiphyFetch('Byl2VhFAfkJoTGT18NAxjvvl274ZQZGV');
 
 const fetchGif = async (searchInput: string) => {
   const result = await gf.search(searchInput, { limit: 1 });
@@ -32,8 +32,8 @@ export interface ResultImage {
 }
 
 interface AppStoreValue extends StoreValue {
-  searchInput$: Subject<string>;
-  resultImage$: Subject<undefined | ResultImage>;
+  searchInput$: BehaviorSubject<string>;
+  resultImage$: BehaviorSubject<undefined | ResultImage>;
 }
 
 const storeValue: AppStoreValue = {

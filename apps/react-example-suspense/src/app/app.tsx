@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 import { useStore, useSubscription } from '@rx-store/react';
-import { rootContext, ResultImage } from '../main';
+import { rootContext } from '../main';
+import { take } from 'rxjs/operators';
 
 export const App = () => {
   const store = useStore(rootContext);
   const [searchInput] = useSubscription(store.searchInput$);
-  const [resultImage] = useSubscription(store.resultImage$);
   return (
     <>
       <input
@@ -17,17 +17,18 @@ export const App = () => {
       />
       <br />
       <Suspense fallback={<>suspended. wait.</>}>
-        <Result resultImage={resultImage} />
+        <ResultImage />
       </Suspense>
     </>
   );
 };
 
-const Result = ({ resultImage }: { resultImage?: ResultImage }) => {
-  if (!resultImage)
-    throw new Promise(() => {
-      //
-    });
+const ResultImage = () => {
+  const store = useStore(rootContext);
+  if (!store.resultImage$.getValue()) {
+    throw store.resultImage$.pipe(take(1)).toPromise();
+  }
+  const [resultImage] = useSubscription(store.resultImage$);
   return resultImage ? <img src={resultImage.url} alt="" /> : null;
 };
 
