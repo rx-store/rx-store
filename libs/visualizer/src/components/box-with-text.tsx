@@ -49,9 +49,13 @@ export function BoxWithText({
     scale: isHovered ? [1.5, 1.5, 1.5] : [1, 1, 1],
   });
 
-  const textPos: Vector3 = new Vector3(x - width / 2, y, 2);
+  const textPos: Vector3 = new Vector3(x + 2, y, 2);
   const boxPos: Vector3 = new Vector3(x, y, 0);
-  if (!font) return null;
+
+  if (!font) {
+    console.warn('missing font, items will be missing from visualizer!');
+    return null;
+  }
   return (
     <group
       onClick={onClick}
@@ -65,7 +69,7 @@ export function BoxWithText({
             text,
             {
               font: font,
-              size: 2,
+              size: 1.7,
               height: 0.01,
             },
           ]}

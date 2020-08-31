@@ -49,7 +49,7 @@ module.exports = {
       type: 'category',
       label: 'Tutorials',
       collapsed: false,
-      items: ['react/guides/counter'],
+      items: ['react/guides/counter', 'react/guides/autocomplete'],
     },
     {
       type: 'category',

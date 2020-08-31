@@ -54,7 +54,7 @@ export const createSinks = <T extends StoreValue>(
         return (source: Observable<unknown>) => {
           return source.pipe(
             tap((value) => {
-              debug(`rx-store:${effectName}`)(`sink ${subjectName}: ${value}`);
+              debug(`rx-store:${effectName}`)(`sink ${subjectName}:`, value);
               if (observer) {
                 observer.next({
                   type: StoreEventType.value,

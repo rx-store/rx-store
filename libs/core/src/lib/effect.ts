@@ -125,7 +125,7 @@ export const spawnRootEffect = <T extends StoreValue>({
 
     return effect$.pipe(
       tap((val) => {
-        debug(`rx-store:${stack.join(':')}`)(`inner effect: ${val}`);
+        debug(`rx-store:${stack.join(':')}`)(`inner effect:`, val);
         if (observer) {
           observer.next({
             type: StoreEventType.value,
