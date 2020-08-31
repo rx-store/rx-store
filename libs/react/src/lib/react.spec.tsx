@@ -11,7 +11,7 @@ it('legacy signature', () => {
 
 it('new signature', () => {
   const value = { count$: new BehaviorSubject(0) };
-  const { Manager, context } = store<typeof value>(value);
+  const { Manager, context } = store<typeof value>({ value });
   const MyComponent: React.FC<{}> = () => {
     const store = useStore(context);
     const [count] = useSubscription(store.count$);
