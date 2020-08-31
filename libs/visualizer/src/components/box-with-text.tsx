@@ -66,7 +66,7 @@ export function BoxWithText({
             },
           ]}
         />
-        <meshStandardMaterial attach="material" color="black" />
+        <meshStandardMaterial attach="material" color="#eeeeee" />
       </mesh>
       {/* @ts-ignore - react three spring typings issue? */}
       <animated.mesh position={boxPos} scale={scale}>

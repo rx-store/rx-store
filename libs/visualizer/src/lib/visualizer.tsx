@@ -31,7 +31,7 @@ export const Visualizer: React.FC<VisualizerProps> = ({
       }}
     >
       <Canvas
-        style={{ background: '#aaccee' }}
+        style={{ background: '#110000' }}
         camera={{ position: [0, 0, 10] }}
       >
         <ambientLight />

@@ -12,7 +12,7 @@ export const Bullet = ({ bullet }: { bullet: any }) => {
       ]}
     >
       <sphereBufferGeometry attach="geometry" />
-      <meshStandardMaterial attach="material" />
+      <meshStandardMaterial attach="material" color={0xeeeeee} />
     </mesh>
   );
 };
