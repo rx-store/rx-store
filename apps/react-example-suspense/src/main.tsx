@@ -1,4 +1,4 @@
-import { Devtools } from '@rx-store/devtools';
+// import { Devtools } from '@rx-store/devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
@@ -79,7 +79,7 @@ ReactDOM.render(
 
 ReactDOM.render(
   <React.StrictMode>
-    <Devtools observable={devTools$} />
+    {/* <Devtools observable={devTools$} /> */}
   </React.StrictMode>,
   document.getElementById('devtools')
 );
