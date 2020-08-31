@@ -17,7 +17,7 @@ export interface SubjectProps {
 export const Subject: React.FC<SubjectProps> = (props) => (
   <BoxWithText
     {...props}
-    text={`${props.name}: ${props.value}`}
+    text={`${props.name}: ${JSON.stringify(props.value, null, 2)}`}
     boxColor="red"
     onClick={() =>
       props.onClick && props.onClick(StoreEventType.subject, props.name)

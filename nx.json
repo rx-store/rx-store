@@ -50,6 +50,13 @@
     },
     "devtools": {
       "tags": []
+    },
+    "react-example-suspense": {
+      "tags": []
+    },
+    "react-example-suspense-e2e": {
+      "tags": [],
+      "implicitDependencies": ["react-example-suspense"]
     }
   }
 }
