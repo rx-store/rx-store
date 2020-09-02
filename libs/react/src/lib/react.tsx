@@ -13,7 +13,7 @@ import {
   StoreEvent,
   Effect,
 } from '@rx-store/core';
-import { map, take } from 'rxjs/operators';
+import { map, take, filter } from 'rxjs/operators';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -200,7 +200,13 @@ export function useResource<T, R>(
   projectFn: (value: T) => R
 ) {
   if (!projectFn(subject.getValue())) {
-    throw subject.pipe(map(projectFn), take(1)).toPromise();
+    throw subject
+      .pipe(
+        map(projectFn),
+        filter((value: unknown) => !!value),
+        take(1)
+      )
+      .toPromise();
   }
   return projectFn(subject.getValue());
 }
