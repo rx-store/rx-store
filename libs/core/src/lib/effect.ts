@@ -6,15 +6,15 @@ import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
 import { StoreEventType, StoreEvent } from './store-arg';
 
-export type SpawnEffect<T extends StoreValue> = (
-  effect: Effect<T>,
+export type SpawnEffect<T extends StoreValue> = <R>(
+  effect: Effect<T, R>,
   options: {
     name: string;
   }
-) => Observable<any>;
+) => Observable<R>;
 
 export type SpawnEffectInternal<T extends StoreValue> = (
-  effect: Effect<T>,
+  effect: Effect<T, any>,
   stack: string[]
 ) => Observable<any>;
 
@@ -30,13 +30,13 @@ interface EffectArgs<T extends StoreValue> {
  * a unit of work as an observable. The work does not actually run until that
  * observable is subscribed to, by the <Manager /> component.
  */
-export type Effect<T extends StoreValue> = (
+export type Effect<T extends StoreValue, R> = (
   effectArgs: EffectArgs<T>
-) => Observable<any>;
+) => Observable<R>;
 
-export interface RootEffectArgs<T extends StoreValue> {
+export interface RootEffectArgs<T extends StoreValue, R> {
   value: T;
-  effect: Effect<T>;
+  effect: Effect<T, R>;
   observer?: Observer<StoreEvent>;
 }
 
@@ -64,7 +64,7 @@ export const spawnRootEffect = <T extends StoreValue>({
   value,
   effect,
   observer,
-}: RootEffectArgs<T>) => {
+}: RootEffectArgs<T, unknown>) => {
   /**
    * spawnEffect closes over the `storeValue`. It takes in a `name`
    * and an effectFn.
