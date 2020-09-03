@@ -1,6 +1,6 @@
-import { Devtools } from '@rx-store/devtools';
-import React from 'react-experimental';
-import ReactDOM from 'react-dom-experimental';
+// import { Devtools } from '@rx-store/devtools';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
 import { store } from '@rx-store/react';
 import {
@@ -143,9 +143,9 @@ ReactDOM.unstable_createRoot(document.getElementById('root')).render(
 
 // Uncomment to render Rx Store devtools!
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Devtools observable={devTools$} />
-  </React.StrictMode>,
-  document.getElementById('devtools')
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <Devtools observable={devTools$} />
+//   </React.StrictMode>,
+//   document.getElementById('devtools')
+// );

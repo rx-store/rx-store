@@ -195,7 +195,7 @@ export function useSubscription<T>(
  * key is replaced you will get tearing in your app when the value is
  * sampled at different points in time by React.
  */
-export function useResource<T, R>(
+export function getResource<T, R>(
   subject: BehaviorSubject<T>,
   projectFn: (value: T) => R
 ) {
