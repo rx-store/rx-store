@@ -23,8 +23,19 @@ export const App = () => {
 };
 
 const ResultImage = () => {
-  const { resultImage$ } = useStore(rootContext);
-  const resultImage = useResource(resultImage$, (v) => v);
+  // This is just standard Rx Store stuff, access some streams from the store...
+  const { resultImage$, searchInput$ } = useStore(rootContext);
+
+  // This is not a promise, although it does represent a future value we can act like we have now
+  const resource = useResource(
+    resultImage$,
+    (hashMap) => hashMap[searchInput$.getValue()]
+  );
+
+  // Because of how suspense works, we are able to render this "even if its not there", this may throw a promise!
+  const resultImage = resource.read();
+
+  // React will wait for that promise to resolve, then retry rendering, so we can just "pretend" we always read the value!
   return resultImage ? <img src={resultImage.url} alt="" /> : null;
 };
 

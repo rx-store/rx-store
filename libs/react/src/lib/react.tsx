@@ -13,7 +13,7 @@ import {
   StoreEvent,
   Effect,
 } from '@rx-store/core';
-import { map, take, filter } from 'rxjs/operators';
+import { map, take, filter, finalize } from 'rxjs/operators';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -41,7 +41,7 @@ export interface StoreFn {
 }
 
 export interface StoreArg<T extends StoreValue> {
-  effect?: undefined | Effect<T>;
+  effect?: undefined | Effect<T, unknown>;
   value: T;
   observer?: Observer<StoreEvent>;
   onSelect?: (type: 'subject' | 'effect', name: string) => void;
@@ -199,16 +199,48 @@ export function useResource<T, R>(
   subject: BehaviorSubject<T>,
   projectFn: (value: T) => R
 ) {
-  if (!projectFn(subject.getValue())) {
-    throw subject
-      .pipe(
-        map(projectFn),
-        filter((value: unknown) => !!value),
-        take(1)
-      )
-      .toPromise();
-  }
-  return projectFn(subject.getValue());
+  // This is needed because the stream may use a non synchronous scheduler to deliver values
+  // which would otherwise infinitely render, since we create a new promise each time
+  // this hook renders, which will be 1 tick in the future, even if the value exists
+  // therefore, we access it synchronously on this tick & return it if it exists
+  const maybeValue: R | undefined = projectFn(subject.getValue());
+  if (maybeValue) return { read: () => maybeValue };
+
+  // Creates a promise that resolves when the user defined state exists on the BehaviorSubject
+  const promise: Promise<R> = subject
+    .pipe(
+      map(projectFn),
+      filter((value) => !!value),
+      take(1)
+    )
+    .toPromise();
+
+  // Yes, we copy pasted the thing React said not to copy paste...
+  let status: 'pending' | 'success' | 'error' = 'pending';
+  let result: R;
+
+  const suspender = promise.then(
+    (r) => {
+      status = 'success';
+      result = r;
+    },
+    (e) => {
+      status = 'error';
+      result = e;
+    }
+  );
+
+  return {
+    read(): R {
+      if (status === 'pending') {
+        throw suspender;
+      } else if (status === 'error') {
+        throw result;
+      }
+      // We did modify this from the React demo, to placate Typescript
+      return result;
+    },
+  };
 }
 
 export function withSubscription<T>(
