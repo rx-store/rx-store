@@ -19,7 +19,10 @@ import { AppStoreValue } from '../../types';
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: Effect<AppStoreValue> = ({ sources, sinks }) => {
+export const appRootEffect: Effect<AppStoreValue, any> = ({
+  sources,
+  sinks,
+}) => {
   return sources.counterChange$().pipe(
     scan((acc, val) => acc + val, 0),
     startWith(0),
