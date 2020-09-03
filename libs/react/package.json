@@ -1,6 +1,6 @@
 {
   "name": "@rx-store/react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "ISC",
   "dependencies": {
     "debug": "^4.1.1"
