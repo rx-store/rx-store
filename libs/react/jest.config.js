@@ -2,10 +2,7 @@ module.exports = {
   name: 'react',
   preset: '../../jest.config.js',
   transform: {
-    '^.+\\.[tj]sx?$': [
-      'babel-jest',
-      { cwd: __dirname, configFile: './babel-jest.config.json' },
-    ],
+    '^.+\\.(tsx?|js|html)$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
   coverageDirectory: '../../coverage/libs/react',
