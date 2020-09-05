@@ -2,10 +2,6 @@
 
 BREAKING CHANGES
 
-- Will remove deprecated store() positional arguments
-
-# 1.2.0 (unreleased)
-
 - Makes spawnEffect generic so users can type projected values [#72](https://github.com/rx-store/rx-store/pull/72)
 
 # [1.1.2](https://github.com/rx-store/rx-store/compare/1.1.0...1.1.2) (09-03-2020)
