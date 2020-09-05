@@ -40,7 +40,7 @@ export interface StoreFn {
 }
 
 export interface StoreArg<T extends StoreValue> {
-  effect?: undefined | Effect<T>;
+  effect?: undefined | Effect<T, unknown>;
   value: T;
   observer?: Observer<StoreEvent>;
   onSelect?: (type: 'subject' | 'effect', name: string) => void;
