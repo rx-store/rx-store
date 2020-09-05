@@ -21,7 +21,7 @@ import { StoreEventType, StoreEvent } from './store-arg';
  * effect that projects values onto the outer effect that spawned it,
  * you can type check that the inner effect projects the correct type of
  * value back, and to ensure that if the inner effect is flattened back into
- * the outer effect, the out effect has access to the correct typings:
+ * the outer effect, the outer effect has access to the correct typings:
  *
  *  spawnEffect<boolean>(() => from(...).mapTo(true))
  */
