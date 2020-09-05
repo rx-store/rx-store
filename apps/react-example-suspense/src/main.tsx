@@ -5,7 +5,7 @@ import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
 import { store } from '@rx-store/react';
 import { BehaviorSubject, Subject, ReplaySubject, from } from 'rxjs';
 import App from './app/app';
-import { switchMap, debounceTime, delay } from 'rxjs/operators';
+import { switchMap, debounceTime, delay, ignoreElements } from 'rxjs/operators';
 
 import { GiphyFetch } from '@giphy/js-fetch-api';
 
@@ -45,13 +45,18 @@ const createFetchEffect = (searchInput: string) => () => {
   return from(fetchGif(searchInput)).pipe(delay(1000 + Math.random() * 5000));
 };
 
-const effect: Effect<AppStoreValue> = ({ sources, sinks, spawnEffect }) =>
+const effect: Effect<AppStoreValue, never> = ({
+  sources,
+  sinks,
+  spawnEffect,
+}) =>
   sources.searchInput$().pipe(
     debounceTime(1200),
     switchMap((searchInput) =>
       spawnEffect(createFetchEffect(searchInput), { name: 'fetch-effect' })
     ),
-    sinks.resultImage$()
+    sinks.resultImage$(),
+    ignoreElements()
   );
 
 const { Manager, context } = store({
