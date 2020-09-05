@@ -13,10 +13,10 @@ export type SpawnEffect<T extends StoreValue> = <R>(
   }
 ) => Observable<R>;
 
-export type SpawnEffectInternal<T extends StoreValue> = (
-  effect: Effect<T, any>,
+export type SpawnEffectInternal<T extends StoreValue> = <R>(
+  effect: Effect<T, R>,
   stack: string[]
-) => Observable<any>;
+) => Observable<R>;
 
 interface EffectArgs<T extends StoreValue> {
   sources: Sources<T>;
@@ -34,9 +34,13 @@ export type Effect<T extends StoreValue, R> = (
   effectArgs: EffectArgs<T>
 ) => Observable<R>;
 
-export interface RootEffectArgs<T extends StoreValue, R> {
+export type RootEffect<T extends StoreValue> = (
+  effectArgs: EffectArgs<T>
+) => Observable<never>;
+
+export interface RootEffectArgs<T extends StoreValue> {
   value: T;
-  effect: Effect<T, R>;
+  effect: RootEffect<T>;
   observer?: Observer<StoreEvent>;
 }
 
@@ -64,7 +68,7 @@ export const spawnRootEffect = <T extends StoreValue>({
   value,
   effect,
   observer,
-}: RootEffectArgs<T, unknown>) => {
+}: RootEffectArgs<T>): Observable<never> => {
   /**
    * spawnEffect closes over the `storeValue`. It takes in a `name`
    * and an effectFn.
@@ -156,5 +160,5 @@ export const spawnRootEffect = <T extends StoreValue>({
       event: 'spawn',
     });
   }
-  return spawnEffect(effect, ['root']);
+  return spawnEffect<never>(effect, ['root']);
 };
