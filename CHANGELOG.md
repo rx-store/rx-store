@@ -1,6 +1,6 @@
-# 2.0.0 (unreleased)
+# 1.2.0 (unreleased)
 
-BREAKING CHANGES
+### Features
 
 - Makes spawnEffect generic so users can type projected values [#72](https://github.com/rx-store/rx-store/pull/72)
 
