@@ -53,7 +53,7 @@ const effect: RootEffect<AppStoreValue> = ({ sources, sinks, spawnEffect }) =>
   sources.searchInput$().pipe(
     debounceTime(1200),
     switchMap((searchInput) =>
-      spawnEffect<ResultImage | undefined>(createFetchEffect(searchInput), {
+      spawnEffect(createFetchEffect(searchInput), {
         name: 'fetch-effect',
       })
     ),
