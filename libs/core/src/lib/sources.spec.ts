@@ -1,19 +1,19 @@
 import { Subject } from 'rxjs';
-import { Effect } from './effect';
+import { RootEffect } from './effect';
 import { setup } from './test-helper';
+import { ignoreElements } from 'rxjs/operators';
 
 it('sources data from subject', () => {
   const value = { count$: new Subject() };
-  const effect: Effect<typeof value> = ({ sources }) => {
-    return sources.count$();
+  const effect: RootEffect<typeof value> = ({ sources }) => {
+    return sources.count$().pipe(ignoreElements());
   };
   setup(
     { value, effect },
     ({ expectObservable, effect$, hot, storeEvent$ }) => {
       hot('a').subscribe(value.count$);
-
-      expectObservable(effect$).toBe('a');
-      expectObservable(storeEvent$).toBe('(abcd)', {
+      expectObservable(effect$).toBe('');
+      expectObservable(storeEvent$).toBe('(abc)', {
         a: { type: 'effect', name: 'root', event: 'spawn' },
         b: {
           type: 'link',
@@ -24,12 +24,6 @@ it('sources data from subject', () => {
           type: 'value',
           from: { type: 'subject', name: 'count$' },
           to: { type: 'effect', name: 'root' },
-          value: 'a',
-        },
-        d: {
-          type: 'value',
-          to: { type: 'effect', name: 'root' },
-          from: { type: 'effect', name: '' },
           value: 'a',
         },
       });
