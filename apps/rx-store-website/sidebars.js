@@ -28,7 +28,7 @@ module.exports = {
       label: 'Guides',
       items: [
         'core/guides/nesting-effects',
-        'core/guides/state-vs-events',
+        'core/guides/store-state-in-a-stream',
         'core/guides/manipulate-time',
         'core/guides/recursive-effects',
         'core/guides/combining-in-effects',

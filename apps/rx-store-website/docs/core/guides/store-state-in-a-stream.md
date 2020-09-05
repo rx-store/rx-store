@@ -1,6 +1,6 @@
 ---
-id: state-vs-events
-title: State vs Events
+id: store-state-in-a-stream
+title: Store State In A Stream
 ---
 
 ## State values
