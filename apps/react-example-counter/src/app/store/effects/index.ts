@@ -1,5 +1,5 @@
 import { scan, startWith, ignoreElements } from 'rxjs/operators';
-import { Effect } from '@rx-store/core';
+import { RootEffect } from '@rx-store/core';
 import { AppContextValue } from '../../app-context-value.interface';
 
 /**
@@ -11,7 +11,7 @@ import { AppContextValue } from '../../app-context-value.interface';
  *
  * The effect will remain subscribed while the <Manager /> component is mounted.
  */
-export const appRootEffect: Effect<AppContextValue, never> = ({
+export const appRootEffect: RootEffect<AppContextValue> = ({
   sources,
   sinks,
 }) => {

@@ -1,5 +1,5 @@
 import { scan, startWith, ignoreElements } from 'rxjs/operators';
-import { Effect } from '@rx-store/core';
+import { RootEffect } from '@rx-store/core';
 import { RootContextValue } from '../../types';
 
 /**
@@ -19,7 +19,7 @@ import { RootContextValue } from '../../types';
  * by accessing the context value directly in your components, and
  * subscribing. See the <Provider /> component for an example.
  */
-export const appRootEffect: Effect<RootContextValue, never> = ({
+export const appRootEffect: RootEffect<RootContextValue> = ({
   sources,
   sinks,
 }) =>
