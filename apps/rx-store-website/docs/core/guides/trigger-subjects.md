@@ -1,6 +1,6 @@
 ---
 id: trigger-subjects
-title: Trigger subjects
+title: Trigger Subjects
 ---
 
 Trigger [subjects](https://rxjs-dev.firebaseapp.com/guide/subject) are a pattern where subjects are used for emitting an event which triggers something to happen in other part(s) of the app.
