@@ -48,3 +48,6 @@ Thumbs.db
 # Generated Docusaurus files
 .docusaurus/
 .cache-loader/
+
+# Typedoc generated files
+src/rx-store-website/src/pages/api-*
