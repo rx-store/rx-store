@@ -25,7 +25,7 @@
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
     "help": "nx help",
-    "deploy-website": "cd apps/rx-store-website && ../../node_modules/.bin/docusaurus deploy",
+    "deploy-website": "yarn api-docs && cd apps/rx-store-website && ../../node_modules/.bin/docusaurus deploy",
     "api-docs": "yarn api-docs:core && yarn api-docs:react",
     "api-docs:core": "rm -fr apps/rx-store-website/src/pages/api-core/ && typedoc --excludeNotExported --out apps/rx-store-website/src/pages/api-core/ --tsconfig libs/core/tsconfig.lib.json --theme default && rm -fr apps/rx-store-website/src/pages/api-core/assets",
     "api-docs:react": "rm -fr apps/rx-store-website/src/pages/api-react/ && typedoc --excludeNotExported --out apps/rx-store-website/src/pages/api-react/ --tsconfig libs/react/tsconfig.lib.json --theme default  && rm -fr apps/rx-store-website/src/pages/api-react/assets"
