@@ -14,12 +14,12 @@ Rx Store is a reactive state management solution for frontend component librarie
 
 ## Packages
 
-| Package                                   | Version                                                                                                                    | Description                             |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| [`@rx-store/core`](/lib/core)             | [![npm](https://img.shields.io/npm/v/@rx-store/core.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/core)  | Reactive State Management               |
-| [`@rx-store/react`](/lib/react)           | [![npm](https://img.shields.io/npm/v/@rx-store/core.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/react) | React Bindings                          |
-| [`@rx-store/visualizer`](/lib/visualizer) | experimental                                                                                                               | Visualizes data flow over time          |
-| [`@rx-store/devtools`](/lib/devtools)     | experimental                                                                                                               | Debugging solution using the visualizer |
+| Package                                   | Version                                                                                                                     | Description                             |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| [`@rx-store/core`](/lib/core)             | [![npm](https://img.shields.io/npm/v/@rx-store/core.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/core)   | Reactive State Management               |
+| [`@rx-store/react`](/lib/react)           | [![npm](https://img.shields.io/npm/v/@rx-store/react.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/react) | React Bindings                          |
+| [`@rx-store/visualizer`](/lib/visualizer) | experimental                                                                                                                | Visualizes data flow over time          |
+| [`@rx-store/devtools`](/lib/devtools)     | experimental                                                                                                                | Debugging solution using the visualizer |
 
 ## Development
 
