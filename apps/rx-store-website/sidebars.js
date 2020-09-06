@@ -29,11 +29,11 @@ module.exports = {
       items: [
         'core/guides/nesting-effects',
         'core/guides/store-state-in-a-stream',
+        'core/guides/command-streams',
         'core/guides/manipulate-time',
         'core/guides/recursive-effects',
         'core/guides/combining-in-effects',
         'core/guides/network-requests',
-        'core/guides/trigger-subjects',
         'core/guides/control-when-effects-run',
       ],
     },
