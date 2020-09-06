@@ -28,6 +28,7 @@ module.exports = {
       label: 'Guides',
       items: [
         'core/guides/nesting-effects',
+        'core/guides/effect-creators',
         'core/guides/store-state-in-a-stream',
         'core/guides/command-streams',
         'core/guides/manipulate-time',
