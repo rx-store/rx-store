@@ -50,4 +50,4 @@ Thumbs.db
 .cache-loader/
 
 # Typedoc generated files
-src/rx-store-website/src/pages/api-*
+/apps/rx-store-website/src/pages/api-*

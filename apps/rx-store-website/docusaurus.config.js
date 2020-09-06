@@ -101,7 +101,7 @@ module.exports = {
   plugins: [
     [
       path.resolve(__dirname, 'custom.js'),
-      { path: 'src/pages/api', include: '*.html' },
+      { path: 'src/pages/api-core', include: '**/*.html' },
     ],
   ],
 };

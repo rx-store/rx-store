@@ -59,7 +59,7 @@ module.exports = function (context, options) {
             `${docuHash(metadata.source)}.json`,
             JSON.stringify(html.toString('utf-8'), null, 2)
           );
-          console.log(source);
+          console.log({ friends, permalink, source });
           addRoute({
             path: permalink,
             component: '@site/src/components/Friends.js',
