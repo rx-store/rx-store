@@ -30,9 +30,7 @@ module.exports = function (context, options) {
         const source = path.join(pagesDir, relativeSource);
         const aliasedSourcePath = aliasedSitePath(source, siteDir);
         const pathName = encodePath(fileToPath(relativeSource));
-        console.log(pathName);
         const permalink = pathName.replace(/^\//, baseUrl || '');
-        console.log(permalink);
         if (isHTML(relativeSource)) {
           return {
             permalink,
@@ -53,20 +51,18 @@ module.exports = function (context, options) {
           const { permalink, source } = metadata;
           //   console.log(`${docuHash(metadata.source)}.json`, { metadata });
           const html = fs.readFileSync(metadata.source);
-          const friends = await createData(
+          const __html = await createData(
             // Note that this created data path must be in sync with
             // metadataPath provided to mdx-loader.
             `${docuHash(metadata.source)}.json`,
             JSON.stringify(html.toString('utf-8'), null, 2)
           );
-          console.log({ friends, permalink, source });
           addRoute({
             path: permalink,
-            component: '@site/src/components/Friends.js',
+            component: '@site/src/components/Apidocs.js',
             exact: true,
             modules: {
-              //   content: source,
-              friends,
+              __html,
             },
           });
         })
