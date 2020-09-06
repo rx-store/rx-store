@@ -31,7 +31,10 @@ module.exports = function (context, options) {
         const source = path.join(pagesDir, relativeSource);
         const aliasedSourcePath = aliasedSitePath(source, siteDir);
         const pathName = encodePath(fileToPath(relativeSource));
-        const permalink = pathName.replace(/^\//, baseUrl || '');
+        const permalink = pathName.replace(
+          /^\//,
+          (baseUrl || '') + (options.route || '')
+        );
         if (isHTML(relativeSource)) {
           return {
             permalink,
@@ -65,6 +68,7 @@ module.exports = function (context, options) {
           //   `${docuHash(metadata.source)}.json`,
           //   JSON.stringify($('.tsd-legend-group').html(), null, 2)
           // );
+          console.log(permalink);
           addRoute({
             path: permalink,
             component: '@site/src/components/Apidocs.js',
