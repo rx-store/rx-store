@@ -6,41 +6,114 @@ import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
 import { StoreEventType, StoreEvent } from './store-arg';
 
-export type SpawnEffect<T extends StoreValue> = (
-  effect: Effect<T>,
+/**
+ * The **SpawnEffect** type is a generic type describing the type of
+ * the spawnEffect function. Pass the **StoreValue** type to
+ * the **SpawnEffect** type to consume it as a type. This ensures consumers
+ * of the **SpawnEffect** typing get the mapped type's with the sources &
+ * sinks typings. Example:
+ *
+ * SpawnEffect<AppStoreValue>.
+ *
+ *
+ * The **function signature** specified by this typing is also itself
+ * a generic. This is so that if you want to spawn an inner
+ * effect that projects values onto the outer effect that spawned it,
+ * you can type check that the inner effect projects the correct type of
+ * value back, and to ensure that if the inner effect is flattened back into
+ * the outer effect, the outer effect has access to the correct typings:
+ *
+ *  spawnEffect<boolean>(() => from(...).mapTo(true))
+ */
+export type SpawnEffect<Subjects extends StoreValue> = <Projected>(
+  effect: Effect<Subjects, Projected>,
   options: {
     name: string;
   }
-) => Observable<any>;
+) => Observable<Projected>;
 
-type SpawnEffectInternal<T extends StoreValue> = (
-  effect: Effect<T>,
+/**
+ * As the name suggests, this is for internal use only. End users
+ * are intended to use **spawnRootEffect**, and then their effect
+ * is passed a curried **spawnEffect** function to spawn inner effects
+ * recursively. As this happens, we build a "stack" tracking where all
+ * the effects were spawned from. In order to keep the "stack" internal
+ * to prevent users corrupting it and to simplify the public API, the
+ * **spawnRootEffect** and **spawnEffect** functions both internally
+ * call **spawnEffectInternal**, which itself is used to curry and then
+ * close over the sources, sinks, and **spawnEffect** function. Only
+ * the internal function has access to the stack.
+ */
+type SpawnEffectInternal<Subjects extends StoreValue> = <Projected = unknown>(
+  effect: Effect<Subjects, Projected>,
   stack: string[]
-) => Observable<any>;
+) => Observable<Projected>;
 
-interface EffectArgs<T extends StoreValue> {
-  sources: Sources<T>;
-  sinks: Sinks<T>;
-  spawnEffect: SpawnEffect<T>;
+/**
+ * This interface defines the object passed to all effect
+ * functions as an argument. Via the object defined by this
+ * interface, effects can access the sources, sinks, and
+ * spawnEffect function (used to spawn inner effects)
+ */
+export interface EffectArgs<Subjects extends StoreValue> {
+  sources: Sources<Subjects>;
+  sinks: Sinks<Subjects>;
+  spawnEffect: SpawnEffect<Subjects>;
 }
 
 /**
+ * This is the function signature that all effects must implement.
+ *
  * An effect is a function that is injected with sources, sinks, can spawn
  * effects using the injected spawnEffect() helper. The effect encapsulates
  * a unit of work as an observable. The work does not actually run until that
  * observable is subscribed to, by the <Manager /> component.
+ *
+ * This typing is generic, the first argument to the generic is used to
+ * configure the mapped types for the sources & sinks that are passed to the
+ * effect function implementing this type. The second generic paramater is used
+ * to specify the projected value, in case you are flattening values into the outer
+ * effect and want to strongly type the interface between the outer & inner effect.
  */
-export type Effect<T extends StoreValue> = (
-  effectArgs: EffectArgs<T>
-) => Observable<any>;
+export type Effect<Subjects extends StoreValue, Projected = unknown> = (
+  effectArgs: EffectArgs<Subjects>
+) => Observable<Projected>;
 
-export interface RootEffectArgs<T extends StoreValue> {
-  value: T;
-  effect: Effect<T>;
+/**
+ * This typing is used to refer to the root effect in particular
+ * which is a specialized version of the Effect which must not project
+ * any values, since there is no effect above it & Rx Store does not
+ * use any of the values projected by the root effect.
+ */
+export type RootEffect<Subjects extends StoreValue> = (
+  effectArgs: EffectArgs<Subjects>
+) => Observable<never>;
+
+/**
+ * This typing specifies the object that must be passed to the
+ * **spawnRootEffect** function. Users must pass in a store value,
+ * the root effect they are spawning, and can optionally pass in an observer
+ * used to observe all events happening anywhere in the store.
+ */
+export interface SpawnRootEffectArgs<Subjects extends StoreValue> {
+  value: Subjects;
+  effect: RootEffect<Subjects>;
   observer?: Observer<StoreEvent>;
 }
 
+/**
+ * This hashmap is used to keep track of an auto incrementing counter
+ * so that each instance of the effect is numbered and can be distinguised
+ * from other instances of the same effect when introspecting store events
+ * with the store observer / devtools.
+ */
 const ids: Record<string, number> = {};
+
+/**
+ * This function resets the auto-incrementing IDs, it is used to make
+ * tests deterministic if they need to assert on the dynamically generated
+ * effect IDs. You could also use this to reset the IDs for some other use case.
+ */
 export const resetIds = () => {
   Object.keys(ids).forEach((key) => {
     delete ids[key];
@@ -60,11 +133,11 @@ export const resetIds = () => {
  * @param storeValue
  * @param effect
  */
-export const spawnRootEffect = <T extends StoreValue>({
+export const spawnRootEffect = <Subjects extends StoreValue>({
   value,
   effect,
   observer,
-}: RootEffectArgs<T>) => {
+}: SpawnRootEffectArgs<Subjects>): Observable<never> => {
   /**
    * spawnEffect closes over the `storeValue`. It takes in a `name`
    * and an effectFn.
@@ -81,7 +154,10 @@ export const spawnRootEffect = <T extends StoreValue>({
    * that devtools knows when each effect receives value(s), which subject(s) they came
    * from, and which subject(s) each effect sinks data back into.
    */
-  const spawnEffect: SpawnEffectInternal<T> = (effect, stack) => {
+  const spawnEffectInternal: SpawnEffectInternal<Subjects> = (
+    effect,
+    stack
+  ) => {
     const name = stack[stack.length - 1];
     const parentName: string | undefined = stack[stack.length - 2];
     // Curries the sources and sinks with the debug key, to track this
@@ -91,7 +167,10 @@ export const spawnRootEffect = <T extends StoreValue>({
 
     // Keeps the "context" intact, by appending to name to create a path
     // each time an effect creates a child effect by running it's curried `spawnEffect()`
-    const childSpawnEffect: SpawnEffect<T> = (effect, { name: childName }) => {
+    const childSpawnEffect: SpawnEffect<Subjects> = (
+      effect,
+      { name: childName }
+    ) => {
       if (undefined === ids[childName]) {
         ids[childName] = 1;
       } else {
@@ -116,7 +195,7 @@ export const spawnRootEffect = <T extends StoreValue>({
         });
       }
 
-      return spawnEffect(effect, [...stack, curriedNameWithId]);
+      return spawnEffectInternal(effect, [...stack, curriedNameWithId]);
     };
 
     // Run the effect function passing in the curried sources, sinks, and
@@ -156,5 +235,5 @@ export const spawnRootEffect = <T extends StoreValue>({
       event: 'spawn',
     });
   }
-  return spawnEffect(effect, ['root']);
+  return spawnEffectInternal<never>(effect, ['root']);
 };

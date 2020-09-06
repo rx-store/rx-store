@@ -1,3 +1,9 @@
+# 1.2.0 (unreleased)
+
+### Features
+
+- Makes spawnEffect generic so users can type projected values [#72](https://github.com/rx-store/rx-store/pull/72)
+
 # [1.1.2](https://github.com/rx-store/rx-store/compare/1.1.0...1.1.2) (09-03-2020)
 
 ### Bug Fixes
@@ -8,8 +14,8 @@
 
 ### Features
 
-- Added new store() API which takes in an object. Deprecated old store() positional arguments. [#48](https://github.com/rx-store/rx-store/pull/48/files)
-- Adds store observer to core, making the store introspectable. [#48](https://github.com/rx-store/rx-store/pull/48/files)
+- Added new store() API which takes in an object. Deprecated old store() positional arguments [#48](https://github.com/rx-store/rx-store/pull/48/files)
+- Adds store observer to core, making the store introspectable [#48](https://github.com/rx-store/rx-store/pull/48/files)
 - Adds experimental devtools & visualizer packages [#48](https://github.com/rx-store/rx-store/pull/48/files)
 - Adds React suspense demo app [#65](https://github.com/rx-store/rx-store/pull/65)
 - Docs updates

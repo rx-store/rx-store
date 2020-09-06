@@ -4,15 +4,15 @@ import { store, useStore } from '@rx-store/react';
 import { RootContextValue } from './types';
 import { Effect } from '@rx-store/core';
 import { rootContext } from './Manager';
-import { tap } from 'rxjs/operators';
+import { tap, ignoreElements } from 'rxjs/operators';
 
 export interface ChildContextValue extends RootContextValue {
   foo$: Subject<number>;
 }
 
-const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
-  sources,
-}) =>
+const createChildEffect: (i: number) => Effect<ChildContextValue, never> = (
+  i
+) => ({ sources }) =>
   merge(
     sources.count$().pipe(tap((count) => console.log({ c: count }))),
     sources
@@ -20,7 +20,7 @@ const createChildEffect: (i: number) => Effect<ChildContextValue> = (i) => ({
       .pipe(
         tap((value) => console.log(`hello from ${i} with value of ${value}`))
       )
-  );
+  ).pipe(ignoreElements());
 
 const createChildValue: (
   parentStore: RootContextValue,

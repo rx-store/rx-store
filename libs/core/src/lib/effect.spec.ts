@@ -1,9 +1,11 @@
-import { of, timer } from 'rxjs';
-import { Effect } from './effect';
+import { of, timer, BehaviorSubject } from 'rxjs';
+import { Effect, RootEffect } from './effect';
 import { setup } from './test-helper';
+import { ignoreElements, toArray } from 'rxjs/operators';
+import { StoreValue } from './store-value';
 
-it('spawns and tears down an empty effect', () => {
-  const effect: Effect<{}> = () => of();
+it('does nothing and just completes immediately for a no-op effect', () => {
+  const effect: RootEffect<{}> = () => of();
   setup({ value: {}, effect }, ({ expectObservable, effect$, storeEvent$ }) => {
     expectObservable(effect$).toBe('|');
     expectObservable(storeEvent$).toBe('(ab)', {
@@ -13,25 +15,43 @@ it('spawns and tears down an empty effect', () => {
   });
 });
 
-it('spawns and tears down an effect with a timer', () => {
-  const effect: Effect<{}> = () => timer(10);
+it('does nothing and completes after the effect when an effect uses no sink', () => {
+  const effect: RootEffect<{}> = () => timer(10).pipe(ignoreElements());
   setup({ value: {}, effect }, ({ expectObservable, effect$, storeEvent$ }) => {
-    expectObservable(effect$).toBe('----------(a|)', { a: 0 });
-    expectObservable(storeEvent$).toBe('  a---------(bc)', {
+    expectObservable(effect$).toBe('----------|');
+    expectObservable(storeEvent$).toBe('  a---------b', {
+      a: { event: 'spawn', name: 'root', type: 'effect' },
+      b: { event: 'teardown', name: 'root', type: 'effect' },
+    });
+  });
+});
+
+it('links the subject the effect and sinks the values onto it', () => {
+  const value: StoreValue = { count$: new BehaviorSubject(0) };
+  const effect: RootEffect<typeof value> = ({ sinks }) =>
+    timer(10).pipe(sinks.count$(), ignoreElements());
+  setup({ value, effect }, ({ expectObservable, effect$, storeEvent$ }) => {
+    expectObservable(effect$).toBe('----------|');
+    expectObservable(storeEvent$).toBe('(ab)------(cd)', {
       a: { event: 'spawn', name: 'root', type: 'effect' },
       b: {
+        type: 'link',
+        to: { type: 'subject', name: 'count$' },
+        from: { type: 'effect', name: 'root' },
+      },
+      c: {
         type: 'value',
-        from: { name: '', type: 'effect' },
-        to: { name: 'root', type: 'effect' },
+        to: { type: 'subject', name: 'count$' },
+        from: { type: 'effect', name: 'root' },
         value: 0,
       },
-      c: { event: 'teardown', name: 'root', type: 'effect' },
+      d: { event: 'teardown', name: 'root', type: 'effect' },
     });
   });
 });
 
 it('spawns an effect that spawns a child effect', () => {
-  const effect: Effect<{}> = ({ spawnEffect }) => {
+  const effect: RootEffect<{}> = ({ spawnEffect }) => {
     spawnEffect(() => of(), { name: 'child' });
     return of();
   };
@@ -51,7 +71,7 @@ it('spawns an effect that spawns a child effect', () => {
 });
 
 it('numbers the child effects', () => {
-  const effect: Effect<{}> = ({ spawnEffect }) => {
+  const effect: RootEffect<{}> = ({ spawnEffect }) => {
     spawnEffect(() => of(), { name: 'child' });
     spawnEffect(() => of(), { name: 'child' });
     spawnEffect(() => of(), { name: 'child' });
@@ -85,14 +105,14 @@ it('numbers the child effects', () => {
 });
 
 it('spawns an effect that spawns grand children effects', () => {
-  const grandchild: Effect<{}> = () => {
+  const grandchild: Effect<{}, never> = () => {
     return of();
   };
-  const child: Effect<{}> = ({ spawnEffect }) => {
+  const child: Effect<{}, never> = ({ spawnEffect }) => {
     spawnEffect(grandchild, { name: 'grandchild' });
     return of();
   };
-  const root: Effect<{}> = ({ spawnEffect }) => {
+  const root: RootEffect<{}> = ({ spawnEffect }) => {
     spawnEffect(child, { name: 'child' });
     return of();
   };

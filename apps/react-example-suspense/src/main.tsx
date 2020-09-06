@@ -1,11 +1,11 @@
 // import { Devtools } from '@rx-store/devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { StoreValue, Effect, StoreEvent } from '@rx-store/core';
+import { StoreValue, StoreEvent, RootEffect, Effect } from '@rx-store/core';
 import { store } from '@rx-store/react';
 import { BehaviorSubject, Subject, ReplaySubject, from } from 'rxjs';
 import App from './app/app';
-import { switchMap, debounceTime, delay } from 'rxjs/operators';
+import { switchMap, debounceTime, delay, ignoreElements } from 'rxjs/operators';
 
 import { GiphyFetch } from '@giphy/js-fetch-api';
 
@@ -14,7 +14,13 @@ export const devTools$ = new ReplaySubject<StoreEvent>(5000);
 // use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
 const gf = new GiphyFetch('');
 
-const fetchGif = async (searchInput: string) => {
+export interface ResultImage {
+  url: string;
+}
+
+const fetchGif = async (
+  searchInput: string
+): Promise<ResultImage | undefined> => {
   const result = await gf.search(searchInput, { limit: 1 });
   const images = result.data.map((data) =>
     Object.entries(data.images).find(([key]) => key === 'preview_gif')
@@ -27,10 +33,6 @@ const fetchGif = async (searchInput: string) => {
   }
 };
 
-export interface ResultImage {
-  url: string;
-}
-
 interface AppStoreValue extends StoreValue {
   searchInput$: Subject<string>;
   resultImage$: Subject<undefined | ResultImage>;
@@ -41,17 +43,22 @@ const storeValue: AppStoreValue = {
   resultImage$: new BehaviorSubject<undefined | ResultImage>(undefined),
 };
 
-const createFetchEffect = (searchInput: string) => () => {
+const createFetchEffect: (
+  seachInput: string
+) => Effect<AppStoreValue, ResultImage | undefined> = (searchInput) => () => {
   return from(fetchGif(searchInput)).pipe(delay(1000 + Math.random() * 5000));
 };
 
-const effect: Effect<AppStoreValue> = ({ sources, sinks, spawnEffect }) =>
+const effect: RootEffect<AppStoreValue> = ({ sources, sinks, spawnEffect }) =>
   sources.searchInput$().pipe(
     debounceTime(1200),
     switchMap((searchInput) =>
-      spawnEffect(createFetchEffect(searchInput), { name: 'fetch-effect' })
+      spawnEffect(createFetchEffect(searchInput), {
+        name: 'fetch-effect',
+      })
     ),
-    sinks.resultImage$()
+    sinks.resultImage$(),
+    ignoreElements()
   );
 
 const { Manager, context } = store({

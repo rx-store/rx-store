@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 import { ReplaySubject, Observable } from 'rxjs';
 import { spawnRootEffect } from './effect';
-import { RootEffectArgs, resetIds } from '..';
+import { SpawnRootEffectArgs, resetIds } from '..';
 import { TestScheduler } from 'rxjs/testing';
 import { StoreValue } from './store-value';
 import { StoreEvent } from './store-arg';
@@ -13,7 +13,7 @@ interface CallbackArgs extends RunHelpers {
 }
 
 export const setup = <T extends StoreValue>(
-  setupArgs: RootEffectArgs<T>,
+  setupArgs: SpawnRootEffectArgs<T>,
   cb: (args: CallbackArgs) => void
 ) => {
   resetIds();

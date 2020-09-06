@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Effect, spawnRootEffect } from '@rx-store/core';
+import { spawnRootEffect, RootEffect } from '@rx-store/core';
 import { Observable, Subscription } from 'rxjs';
 import { AppStoreValue } from '../types';
 
@@ -7,12 +7,12 @@ import { AppStoreValue } from '../types';
   providedIn: 'root',
 })
 export class StoreManagerService implements OnDestroy {
-  rootEffect!: Observable<any>;
+  rootEffect!: Observable<never>;
   rootEffectSubscription!: Subscription;
   store!: AppStoreValue;
-  init(value: AppStoreValue, effect: Effect<any>): void {
+  init(value: AppStoreValue, effect: RootEffect<AppStoreValue>): void {
     this.store = value;
-    this.rootEffect = spawnRootEffect({ value, effect });
+    this.rootEffect = spawnRootEffect<AppStoreValue>({ value, effect });
     this.rootEffectSubscription = this.rootEffect.subscribe();
   }
 

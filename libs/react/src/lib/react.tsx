@@ -11,7 +11,7 @@ import {
   StoreValue,
   StoreEventType,
   StoreEvent,
-  Effect,
+  RootEffect,
 } from '@rx-store/core';
 
 /**
@@ -40,7 +40,7 @@ export interface StoreFn {
 }
 
 export interface StoreArg<T extends StoreValue> {
-  effect?: undefined | Effect<T>;
+  effect?: undefined | RootEffect<T>;
   value: T;
   observer?: Observer<StoreEvent>;
   onSelect?: (type: 'subject' | 'effect', name: string) => void;
@@ -57,10 +57,10 @@ export interface StoreArg<T extends StoreValue> {
  */
 export const store: StoreFn = <T extends StoreValue>(
   storeArgOrValue: StoreArg<T> | T,
-  deprecatedEffect?: StoreArg<T>['effect']
+  deprecatedEffect?: RootEffect<T>
 ) => {
   let value: T;
-  let effect: StoreArg<T>['effect'] | undefined;
+  let effect: RootEffect<T> | undefined;
   let observer: StoreArg<T>['observer'] | undefined;
   if (
     storeArgOrValue &&
