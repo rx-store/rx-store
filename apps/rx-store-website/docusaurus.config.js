@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   title: 'Rx Store',
   tagline: 'The stream management library',
@@ -94,6 +96,12 @@ module.exports = {
           customCss: require.resolve('./src/css/custom.css'),
         },
       },
+    ],
+  ],
+  plugins: [
+    [
+      path.resolve(__dirname, 'custom.js'),
+      { path: 'src/pages/api', include: '*.html' },
     ],
   ],
 };
