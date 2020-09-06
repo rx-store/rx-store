@@ -13,7 +13,7 @@ export type SpawnEffect<T extends StoreValue> = (
   }
 ) => Observable<any>;
 
-export type SpawnEffectInternal<T extends StoreValue> = (
+type SpawnEffectInternal<T extends StoreValue> = (
   effect: Effect<T>,
   stack: string[]
 ) => Observable<any>;
