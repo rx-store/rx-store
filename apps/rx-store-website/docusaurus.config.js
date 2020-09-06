@@ -100,7 +100,7 @@ module.exports = {
   ],
   plugins: [
     [
-      path.resolve(__dirname, 'custom.js'),
+      path.resolve(__dirname, 'plugin-typedoc.js'),
       { path: 'src/pages/api-core', include: '**/*.html' },
     ],
   ],

@@ -1,3 +1,4 @@
+const cheerio = require('cheerio');
 const path = require('path');
 const globby = require('globby');
 const fs = require('fs');
@@ -50,19 +51,27 @@ module.exports = function (context, options) {
         content.map(async (metadata) => {
           const { permalink, source } = metadata;
           //   console.log(`${docuHash(metadata.source)}.json`, { metadata });
-          const html = fs.readFileSync(metadata.source);
-          const __html = await createData(
-            // Note that this created data path must be in sync with
-            // metadataPath provided to mdx-loader.
-            `${docuHash(metadata.source)}.json`,
-            JSON.stringify(html.toString('utf-8'), null, 2)
+          const html = fs.readFileSync(metadata.source).toString('utf8');
+          const $ = cheerio.load(html);
+          const __content = await createData(
+            `${docuHash(metadata.source)}.content.json`,
+            JSON.stringify($('.col-content').html(), null, 2)
           );
+          const __menu = await createData(
+            `${docuHash(metadata.source)}.menu.json`,
+            JSON.stringify($('.col-menu').html(), null, 2)
+          );
+          // const __content = await createData(
+          //   `${docuHash(metadata.source)}.json`,
+          //   JSON.stringify($('.tsd-legend-group').html(), null, 2)
+          // );
           addRoute({
             path: permalink,
             component: '@site/src/components/Apidocs.js',
             exact: true,
             modules: {
-              __html,
+              __content,
+              __menu,
             },
           });
         })
