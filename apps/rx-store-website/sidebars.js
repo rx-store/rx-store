@@ -38,6 +38,10 @@ module.exports = {
         'core/guides/control-when-effects-run',
       ],
     },
+    {
+      type: 'doc',
+      id: 'core/api-reference',
+    },
   ],
   react: [
     {
@@ -63,6 +67,10 @@ module.exports = {
         'react/api-reference/use-subscription',
         'react/api-reference/with-subscription',
       ],
+    },
+    {
+      type: 'doc',
+      id: 'react/api-reference',
     },
   ],
   angular: {
