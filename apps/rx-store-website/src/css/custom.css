@@ -2375,7 +2375,7 @@ footer .tsd-legend {
   padding-top: 2px;
   padding-bottom: 2px;
   border-left: 2px solid transparent;
-  color: #222;
+  /* color: #222; */
   text-decoration: none;
   transition: border-left-color 0.1s;
 }
@@ -2523,6 +2523,9 @@ footer .tsd-legend {
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+html[data-theme='dark'] .tsd-panel {
+  background-color: #000;
 }
 
 .tsd-panel:empty {
