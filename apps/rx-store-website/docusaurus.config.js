@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   title: 'Rx Store',
   tagline: 'The stream management library',
@@ -12,13 +14,13 @@ module.exports = {
       items: [
         {
           to: 'docs/core/introduction/getting-started',
-          activeBasePath: 'docs/core',
+          activeBaseRegex: 'docs/core|api-core',
           label: 'Core',
           position: 'left',
         },
         {
           to: 'docs/react/react',
-          activeBasePath: 'docs/react',
+          activeBaseRegex: 'docs/react|api-react',
           label: 'React',
           position: 'left',
         },
@@ -93,6 +95,21 @@ module.exports = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      path.resolve(__dirname, 'plugin-typedoc.js'),
+      { path: 'src/pages/api-core', include: '**/*.html', route: 'api-core/' },
+    ],
+    [
+      path.resolve(__dirname, 'plugin-typedoc.js'),
+      {
+        id: 2,
+        path: 'src/pages/api-react',
+        include: '**/*.html',
+        route: 'api-react/',
       },
     ],
   ],

@@ -15,4 +15,4 @@ In Rx Store, each store has a store value, which is an object. It is where you d
 }
 ```
 
-They type of subject you want most likely [depends on what you're modeling, state or events](../guides/state-vs-events.md)
+They type of subject you want most likely [depends on what you're modeling, state or events](../guides/store-state-in-a-stream.md)

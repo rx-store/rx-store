@@ -8,9 +8,18 @@
 
 ![Build status](https://github.com/rx-store/rx-store/workflows/build/badge.svg)
 
-Rx Store is a reactive state management solution for frontend component libraries such as React & Angular, allowing you to build your application's logic using RxJs.
+Rx Store is a reactive state management solution for frontend component libraries such as React & Angular, allowing you to build your application's logic using RxJS.
 
 [Read the documentation to learn more about rx store and get started!](https://rx-store.github.io/rx-store/)
+
+## Packages
+
+| Package                                   | Version                                                                                                                     | Description                             |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| [`@rx-store/core`](/lib/core)             | [![npm](https://img.shields.io/npm/v/@rx-store/core.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/core)   | Reactive State Management               |
+| [`@rx-store/react`](/lib/react)           | [![npm](https://img.shields.io/npm/v/@rx-store/react.svg?style=flat-square)](https://www.npmjs.com/package/@rx-store/react) | React Bindings                          |
+| [`@rx-store/visualizer`](/lib/visualizer) | experimental                                                                                                                | Visualizes data flow over time          |
+| [`@rx-store/devtools`](/lib/devtools)     | experimental                                                                                                                | Debugging solution using the visualizer |
 
 ## Development
 

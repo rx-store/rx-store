@@ -28,14 +28,19 @@ module.exports = {
       label: 'Guides',
       items: [
         'core/guides/nesting-effects',
-        'core/guides/state-vs-events',
+        'core/guides/effect-creators',
+        'core/guides/store-state-in-a-stream',
+        'core/guides/command-streams',
         'core/guides/manipulate-time',
         'core/guides/recursive-effects',
         'core/guides/combining-in-effects',
         'core/guides/network-requests',
-        'core/guides/trigger-subjects',
         'core/guides/control-when-effects-run',
       ],
+    },
+    {
+      type: 'doc',
+      id: 'core/api-reference',
     },
   ],
   react: [
@@ -62,6 +67,10 @@ module.exports = {
         'react/api-reference/use-subscription',
         'react/api-reference/with-subscription',
       ],
+    },
+    {
+      type: 'doc',
+      id: 'react/api-reference',
     },
   ],
   angular: {
