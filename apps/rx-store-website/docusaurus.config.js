@@ -4,7 +4,6 @@ module.exports = {
   title: 'Rx Store',
   tagline: 'The stream management library',
   url: 'https://rx-store.github.io',
-  baseUrl: '/rx-store/',
   favicon: 'img/favicon.ico',
   organizationName: 'rx-store', // Usually your GitHub org/user name.
   projectName: 'rx-store', // Usually your repo name.
