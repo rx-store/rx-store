@@ -3,7 +3,7 @@ id: command-streams
 title: Command Subjects
 ---
 
-Commands can be represented in your [store value](https://rxjs-dev.firebaseapp.com/guide/subject) by having a subject used for emitting an event which triggers something to happen in other part(s) of the app.
+Commands can be represented in your [store value](https://rxjs.dev/guide/subject) by having a subject used for emitting an event which triggers something to happen in other part(s) of the app.
 
 ## Example
 

@@ -7,7 +7,7 @@ title: Store State In A Stream
 
 State can be modeled as a stream, where an event is emitted onto the stream each time the state changes, where the event itself is the latest value of the state.
 
-One good pattern for this is to use a [behavior subject](https://rxjs-dev.firebaseapp.com/guide/subject#behaviorsubject).
+One good pattern for this is to use a [behavior subject](https://rxjs.dev/guide/subject#behaviorsubject).
 
 The `BehaviorSubject` is a subject, which has a notion of "the current value". It stores the latest value emitted to its consumers, and whenever a new `Observer` subscribes, it will immediately receive the "current value" from the BehaviorSubject.
 
@@ -42,7 +42,7 @@ export const effect = ({sources, sinks}) =>
 };
 ```
 
-You may want to make your subject a [replay subject](https://rxjs-dev.firebaseapp.com/guide/subject#replaysubject) if you want late subscriber to receive all of the events that occurred before they subscribed.
+You may want to make your subject a [replay subject](https://rxjs.dev/guide/subject#replaysubject) if you want late subscriber to receive all of the events that occurred before they subscribed.
 
 :::danger
 Use a replay subject without passing in a maximum buffer size only after considering that it internally stores every event by default, which can easily cause memory leaks that cause your app to consume infinite amounts of memory and crash over time.

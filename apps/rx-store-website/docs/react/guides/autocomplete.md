@@ -14,7 +14,7 @@ yarn add @rx-store/react @rx-store/core rxjs @giphy/js-fetch-api
 
 ## Store Value (subjects)
 
-The store value is where we'll store our sources of truth. We'll use two [subjects](https://rxjs-dev.firebaseapp.com/guide/subject), one called `searchInput$` which emits a string with the latest values of the text input, and one called `resultImage$` that emits an object of the shape `{url: string}` each time we get back a result from the API.
+The store value is where we'll store our sources of truth. We'll use two [subjects](https://rxjs.dev/guide/subject), one called `searchInput$` which emits a string with the latest values of the text input, and one called `resultImage$` that emits an object of the shape `{url: string}` each time we get back a result from the API.
 
 We'll declare the typings here, but if you're not using typescript you can skip this step.
 
@@ -25,7 +25,7 @@ interface AppStoreValue extends StoreValue {
 }
 ```
 
-Next, we'll implement this interface, or create the store value. For both subjects we will [BehaviorSubject](https://rxjs-dev.firebaseapp.com/guide/subject#behaviorsubject) so they act stateful.
+Next, we'll implement this interface, or create the store value. For both subjects we will [BehaviorSubject](https://rxjs.dev/guide/subject#behaviorsubject) so they act stateful.
 
 ```ts
 const storeValue: AppStoreValue = {
@@ -55,7 +55,7 @@ const fetchGif = async (searchInput: string) => {
 
 ## Effect
 
-We'll write an effect that takes the `searchInput$` events, and [debounces](https://rxjs-dev.firebaseapp.com/api/operators/debounceTime) them for 1.2 seconds, then converts them to network request and cancels any previous in flight request with [switchMap](https://rxjs-dev.firebaseapp.com/api/operators/switchMap).
+We'll write an effect that takes the `searchInput$` events, and [debounces](https://rxjs.dev/api/operators/debounceTime) them for 1.2 seconds, then converts them to network request and cancels any previous in flight request with [switchMap](https://rxjs.dev/api/operators/switchMap).
 
 ```ts
 const effect: Effect<AppStoreValue> = ({ sources, sinks, spawnEffect }) =>

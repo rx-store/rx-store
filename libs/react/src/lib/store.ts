@@ -24,7 +24,7 @@ export interface StoreArg<Value extends StoreValue> {
 
   /**
    * value The {@link StoreValue} is a plain javascript object (containing
-   * [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject)).
+   * [RxJS subjects](https://rxjs.dev/guide/subject)).
    */
   value: Value;
   observer?: StoreObserver;
@@ -44,7 +44,7 @@ export interface StoreReturn<Value extends StoreValue> {
  * by the consuming code, for downstream components to import in
  * order for them to consume & publish to streams in the store value.
  *
- * You create your store value, which is a plain old javascript object (containing [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject), then use `createStore()` passing in the store value, and the optional root effect.
+ * You create your store value, which is a plain old javascript object (containing [RxJS subjects](https://rxjs.dev/guide/subject), then use `createStore()` passing in the store value, and the optional root effect.
  *
  * You get back a {@link Manager} component, for providing the store and it's context, and you also get back the React context itself, for consuming from and emitting to the store directly from outside of Rx Store (such as in your components).
  *

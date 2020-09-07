@@ -3,7 +3,7 @@ id: root-effect
 title: Root Effect
 ---
 
-Each store has one root one effect. If you want multiple effects, you must [use the `spawnEffect` function](../guides/nesting-effects.md) together with [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) to nest effects under the root effect.
+Each store has one root one effect. If you want multiple effects, you must [use the `spawnEffect` function](../guides/nesting-effects.md) together with [RxJS operators](https://rxjs.dev/guide/operators) to nest effects under the root effect.
 
 ## What are effects?
 
@@ -42,7 +42,7 @@ Sources and sinks are both functions, which allows Rx Store to keep track of whi
 
 Sources are [observables](), they are essentially the result of calling [asObservable](https://rxjs.dev/api/index/class/Subject#asobservable-) to "seal off" the subjects and make them read only.
 
-Sinks are [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators), meaning you place them directly in a pipeline. They will take the values emitted on the source observable (the observable returned by the operator preceding it in the pipeline) and emit them onto the corresponding [subject](https://rxjs.dev/guide/subject) on your [store value](./store-value.md). The value will be passed through unmodified by the sinks if there are any additional operators in your pipeline.
+Sinks are [RxJS operators](https://rxjs.dev/guide/operators), meaning you place them directly in a pipeline. They will take the values emitted on the source observable (the observable returned by the operator preceding it in the pipeline) and emit them onto the corresponding [subject](https://rxjs.dev/guide/subject) on your [store value](./store-value.md). The value will be passed through unmodified by the sinks if there are any additional operators in your pipeline.
 
 ## Typescript
 

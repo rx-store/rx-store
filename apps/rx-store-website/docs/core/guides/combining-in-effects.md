@@ -14,4 +14,4 @@ export const effect = ({ sources }) =>
   );
 ```
 
-You can also use any of the plethora of [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) or make your own operators that encapsulate combining logic.
+You can also use any of the plethora of [RxJS operators](https://rxjs.dev/guide/operators) or make your own operators that encapsulate combining logic.

@@ -5,7 +5,7 @@ title: Network Requests
 
 An effect could for example subscribe to a `request$` subject and for each value emitted it could be mapped to a network request, and the responses emitted onto a `response$` subject.
 
-First, we'll define a helper function which makes the actual request, well use the [fromFetch](https://rxjs-dev.firebaseapp.com/api/fetch/fromFetch) operator, which returns an observable, that when subscribed to performs an HTTP request using the [fetch function](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
+First, we'll define a helper function which makes the actual request, well use the [fromFetch](https://rxjs.dev/api/fetch/fromFetch) operator, which returns an observable, that when subscribed to performs an HTTP request using the [fetch function](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
 
 ```ts
 const makeRequest = (request) =>
@@ -27,7 +27,7 @@ export const effect = ({ sources, sinks }) =>
   );
 ```
 
-https://rxjs-dev.firebaseapp.com/api/operators/mergeMap
+https://rxjs.dev/api/operators/mergeMap
 
 ## Prioritize latest requests with switchMap
 
@@ -39,7 +39,7 @@ export const effect = ({ sources, sinks }) =>
   );
 ```
 
-https://rxjs-dev.firebaseapp.com/api/operators/switchMap
+https://rxjs.dev/api/operators/switchMap
 
 ## Complete the requests in order with concatMap
 
@@ -51,7 +51,7 @@ export const effect = ({ sources, sinks }) =>
   );
 ```
 
-https://rxjs-dev.firebaseapp.com/api/operators/concatMap
+https://rxjs.dev/api/operators/concatMap
 
 ## Ignore requests when there is already a request in flight with exhaustMap
 
@@ -63,4 +63,4 @@ export const effect = ({ sources, sinks }) =>
   );
 ```
 
-https://rxjs-dev.firebaseapp.com/api/operators/exhaustMap
+https://rxjs.dev/api/operators/exhaustMap

@@ -16,4 +16,4 @@ Here is an effect that emits a monotonically increasing value onto `count$`, eve
 export const effect = ({ sinks }) => timer(1000).pipe(sinks.count$());
 ```
 
-You can also use any of the plethora of [RxJS operators](https://rxjs-dev.firebaseapp.com/guide/operators) or make your own operators that wrap some imperative async logic.
+You can also use any of the plethora of [RxJS operators](https://rxjs.dev/guide/operators) or make your own operators that wrap some imperative async logic.
