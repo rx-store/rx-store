@@ -11,7 +11,7 @@ import { createManager } from './manager';
  * This is the single argument passed to the {@link store} function to create a new store.
  *
  * @typeparam Value the type declaration of your {@link StoreValue}, so that when Rx Store calls your
- * effects with curried helper functions, sources, and sinks, your effects will receive the proper typings.
+ * effects with curried helper functions, {@link Sources} & {@link Sinks}, your {@link Effect}s will receive the proper typings.
  * Also ensures the returned context and {@link Manager} component have proper typings.
  */
 export interface StoreArg<Value extends StoreValue> {

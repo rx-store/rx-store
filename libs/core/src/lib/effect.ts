@@ -8,22 +8,24 @@ import { StoreEventType, StoreObserver } from './store-event';
 
 /**
  * The **SpawnEffect** type is a generic type describing the type of
- * the spawnEffect function. Pass the **StoreValue** type to
+ * the spawnEffect function. Pass a type that extends the {@link StoreValue} type to
  * the **SpawnEffect** type to consume it as a type. This ensures consumers
- * of the **SpawnEffect** typing get the mapped type's with the sources &
- * sinks typings. Example:
+ * of the **SpawnEffect** typing get the mapped type's with the {@link Sources} &
+ * {@link Sinks} typings. Example:
  *
- * SpawnEffect<AppStoreValue>.
+ * SpawnEffect<{@link StoreValue}>.
  *
  *
  * The **function signature** specified by this typing is also itself
  * a generic. This is so that if you want to spawn an inner
- * effect that projects values onto the outer effect that spawned it,
- * you can type check that the inner effect projects the correct type of
- * value back, and to ensure that if the inner effect is flattened back into
+ * {@link Effect} that projects values onto the outer {@link Effect} that spawned it,
+ * you can type check that the inner {@link Effect} projects the correct type of
+ * value back, and to ensure that if the inner {@link Effect} is flattened back into
  * the outer effect, the outer effect has access to the correct typings:
  *
+ * ```typescript
  *  spawnEffect<boolean>(() => from(...).mapTo(true))
+ * ```
  */
 export type SpawnEffect<Subjects extends StoreValue> = <Projected>(
   effect: Effect<Subjects, Projected>,
@@ -70,8 +72,13 @@ export interface EffectArgs<Subjects extends StoreValue> {
  * observable is subscribed to, by the <Manager /> component.
  *
  * This typing is generic, the first argument to the generic is used to
- * configure the mapped types for the sources & sinks that are passed to the
- * effect function implementing this type. The second generic paramater is used
+ * configure the mapped types for the {@link Sources} & {@link Sinks} that are passed to the
+ * function implementing this type.
+ *
+ * @typeparam Value the type declaration of your {@link StoreValue}, so that when Rx Store spawns child
+ * effects with curried helper functions, {@link Sources} & {@link Sinks}, your effects will receive the proper typings.
+ *
+ * @typeparam Projected The second generic paramater is used
  * to specify the projected value, in case you are flattening values into the outer
  * effect and want to strongly type the interface between the outer & inner effect.
  */
