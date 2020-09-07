@@ -1,6 +1,3 @@
-import { StoreValue, Effect } from '..';
-import { Observer } from 'rxjs';
-
 export enum StoreEventType {
   subject = 'subject',
   effect = 'effect',
