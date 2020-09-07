@@ -19,7 +19,7 @@ import {
  * - Have multiple stores scoped to specific subtrees or areas of your application,
  * tying the lifecycle of the effects to the lifecycle of your component tree(s).
  *
- * The `<Manager />` is returned from [the store() factory](./store). Wrap your
+ * The `<Manager />` is returned from {@link store} function which creates the store(s). Wrap your
  * app at the top level, or wrap the part of your app where you want the store to run
  * and be available.
  *
@@ -100,7 +100,7 @@ export type Manager = React.FC<{}>;
 export const createManager = <Subjects extends StoreValue>(
   spawnRootEffectArgs: SpawnRootEffectArgs<Subjects>,
   context: React.Context<Subjects>
-) => {
+): Manager => {
   let mounted = 0;
   const Manager: React.FC<{}> = ({ children }) => {
     // Enforce singleton component instance of the Manager

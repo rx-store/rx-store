@@ -61,7 +61,6 @@ module.exports = {
       label: 'API Reference',
       collapsed: false,
       items: [
-        'react/api-reference/store',
         'react/api-reference/use-store',
         'react/api-reference/use-subscription',
         'react/api-reference/with-subscription',
