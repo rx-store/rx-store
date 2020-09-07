@@ -1,17 +1,7 @@
-import React, { useEffect, useState, useContext, Context } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Observable } from 'rxjs';
-import { StoreValue } from '@rx-store/core';
 
-/**
- * A React hook that consumes from the passed Rx Store context,
- * asserts the store value is present, and returns it.
- */
-export const useStore = <T extends StoreValue>(context: Context<T>): T => {
-  const value = useContext(context);
-  if (!value) throw new Error();
-  return value;
-};
-
+export { useStore } from './use-store';
 export { store, StoreArg, StoreReturn } from './store';
 
 /**
