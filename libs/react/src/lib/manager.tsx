@@ -8,8 +8,8 @@ import {
 /**
  * Each store has a `<Manager />`. The store's manager is responsible for:
  *
- * - Providing the [store value](#store-value) to the component(s) below it.
- * - For subscribing to (and unsubscribing from) the store's [root effect](#effects).
+ * - Providing the {@link StoreValue} to the component(s) below it.
+ * - For subscribing to (and unsubscribing from) the store's {@link RootEffect}
  *
  * You may choose to:
  *

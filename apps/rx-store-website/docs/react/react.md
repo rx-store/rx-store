@@ -14,7 +14,7 @@ const value = {};
 const { Manager, context } = store({ value });
 ```
 
-You may have one, or multiple stores. You can nest stores. Child stores can share references to parent store's streams, [as shown in the Manager docs](../react/api-reference/manager#example-2---dynamic--multiple-child-stores).
+You may have one, or multiple stores. You can nest stores. Child stores can share references to parent store's streams, [as shown in the Manager docs](/api-react/modules/_libs_react_src_lib_manager_.html).
 
 ## Nesting Stores
 
@@ -22,7 +22,7 @@ Creating a child store essentially seals off the entire sub-tree mounted within 
 
 Communication upward works much like a callback prop in React. You must explicitly pass subject(s) and observable(s) down from parent store(s) to child store(s), if you want to allow the child store to communicate up to, or consume streams provided by the parent store(s), respectfully.
 
-We recommend starting out with one root store, and nesting stores only tactfully after considering the tradeoffs, so as to avoid the pitfalls of unintentionally building a "spider web" of streams with unnecessary complexity. [Read more about nesting stores, to "seal off" a sub-tree](../react/api-reference/manager#example-2---dynamic--multiple-child-stores).
+We recommend starting out with one root store, and nesting stores only tactfully after considering the tradeoffs, so as to avoid the pitfalls of unintentionally building a "spider web" of streams with unnecessary complexity. [Read more about nesting stores, to "seal off" a sub-tree](/api-react/modules/_libs_react_src_lib_manager_.html).
 
 ## &lt;Manager /&gt; Component
 

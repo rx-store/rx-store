@@ -8,8 +8,25 @@ import {
 } from '@rx-store/core';
 import { createManager } from './manager';
 
+/**
+ * This is the single argument passed to the {@link store} function to create a new store.
+ *
+ * @typeparam Value the type declaration of your {@link StoreValue}, so that when Rx Store calls your
+ * effects with curried helper functions, sources, and sinks, your effects will receive the proper typings.
+ * Also ensures the returned context and {@link Manager} component have proper typings.
+ */
 export interface StoreArg<Value extends StoreValue> {
+  /**
+   * effect {@link RootEffect} A function that when called, returns an observable that
+   * when subscribed to, runs side effects encapsulated by that stream for the remainder
+   * of duration the store exists (which is until the {@link Manager} component unmounts)
+   */
   effect?: undefined | RootEffect<Value>;
+
+  /**
+   * value The {@link StoreValue} is a plain javascript object (containing
+   * [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject)).
+   */
   value: Value;
   observer?: Observer<StoreEvent>;
 }
@@ -28,11 +45,6 @@ export interface StoreReturn<Value extends StoreValue> {
  * by the consuming code, for downstream components to import in
  * order for them to consume & publish to streams in the store value.
  *
- * - `value`: {}
- *   - The [store value](../../core/basic-concepts/store-value.md) is a plain javascript object (containing [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject).
- * - `effect`: `({sources, sinks, spawnEffect}) => Observable`
- *   - A function that when called, returns an observable that when subscribed to, runs side effects encapsulated by that stream for the remainder of duration the store exists (until the [Manager unmounts](./manager))
- *
  * You create your store value, which is a plain old javascript object (containing [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject), then use `createStore()` passing in the store value, and the optional root effect.
  *
  * You get back a {@link Manager} component, for providing the store and it's context, and you also get back the React context itself, for consuming from and emitting to the store directly from outside of Rx Store (such as in your components).
@@ -45,6 +57,8 @@ export interface StoreReturn<Value extends StoreValue> {
  * export const rootContext = context;
  * ```
  *
+ * @typeparam Value the type declaration of your {@link StoreValue}, so that when Rx Store calls your effects with curried helper functions, sources, and sinks, your effects will receive the proper typings. Also ensures the returned context and {@link Manager} component have proper typings.
+ * @param arg an object containing your {@link RootEffect}, {@link StoreValue}, and optional {@link StoreEvent} observer
  */
 export function store<Value extends StoreValue>(
   arg: StoreArg<Value>
