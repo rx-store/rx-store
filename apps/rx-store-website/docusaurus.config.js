@@ -14,6 +14,7 @@ module.exports = {
       items: [
         {
           to: 'docs/core/introduction/getting-started',
+          activeBasePath: 'docs/core',
           label: 'Core',
           position: 'left',
         },
@@ -25,6 +26,7 @@ module.exports = {
         },
         {
           to: 'docs/react/react',
+          activeBasePath: 'docs/react',
           label: 'React',
           position: 'left',
         },
