@@ -5,13 +5,13 @@ import { useSubscription } from './use-subscription';
 /**
  * A HOC for consuming from a stream.
  *
- * ```
+ * ```typescript
  * const WrappedComponent = withSubscription(MyComponent, store.count$)
  * ```
  *
  * Your component will be rendered with `next`, `error` & `complete` props:
  *
- * ```jsx
+ * ```typescript
  * <WrappedComponent
  *   next={next}
  *   error={error}

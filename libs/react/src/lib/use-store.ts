@@ -10,7 +10,7 @@ import { StoreValue } from '@rx-store/core';
  *
  * ## Example
  *
- * ```jsx
+ * ```typescript
  * import { rootContext } from './index';
  * import { useSubscription, useStore } from '@rx-store/react';
  *

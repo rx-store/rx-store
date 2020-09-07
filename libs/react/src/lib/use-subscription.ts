@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
  *
  * ## Example 1 - consume just the value(s)
  *
- * ```tsx
+ * ```typescript
  * import { useSubscription, useStore } from '@rx-store/react';
  *
  * function Component() {
@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
  *
  * ## Example 2 - consume "next", "error" and "complete"
  *
- * ```tsx
+ * ```typescript
  * import { useSubscription, useStore } from '@rx-store/react';
  *
  * function Component() {
@@ -45,7 +45,7 @@ import { Observable } from 'rxjs';
  * You can create an observable inline, on the fly, just remember to memoize it otherwise
  * the `useSubscription()` hook will unsubscibe to the old observable & subscribe to the new observable that gets created on every render!
  *
- * ```tsx
+ * ```typescript
  * import { useRxStore, useSubscription } from '@rx-store/react';
  *
  * function Component() {
