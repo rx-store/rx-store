@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { Observable, Observer } from 'rxjs';
 import {
-  spawnRootEffect,
   StoreValue,
   StoreEventType,
   StoreEvent,

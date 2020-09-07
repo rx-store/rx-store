@@ -62,7 +62,6 @@ module.exports = {
       collapsed: false,
       items: [
         'react/api-reference/store',
-        'react/api-reference/manager',
         'react/api-reference/use-store',
         'react/api-reference/use-subscription',
         'react/api-reference/with-subscription',
