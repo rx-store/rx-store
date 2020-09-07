@@ -4,7 +4,7 @@ import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
 import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
-import { StoreEventType, StoreEvent } from './store-arg';
+import { StoreEventType, StoreEvent } from './store-event';
 
 /**
  * The **SpawnEffect** type is a generic type describing the type of

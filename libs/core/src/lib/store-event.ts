@@ -1,3 +1,6 @@
+/**
+ *
+ */
 export enum StoreEventType {
   subject = 'subject',
   effect = 'effect',
