@@ -60,10 +60,7 @@ module.exports = {
       type: 'category',
       label: 'API Reference',
       collapsed: false,
-      items: [
-        'react/api-reference/use-subscription',
-        'react/api-reference/with-subscription',
-      ],
+      items: ['react/api-reference/with-subscription'],
     },
     {
       type: 'doc',
