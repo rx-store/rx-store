@@ -57,12 +57,6 @@ module.exports = {
       items: ['react/guides/counter', 'react/guides/autocomplete'],
     },
     {
-      type: 'category',
-      label: 'API Reference',
-      collapsed: false,
-      items: ['react/api-reference/with-subscription'],
-    },
-    {
       type: 'doc',
       id: 'react/typedoc',
     },
