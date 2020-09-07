@@ -65,8 +65,7 @@ export function store<Value extends StoreValue>(
 ): StoreReturn<Value>;
 
 /**
- * @deprecated - created 1.0.0 release a bit prematurely, decided this should
- * take a single object instead of positional args
+ * @deprecated - Passing positional arguments is deprecated, please wrap your value, effect in an object when using the store function
  */
 export function store<Value extends StoreValue>(
   value: Value,
