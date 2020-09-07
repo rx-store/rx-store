@@ -23,7 +23,6 @@ These are the key basic concepts in Rx Store, learning these concepts will give 
 - The [Store Value](../basic-concepts/store-value) is an object where you define [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject) for your application's events.
 - [Effects](../basic-concepts/root-effect.md) are functions that encapsulate some unit of logic as an [observable](https://rxjs.dev/guide/observable), effects react to and emit events onto the subjects in your store value.
 - The [Store Manager](../basic-concepts/manager.md) manages the lifecycle of the effects and provide the store value to your components.
-- [Components](../basic-concepts/components.md) can subscribe to, react to, and emit events onto the subjects in your store value.
 
 # Additional Reading
 

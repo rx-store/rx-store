@@ -18,8 +18,6 @@ module.exports = {
       items: [
         'core/basic-concepts/store-value',
         'core/basic-concepts/root-effect',
-        'core/basic-concepts/manager',
-        'core/basic-concepts/components',
       ],
     },
     {

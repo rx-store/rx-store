@@ -3,6 +3,8 @@ id: react
 title: Usage with React
 ---
 
+Components can subscribe to, react to, and emit events onto the subjects in your store value. Manager components are generated for each store, which manages the lifecycle of the effects.
+
 ## store() factory
 
 ```tsx
