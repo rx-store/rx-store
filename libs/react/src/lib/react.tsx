@@ -12,6 +12,8 @@ export const useStore = <T extends StoreValue>(context: Context<T>): T => {
   return value;
 };
 
+export { store, StoreArg, StoreReturn } from './store';
+
 /**
  * A react hook for subscribing to an observable
  * it will subscribe to an observable given to it &
