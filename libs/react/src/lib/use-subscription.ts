@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Observable } from 'rxjs';
 
-export { useStore } from './use-store';
-export { store, StoreArg, StoreReturn } from './store';
-
 /**
  * A React hook used to subscribe to any observable or subject in an Rx store.
  * Your component will re-render whenever each stream emits, errors, or completes.
