@@ -59,11 +59,14 @@ module.exports = function (context, options) {
             `${docuHash(metadata.source)}.content.json`,
             JSON.stringify($('.col-content').html(), null, 2)
           );
+          const __title = await createData(
+            `${docuHash(metadata.source)}.title.json`,
+            JSON.stringify($('.tsd-page-title .container').html(), null, 2)
+          );
           const __menu = await createData(
             `${docuHash(metadata.source)}.menu.json`,
             JSON.stringify($('.col-menu').html(), null, 2)
           );
-          console.log(permalink);
           addRoute({
             path: permalink,
             component: '@site/src/components/Apidocs.js',
@@ -71,6 +74,7 @@ module.exports = function (context, options) {
             modules: {
               __content,
               __menu,
+              __title,
             },
           });
         })

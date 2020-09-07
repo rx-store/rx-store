@@ -4,7 +4,7 @@ import { spawnRootEffect } from './effect';
 import { SpawnRootEffectArgs, resetIds } from '..';
 import { TestScheduler } from 'rxjs/testing';
 import { StoreValue } from './store-value';
-import { StoreEvent } from './store-arg';
+import { StoreEvent } from './store-event';
 import { RunHelpers } from 'rxjs/internal/testing/TestScheduler';
 
 interface CallbackArgs extends RunHelpers {

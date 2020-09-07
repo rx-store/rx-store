@@ -84,7 +84,7 @@ const [next] = useSubscription(store.count$);
 return <div>count: {next}</div>;
 ```
 
-[Read more about the useSubscription hook](../api-reference/use-subscription.md)
+[Read more about the useSubscription hook](/api-react/modules/_libs_react_src_lib_use_subscription_.html)
 
 ## Summary
 

@@ -18,8 +18,6 @@ module.exports = {
       items: [
         'core/basic-concepts/store-value',
         'core/basic-concepts/root-effect',
-        'core/basic-concepts/manager',
-        'core/basic-concepts/components',
       ],
     },
     {
@@ -38,10 +36,6 @@ module.exports = {
         'core/guides/control-when-effects-run',
       ],
     },
-    {
-      type: 'doc',
-      id: 'core/typedoc',
-    },
   ],
   react: [
     {
@@ -55,22 +49,6 @@ module.exports = {
       label: 'Tutorials',
       collapsed: false,
       items: ['react/guides/counter', 'react/guides/autocomplete'],
-    },
-    {
-      type: 'category',
-      label: 'API Reference',
-      collapsed: false,
-      items: [
-        'react/api-reference/store',
-        'react/api-reference/manager',
-        'react/api-reference/use-store',
-        'react/api-reference/use-subscription',
-        'react/api-reference/with-subscription',
-      ],
-    },
-    {
-      type: 'doc',
-      id: 'react/typedoc',
     },
   ],
   angular: {

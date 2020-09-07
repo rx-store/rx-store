@@ -1,10 +1,10 @@
-import { Observable, Observer } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Sources, createSources } from './sources';
 import { Sinks, createSinks } from './sinks';
 import { StoreValue } from './store-value';
 import { finalize, tap } from 'rxjs/operators';
 import { debug } from 'debug';
-import { StoreEventType, StoreEvent } from './store-arg';
+import { StoreEventType, StoreObserver } from './store-event';
 
 /**
  * The **SpawnEffect** type is a generic type describing the type of
@@ -98,7 +98,7 @@ export type RootEffect<Subjects extends StoreValue> = (
 export interface SpawnRootEffectArgs<Subjects extends StoreValue> {
   value: Subjects;
   effect: RootEffect<Subjects>;
-  observer?: Observer<StoreEvent>;
+  observer?: StoreObserver;
 }
 
 /**

@@ -32,7 +32,7 @@ export const effect = ({sources, sinks}) =>
 
 ## Sources &amp; Sinks
 
-The subjects in your [store value](#store-value) are accessed by your effects via _sources_ and _sinks_, which:
+The subjects in your [store value](./store-value.md) are accessed by your effects via _sources_ and _sinks_, which:
 
 - Are read &amp; write only interfaces for reacting to and publishing events
 - Are unique for each effect, allowing Rx Store to track your data flow

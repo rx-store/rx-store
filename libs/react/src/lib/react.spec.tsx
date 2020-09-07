@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { store, useStore, useSubscription } from './react';
+import { store, useStore, useSubscription } from '../index';
 import { BehaviorSubject } from 'rxjs';
 import { act } from 'react-dom/test-utils';
 
