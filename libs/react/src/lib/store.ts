@@ -1,10 +1,9 @@
 import React, { createContext, Context } from 'react';
-import { Observer } from 'rxjs';
 import {
   StoreValue,
   StoreEventType,
-  StoreEvent,
   RootEffect,
+  StoreObserver,
 } from '@rx-store/core';
 import { createManager } from './manager';
 
@@ -28,7 +27,7 @@ export interface StoreArg<Value extends StoreValue> {
    * [RxJS subjects](https://rxjs-dev.firebaseapp.com/guide/subject)).
    */
   value: Value;
-  observer?: Observer<StoreEvent>;
+  observer?: StoreObserver;
 }
 
 export interface StoreReturn<Value extends StoreValue> {
@@ -78,7 +77,7 @@ export function store<Value extends StoreValue>(
 ): any {
   let value: Value;
   let effect: RootEffect<Value> | undefined;
-  let observer: Observer<StoreEvent> | undefined;
+  let observer: StoreObserver | undefined;
   if (
     storeArgOrValue &&
     Object.values(storeArgOrValue).every(

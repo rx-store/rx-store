@@ -100,7 +100,7 @@ export const counter: RxStoreEffect<AppContextValue> = ({
 The `spawnEffect` helper takes 2 arguments:
 
 `effect` - an effect function (function accepting the {sources,sinks,spawnEffect} object), this is required.
-`options` - an object where you can pass an optional name (auto naming functionality is TODO)
+`options` - an object where you can pass a name
 
 Example:
 
@@ -115,3 +115,5 @@ export const appRootEffect: RxStoreEffect<AppContextValue> = ({
 ```
 
 An object is used to wrap the name passed to spawnEffect, this allows for adding more information like tags or other fields used to configure devtools in the future.
+
+Rx Store accepts a `StoreObserver` which emits `StoreEvent`s, which is used by devtools & the visualizer, it can also be hooked into for any use which requires observing the events in the store. [See the API reference for the specification the `StoreEvent`s follow.](/api-core/modules/_libs_core_src_lib_store_event_.html)
