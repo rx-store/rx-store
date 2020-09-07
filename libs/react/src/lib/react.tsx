@@ -13,6 +13,7 @@ import {
   StoreEvent,
   RootEffect,
 } from '@rx-store/core';
+import { createManager } from './manager';
 
 /**
  * A React hook that consumes from the passed Rx Store context,
@@ -91,46 +92,14 @@ export const store: StoreFn = <T extends StoreValue>(
     });
   }
 
-  /**
-   * This Manager must be mounted at most once, wrap your children
-   * where you want the store to be accessible within (eg. top of app).
-   *
-   * It subscribes your store's root effect, and provides a context
-   * allowing children components to subscribe to the streams in the
-   * context value.
-   */
-  let mounted = 0;
-  const Manager: React.FC<{}> = ({ children }) => {
-    // Enforce singleton component instance of the Manager
-    // within the store closure, [<=1 manager per store may be mounted].
-    useEffect(() => {
-      mounted++;
-      if (mounted > 1) {
-        throw new Error('The Manager component must only be mounted once!');
-      }
-      return () => {
-        mounted--;
-      };
-    }, []);
-
-    // handle subscribing / unsubscribing to the store's effect, if any
-    // also does some runtime validation checks
-    useEffect(() => {
-      if (!effect) {
-        return;
-      }
-      const subscription = spawnRootEffect({
-        value,
-        effect,
-        observer,
-      }).subscribe();
-      return () => subscription.unsubscribe();
-    }, []);
-
-    // Wraps the children in the context provider, supplying
-    // the Rx store value.
-    return <context.Provider value={value}>{children}</context.Provider>;
-  };
+  const Manager = createManager(
+    {
+      value,
+      effect: effect as RootEffect<T>,
+      observer,
+    },
+    context
+  );
 
   return { Manager, context };
 };
