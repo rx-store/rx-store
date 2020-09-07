@@ -40,7 +40,7 @@ export default = (
 )
 ```
 
-Read more about the [&lt;Manager /&gt; component](../react/api-reference/manager) in the API reference.
+Read more about the [&lt;Manager /&gt; component](/api-react/modules/_libs_react_src_lib_manager_.html) in the API reference.
 
 ## Subscribing
 
@@ -67,11 +67,11 @@ function Component() {
 }
 ```
 
-Read more about the [useSubscription hook](./api-reference/use-subscription) in the API reference.
+Read more about the [useSubscription hook](/api-react/modules/_libs_react_src_lib_use_subscription_.html) in the API reference.
 
 ### withSubscription HOC
 
-There is also a [HOC provided](./api-reference/with-subscription) if you want to use class based components or do not want to use hooks.
+There is also a [HOC provided](/api-react/modules/_libs_react_src_lib_with_subscription_.html) if you want to use class based components or do not want to use hooks.
 
 ## React Example app
 
