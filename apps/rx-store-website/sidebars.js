@@ -40,7 +40,7 @@ module.exports = {
     },
     {
       type: 'doc',
-      id: 'core/api-reference',
+      id: 'core/typedoc',
     },
   ],
   react: [
@@ -70,7 +70,7 @@ module.exports = {
     },
     {
       type: 'doc',
-      id: 'react/api-reference',
+      id: 'react/typedoc',
     },
   ],
   angular: {
