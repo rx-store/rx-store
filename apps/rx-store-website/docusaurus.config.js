@@ -14,14 +14,24 @@ module.exports = {
       items: [
         {
           to: 'docs/core/introduction/getting-started',
-          activeBaseRegex: 'docs/core|api-core',
           label: 'Core',
           position: 'left',
         },
         {
+          to: 'api-core/modules/_libs_core_src_index_.html',
+          activeBasePath: 'api-core',
+          label: 'Core Reference',
+          position: 'left',
+        },
+        {
           to: 'docs/react/react',
-          activeBaseRegex: 'docs/react|api-react',
           label: 'React',
+          position: 'left',
+        },
+        {
+          to: 'api-react/modules/_libs_react_src_index_.html',
+          activeBasePath: 'api-react/',
+          label: 'React Reference',
           position: 'left',
         },
         {

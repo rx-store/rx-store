@@ -38,10 +38,6 @@ module.exports = {
         'core/guides/control-when-effects-run',
       ],
     },
-    {
-      type: 'doc',
-      id: 'core/typedoc',
-    },
   ],
   react: [
     {
@@ -55,10 +51,6 @@ module.exports = {
       label: 'Tutorials',
       collapsed: false,
       items: ['react/guides/counter', 'react/guides/autocomplete'],
-    },
-    {
-      type: 'doc',
-      id: 'react/typedoc',
     },
   ],
   angular: {
