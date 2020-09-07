@@ -100,35 +100,27 @@ function Home() {
         )}
         <section className={styles.features}>
           <div className="container">
-            <div className="row">
-              <div className="container">
-                <div className="row" style={{ justifyContent: 'center' }}>
-                  <div className={clsx('col col--6', styles.feature)}>
-                    <h3>Devtools</h3>
-                    <p>
-                      Rx Store is able to track the data flow in your store.
-                    </p>
-                    <p>
-                      Due to Rx Store's unique architecture, the entire store is
-                      introspectable. This affordance allows for features such
-                      as the interactive 3D data flow visualization.{' '}
-                      <a href="/docs/devtools">
-                        Read about Devtools for Rx Store
-                      </a>
-                    </p>
-                  </div>
-                  <div className={clsx('col col--6', styles.feature)}>
-                    <div className="row">
-                      <iframe
-                        width="560"
-                        height="315"
-                        src="https://www.youtube-nocookie.com/embed/pI6ALDSD-QE"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                      ></iframe>
-                    </div>
-                  </div>
+            <div className="row" style={{ justifyContent: 'center' }}>
+              <div className={clsx('col col--6', styles.feature)}>
+                <h3>Devtools</h3>
+                <p>Rx Store is able to track the data flow in your store.</p>
+                <p>
+                  Due to Rx Store's unique architecture, the entire store is
+                  introspectable. This affordance allows for features such as
+                  the interactive 3D data flow visualization.{' '}
+                  <a href="/docs/devtools">Read about Devtools for Rx Store</a>
+                </p>
+              </div>
+              <div className={clsx('col col--6', styles.feature)}>
+                <div className="row">
+                  <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube-nocookie.com/embed/pI6ALDSD-QE"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
                 </div>
               </div>
             </div>
