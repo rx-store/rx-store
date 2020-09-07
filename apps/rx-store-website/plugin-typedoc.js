@@ -53,7 +53,6 @@ module.exports = function (context, options) {
       await Promise.all(
         content.map(async (metadata) => {
           const { permalink, source } = metadata;
-          //   console.log(`${docuHash(metadata.source)}.json`, { metadata });
           const html = fs.readFileSync(metadata.source).toString('utf8');
           const $ = cheerio.load(html);
           const __content = await createData(
@@ -64,10 +63,6 @@ module.exports = function (context, options) {
             `${docuHash(metadata.source)}.menu.json`,
             JSON.stringify($('.col-menu').html(), null, 2)
           );
-          // const __content = await createData(
-          //   `${docuHash(metadata.source)}.json`,
-          //   JSON.stringify($('.tsd-legend-group').html(), null, 2)
-          // );
           console.log(permalink);
           addRoute({
             path: permalink,
