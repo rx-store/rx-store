@@ -34,7 +34,7 @@ const storeValue: AppStoreValue = {
 
 ## Effect
 
-Next, we'll add an effect for our store. This is where we put business logic and side effects. Effects are functions that are passed `sources` and `sinks`. We'll access the `counterChange$` source, use the [RxJS scan operator to put some state in our stream that sums the values](), giving us a stream that emits the latest count. We'll then pipe this through to our `count$` sink. `sources` and `sinks` are just ways to react to & emit events back onto the subjects.
+Next, we'll add an effect for our store. This is where we put business logic and side effects. Effects are functions that are passed `sources` and `sinks`. We'll access the `counterChange$` source, use the [RxJS scan operator to put some state in our stream that sums the values](https://rxjs.dev/api/operators/scan), giving us a stream that emits the latest count. We'll then pipe this through to our `count$` sink. `sources` and `sinks` are just ways to react to & emit events back onto the subjects.
 
 ```tsx
 const effect: Effect<AppStoreValue> = ({ sources, sinks }) =>
