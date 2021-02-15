@@ -5,6 +5,11 @@ import { filter, tap, bufferWhen } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { StoreEvent, StoreEventType } from '@rx-store/core';
 import { isServer } from './is-server';
+import { useTheme } from './theme';
+import chroma from 'chroma-js';
+
+const colors = chroma.scale(['#ff0000', '#00ff00']).mode('lch').colors(60);
+const colorNamespaces: Record<string, string> = {};
 
 export interface PanelProps {
   observable: Observable<StoreEvent>;
@@ -15,10 +20,40 @@ export interface PanelProps {
 export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
   (props, ref) => {
     const messagesEnd = useRef<HTMLDivElement | null>(null);
-    const [state, setState] = useState<[string, string]>(['effect', 'root']);
-    const [text, setText] = useState<string>('');
+    const [selectedFilter, setSelectedFilter] = useState<[string, string]>([
+      'effect',
+      'root',
+    ]);
+    const [events, setEvents] = useState<any[]>([]);
 
     const frame$ = useRef(new Subject());
+
+    const obs2 = useMemo(
+      () =>
+        props.observable.pipe(
+          tap((event: StoreEvent) => {
+            let colorKey = '';
+            switch (event.type) {
+              case StoreEventType.effect:
+                colorKey = `effect-${event.name}`;
+                break;
+              case StoreEventType.value:
+                colorKey = `${event.from.type}-${event.from.name}`;
+                break;
+              case StoreEventType.subject:
+                colorKey = `subject-${event.name}`;
+                break;
+            }
+            if (!colorNamespaces[colorKey]) {
+              const index = Math.round(Math.random() * colors.length - 1);
+              colorNamespaces[colorKey] = colors[index];
+
+              colors.splice(index, 1);
+            }
+          })
+        ),
+      [props.observable]
+    );
 
     const obs = useMemo(
       () =>
@@ -26,19 +61,20 @@ export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
           filter((event) => event.type === StoreEventType.value),
           filter(
             (event: any) =>
-              (event.to.type === state[0] && event.to.name === state[1]) ||
-              (event.from.type === state[0] && event.from.name === state[1])
+              (event.from.name !== '' &&
+                event.to.type === selectedFilter[0] &&
+                event.to.name === selectedFilter[1]) ||
+              (event.from.type === selectedFilter[0] &&
+                event.from.name === selectedFilter[1])
           ),
           bufferWhen(() => frame$.current),
-          tap((events) => {
-            const eventsText = events.map(
-              (event) =>
-                '\n' + `${event.from.type}: ${event.from.name} ${event.value}`
-            );
-            setText((text: string) => text + eventsText);
+          tap((newEvents) => {
+            if (newEvents.length) {
+              setEvents((events: any[]) => [...events, ...newEvents]);
+            }
           })
         ),
-      [props.observable, state]
+      [props.observable, selectedFilter]
     );
 
     useEffect(() => {
@@ -60,9 +96,12 @@ export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
     useEffect(() => {
       if (!messagesEnd || !messagesEnd.current) return;
       messagesEnd.current.scrollIntoView();
-    }, [text]);
+    }, [events]);
 
     useSubscription(obs);
+    useSubscription(obs2);
+
+    const theme = useTheme();
 
     const [isDragging, setIsDragging] = React.useState(false);
 
@@ -120,15 +159,45 @@ export const Panel = React.forwardRef<HTMLDivElement, PanelProps>(
         ></div>
         <Visualizer
           onClick={(type: string, value: string) => {
-            setText('');
-            setState([type, value]);
+            setEvents([]);
+            setSelectedFilter([type, value]);
           }}
           storeObservable={props.observable}
+          theme={theme}
+          colorNamespaces={colorNamespaces}
         />
-        <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'column' }}>
-          <h1>{JSON.stringify(state)}</h1>
+        <div
+          style={{
+            display: 'flex',
+            flexBasis: 0,
+            flexGrow: 1,
+            flexDirection: 'column',
+            color: '#eeeeee',
+            backgroundColor: theme.background,
+            borderLeft: '1px #eeeeee solid',
+            paddingLeft: 10,
+            paddingRight: 10,
+          }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              color:
+                colorNamespaces[`${selectedFilter[0]}-${selectedFilter[1]}`],
+            }}
+          >
+            {selectedFilter[0]}: {selectedFilter[1]}
+          </h1>
           <pre style={{ overflow: 'auto' }}>
-            {text}{' '}
+            {events.map((event: any, index: any) => {
+              const colorKey = `${event.from.type}-${event.from.name}`;
+              return (
+                <div key={index} style={{ color: colorNamespaces[colorKey] }}>
+                  {event.from.type}: {event.from.name}:{' '}
+                  {JSON.stringify(event.value, null, 2)}
+                </div>
+              );
+            })}
             <div
               style={{ float: 'left', clear: 'both' }}
               ref={(el) => {

@@ -16,21 +16,48 @@ import { useLinks } from '../hooks/links';
 export interface VisualizerProps {
   onClick: (type: StoreEventType, value: string) => void;
   storeObservable: Observable<StoreEvent>;
+  theme: {
+    background: string;
+    backgroundAlt: string;
+    foreground: string;
+    gray: string;
+    grayAlt: string;
+    inputBackgroundColor: string;
+    inputTextColor: string;
+    success: string;
+    danger: string;
+    active: string;
+    warning: string;
+  };
+  colorNamespaces: Record<string, string>;
 }
 
 export const Visualizer: React.FC<VisualizerProps> = ({
   onClick,
   storeObservable,
+  theme,
+  colorNamespaces,
 }) => {
   return (
-    <div style={{ border: '1px red solid', width: '100%', height: '100%' }}>
+    <div
+      style={{
+        height: '100%',
+        flexBasis: 0,
+        flexGrow: 1,
+      }}
+    >
       <Canvas
-        style={{ background: '#aaccee' }}
+        style={{ background: theme.background }}
         camera={{ position: [0, 0, 10] }}
       >
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <Layers onClick={onClick} storeObservable={storeObservable} />
+        <Layers
+          onClick={onClick}
+          storeObservable={storeObservable}
+          theme={theme}
+          colorNamespaces={colorNamespaces}
+        />
         {/* <GroundPlane />
         <BackDrop /> */}
         <MapControls target={[0, 0, 0]} maxDistance={1000} minDistance={50} />
@@ -42,6 +69,8 @@ export const Visualizer: React.FC<VisualizerProps> = ({
 export const Layers: React.FC<VisualizerProps> = ({
   onClick,
   storeObservable,
+  theme,
+  colorNamespaces,
 }) => {
   const [, forceRender] = useReducer((n) => n + 1, 0);
   const { size } = useThree();
@@ -105,7 +134,12 @@ export const Layers: React.FC<VisualizerProps> = ({
   return (
     <>
       {bullets.current.map((bullet, i) => (
-        <Bullet bullet={bullet} key={i} />
+        <Bullet
+          bullet={bullet}
+          key={i}
+          theme={theme}
+          colorNamespaces={colorNamespaces}
+        />
       ))}
       {(layout.nodes().map((obj) => ({
         ...obj,
@@ -113,9 +147,21 @@ export const Layers: React.FC<VisualizerProps> = ({
         y: obj.y - size.height / 2,
       })) as any[]).map((props) =>
         props.subject ? (
-          <Subject key={props.name} {...props} onClick={onClick} />
+          <Subject
+            key={props.name}
+            {...props}
+            onClick={onClick}
+            theme={theme}
+            colorNamespaces={colorNamespaces}
+          />
         ) : (
-          <Effect key={props.name} {...props} onClick={onClick} />
+          <Effect
+            key={props.name}
+            {...props}
+            onClick={onClick}
+            theme={theme}
+            colorNamespaces={colorNamespaces}
+          />
         )
       )}
       {(layout.links() as any).map(({ source, target }: any, i: number) => {
@@ -129,6 +175,7 @@ export const Layers: React.FC<VisualizerProps> = ({
             y0={y - size.height / 2}
             x1={x2 - size.width / 2}
             y1={y2 - size.height / 2}
+            theme={theme}
           />
         );
       })}

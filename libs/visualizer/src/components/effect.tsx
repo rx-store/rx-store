@@ -6,7 +6,7 @@ export function Effect(props: any) {
     <BoxWithText
       text={props.name}
       {...props}
-      boxColor="hotpink"
+      boxColor={props.colorNamespaces[`effect-${props.name}`]}
       onClick={() => props.onClick('effect', props.name)}
     />
   );

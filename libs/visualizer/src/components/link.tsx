@@ -20,7 +20,7 @@ export function Link({ x0, y0, x1, y1 }: any) {
           new THREE.Vector3(normX, normY, 0),
           undefined,
           dist - 5,
-          0x000000,
+          0xeeeeee,
           2,
           2,
         ]}
