@@ -56,7 +56,7 @@
     "react-three-fiber": "^4.2.20",
     "rxjs": "6.5.5",
     "styled-components": "5.1.1",
-    "three": "^0.119.1",
+    "three": "^0.125.0",
     "webcola": "^3.4.0",
     "zone.js": "^0.10.2"
   },
